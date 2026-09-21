@@ -26,7 +26,7 @@ export default async function handler(req, res) {
             userName = data.full_name || userName;
             userDham = data.dham || userDham;
             if (data.image_url) {
-                imageUrl = data.image_url; // ডাটাবেজ থেকে সরাসরি ছবির লিংক নেওয়া
+                imageUrl = data.image_url;
             }
         }
     } catch (err) {
@@ -36,7 +36,6 @@ export default async function handler(req, res) {
     const title = `শতবর্ষী স্মারক পরিচিতিপত্র | ${userName}`;
     const description = `ধাম: ${userDham} | "প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!" শতবর্ষের গৌরবময় যাত্রায় আপনার কার্ড তৈরি করুন।`;
     
-    // নিশ্চিত করুন লিংকটি সম্পূর্ণ সঠিক ও https যুক্ত কি না
     const shareUrl = `https://shatabdi-card.vercel.app/api/card?id=${id}&img=${encodeURIComponent(imageUrl)}`;
 
     const html = `
@@ -45,8 +44,6 @@ export default async function handler(req, res) {
         <head>
             <meta charset="UTF-8">
             <title>${title}</title>
-            <!-- Facebook & Open Graph Meta Tags -->
-            <meta property="property" content="og:site_name" content="শতবর্ষী স্মারক" />
             <meta property="og:title" content="${title}" />
             <meta property="og:description" content="${description}" />
             <meta property="og:image" content="${imageUrl}" />
@@ -57,13 +54,12 @@ export default async function handler(req, res) {
             <meta property="og:url" content="${shareUrl}" />
             <meta property="og:type" content="website" />
             
-            <!-- Twitter Card -->
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="${title}" />
             <meta name="twitter:description" content="${description}" />
             <meta name="twitter:image" content="${imageUrl}" />
             
-            <!-- Immediate Redirect -->
+            <!-- Cache Control & Direct Redirect for users -->
             <meta http-equiv="refresh" content="0;url=/?id=${id}" />
         </head>
         <body style="background:#0f172a; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
@@ -75,7 +71,8 @@ export default async function handler(req, res) {
         </html>
     `;
 
+    // ক্যাশ ক্লিয়ার করার হেডার যাতে ফেসবুক পুরোনো সাদা ছবি না ধরে
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.status(200).send(html);
 }
