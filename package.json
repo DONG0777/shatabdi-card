@@ -1,0 +1,9 @@
+{
+  "name": "shatabdi-card",
+  "version": "1.0.0",
+  "description": "RSS Centenary Card Generator",
+  "main": "index.html",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.8"
+  }
+}
