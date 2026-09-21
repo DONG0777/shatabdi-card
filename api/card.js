@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         return res.redirect(302, '/');
     }
 
-    let imageUrl = img || 'https://shatabdi-card.vercel.app/logo.png';
+    let imageUrl = img ? decodeURIComponent(img) : 'https://shatabdi-card.vercel.app/logo.png';
     let userName = 'স্বয়ংসেবক';
     let userDham = 'পশ্চিমবঙ্গ';
 
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
             userName = data.full_name || userName;
             userDham = data.dham || userDham;
             if (data.image_url) {
-                imageUrl = data.image_url;
+                imageUrl = data.image_url; // ডাটাবেজ থেকে সরাসরি ছবির লিংক নেওয়া
             }
         }
     } catch (err) {
@@ -35,6 +35,9 @@ export default async function handler(req, res) {
 
     const title = `শতবর্ষী স্মারক পরিচিতিপত্র | ${userName}`;
     const description = `ধাম: ${userDham} | "প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!" শতবর্ষের গৌরবময় যাত্রায় আপনার কার্ড তৈরি করুন।`;
+    
+    // নিশ্চিত করুন লিংকটি সম্পূর্ণ সঠিক ও https যুক্ত কি না
+    const shareUrl = `https://shatabdi-card.vercel.app/api/card?id=${id}&img=${encodeURIComponent(imageUrl)}`;
 
     const html = `
         <!DOCTYPE html>
@@ -42,12 +45,16 @@ export default async function handler(req, res) {
         <head>
             <meta charset="UTF-8">
             <title>${title}</title>
+            <!-- Facebook & Open Graph Meta Tags -->
+            <meta property="property" content="og:site_name" content="শতবর্ষী স্মারক" />
             <meta property="og:title" content="${title}" />
             <meta property="og:description" content="${description}" />
             <meta property="og:image" content="${imageUrl}" />
+            <meta property="og:image:secure_url" content="${imageUrl}" />
+            <meta property="og:image:type" content="image/png" />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
-            <meta property="og:url" content="https://shatabdi-card.vercel.app/api/card?id=${id}" />
+            <meta property="og:url" content="${shareUrl}" />
             <meta property="og:type" content="website" />
             
             <!-- Twitter Card -->
@@ -56,7 +63,7 @@ export default async function handler(req, res) {
             <meta name="twitter:description" content="${description}" />
             <meta name="twitter:image" content="${imageUrl}" />
             
-            <!-- Immediate Client-side Redirect for real users -->
+            <!-- Immediate Redirect -->
             <meta http-equiv="refresh" content="0;url=/?id=${id}" />
         </head>
         <body style="background:#0f172a; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
