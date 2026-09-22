@@ -405,7 +405,12 @@ async function getCard(req, res, supabase) {
     .maybeSingle();
 
   if (error) {
-    console.error('Supabase card fetch failed:', error);
+    console.error('SUPABASE_CARD_FETCH_DIAGNOSTIC', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    });
 
     if (format === 'json') {
       return jsonError(
