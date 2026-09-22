@@ -295,11 +295,23 @@ async function createCard(req, res, supabase) {
   if (uploadError) {
     console.error('Storage upload failed:', uploadError);
 
+    let serviceKeyRole = '';
+    try {
+      const tokenParts = String(SUPABASE_SERVICE_ROLE_KEY || '').split('.');
+      if (tokenParts.length === 3) {
+        const payload = JSON.parse(
+          Buffer.from(tokenParts[1], 'base64url').toString('utf8')
+        );
+        serviceKeyRole = payload?.role ? String(payload.role) : '';
+      }
+    } catch {}
+
     const uploadDiagnostic = [
       uploadError?.message ? `message=${uploadError.message}` : '',
       uploadError?.name ? `name=${uploadError.name}` : '',
       uploadError?.statusCode ? `statusCode=${uploadError.statusCode}` : '',
       uploadError?.error ? `error=${uploadError.error}` : '',
+      serviceKeyRole ? `serviceKeyRole=${serviceKeyRole}` : '',
     ]
       .filter(Boolean)
       .join(' | ');
