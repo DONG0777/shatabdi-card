@@ -288,6 +288,15 @@
             <p id="photo-help" class="mt-1 text-[10px] text-slate-500">
                 JPG, PNG বা WebP • সর্বোচ্চ 5 MB
             </p>
+            <div id="selected-photo-preview-wrap" class="hidden mt-3 rounded-2xl border border-slate-700 bg-slate-900/60 p-2">
+                <img
+                    id="selected-photo-preview"
+                    src=""
+                    alt="Selected photo preview"
+                    class="w-full max-h-48 rounded-xl object-contain"
+                >
+                <p id="selected-photo-status" class="mt-1 text-center text-[10px] text-slate-400"></p>
+            </div>
         </div>
 
         <!-- Name -->
@@ -432,9 +441,12 @@
                 maxlength="20"
                 inputmode="tel"
                 autocomplete="tel"
-                placeholder="যেমন: 9832312707"
+                placeholder="যেমন: 1234567890"
                 class="focus-ring w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
             >
+            <p id="wa-help" class="mt-1 text-[10px] text-slate-500">
+                ১০ সংখ্যার বৈধ ভারতীয় মোবাইল নম্বর দিন
+            </p>
         </div>
 
         <!-- Terms -->
@@ -775,6 +787,7 @@
             lblYear: 'সম্পন্ন বছর',
             lblSanghayu: 'সংঘায়ু',
             lblWa: 'হোয়াটসঅ্যাপ নম্বর (ঐচ্ছিক)',
+            waHelp: '১০ সংখ্যার বৈধ ভারতীয় মোবাইল নম্বর দিন',
             termsLink: 'নিয়ম ও ব্যবহারের শর্তাবলী',
             agreeText: 'আমি সব',
             agreeEnd: 'মেনে চলছি',
@@ -817,6 +830,7 @@
             lblYear: 'पूर्ण वर्ष',
             lblSanghayu: 'संघ आयु',
             lblWa: 'व्हाट्सएप नंबर (वैकल्पिक)',
+            waHelp: '10 अंकों का वैध भारतीय मोबाइल नंबर दर्ज करें',
             termsLink: 'नियम एवं शर्तें',
             agreeText: 'मैं सभी',
             agreeEnd: 'का पालन करता हूँ',
@@ -859,6 +873,7 @@
             lblYear: 'Year Completed',
             lblSanghayu: 'Sangh Age',
             lblWa: 'WhatsApp Number (Optional)',
+            waHelp: 'Enter a valid 10-digit Indian mobile number',
             termsLink: 'Terms & Conditions',
             agreeText: 'I agree to all',
             agreeEnd: '',
@@ -888,7 +903,10 @@
     };
 
     let currentLang = DEFAULT_LANGUAGE;
-    let selectedPhotoDataUrl = null;
+    const DEFAULT_PHOTO_DATA_URL =
+        $('card-img-preview').getAttribute('src') || '';
+
+    let selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
     let lastCardBlob = null;
     let lastShareUrl = null;
 
@@ -987,6 +1005,13 @@
         setText('lbl-year', t.lblYear);
         setText('lbl-sanghayu', t.lblSanghayu);
         setText('lbl-wa', t.lblWa);
+        setText('wa-help', t.waHelp);
+
+        $('wa-input').placeholder = currentLang === 'hi'
+            ? 'जैसे: 1234567890'
+            : currentLang === 'en'
+                ? 'e.g. 1234567890'
+                : 'যেমন: 1234567890';
 
         setText('btn-generate', t.btnGenerate);
 
@@ -1096,8 +1121,11 @@
             throw new Error(translations[currentLang].termsRequired);
         }
 
-        if (!selectedPhotoDataUrl) {
-            throw new Error(translations[currentLang].requiredPhoto);
+        const photoDataUrl =
+            selectedPhotoDataUrl || DEFAULT_PHOTO_DATA_URL;
+
+        if (!photoDataUrl) {
+            throw new Error(translations[currentLang].generateError);
         }
 
         return {
@@ -1529,7 +1557,10 @@
 
         try {
             if (!file) {
-                selectedPhotoDataUrl = null;
+                selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
+                $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+                $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
+                $('selected-photo-preview-wrap').classList.add('hidden');
                 return;
             }
 
@@ -1538,10 +1569,15 @@
                     selectedPhotoDataUrl = dataUrl;
                     $('card-img-preview').src = dataUrl;
                     $('export-photo').src = dataUrl;
+                    $('selected-photo-preview').src = dataUrl;
+                    $('selected-photo-preview-wrap').classList.remove('hidden');
                 })
                 .catch((error) => {
-                    selectedPhotoDataUrl = null;
+                    selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
                     event.target.value = '';
+                    $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+                    $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
+                    $('selected-photo-preview-wrap').classList.add('hidden');
                     showError(
                         error instanceof Error
                             ? error.message
@@ -1549,8 +1585,11 @@
                     );
                 });
         } catch (error) {
-            selectedPhotoDataUrl = null;
+            selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
             event.target.value = '';
+            $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+            $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
+            $('selected-photo-preview-wrap').classList.add('hidden');
             showError(
                 error instanceof Error
                     ? error.message
