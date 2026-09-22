@@ -781,7 +781,7 @@
             btnGenerate: '🚩 কার্ড তৈরি করুন',
             generating: 'কার্ড তৈরি হচ্ছে... ⏳',
             counter: '🚩 এখনও পর্যন্ত <b class="text-white font-bold">১৮,৪৫০+</b> জন স্মারক কার্ড তৈরি করেছেন!',
-            headerTitle: 'রাষ্ট্রীয় স্বয়ংসেবক সঙ্ঘ',
+            headerTitle: 'রাষ্ট্রীয় স্বয়ংসেবক সংঘ',
             headerSub: 'শতবর্ষপূর্তি স্মারক | RSS Centenary',
             cLblDham: 'ধাম:',
             cLblShakha: 'শাখা/দায়িত্ব:',
@@ -1522,6 +1522,136 @@
         }
     }
 
+    function handlePhotoChange(event) {
+        showError('');
+
+        const file = event.target.files?.[0] || null;
+
+        try {
+            if (!file) {
+                selectedPhotoDataUrl = null;
+                return;
+            }
+
+            fileToDataUrl(file)
+                .then((dataUrl) => {
+                    selectedPhotoDataUrl = dataUrl;
+                    $('card-img-preview').src = dataUrl;
+                    $('export-photo').src = dataUrl;
+                })
+                .catch((error) => {
+                    selectedPhotoDataUrl = null;
+                    event.target.value = '';
+                    showError(
+                        error instanceof Error
+                            ? error.message
+                            : translations[currentLang].invalidPhoto
+                    );
+                });
+        } catch (error) {
+            selectedPhotoDataUrl = null;
+            event.target.value = '';
+            showError(
+                error instanceof Error
+                    ? error.message
+                    : translations[currentLang].invalidPhoto
+            );
+        }
+    }
+
+    async function generateCard() {
+        showError('');
+
+        const button = $('btn-generate');
+        const t = translations[currentLang];
+
+        if (button.disabled) {
+            return;
+        }
+
+        try {
+            const formData = getFormData();
+
+            updatePreview(formData);
+
+            button.disabled = true;
+            button.textContent = t.generating;
+
+            const blob = await createCardBlob();
+            lastCardBlob = blob;
+
+            const result = await createCardOnServer(blob, formData);
+
+            setupShareLinks(result.shareUrl);
+
+            $('share-actions').classList.remove('hidden');
+
+            button.textContent = '✅ ' + (
+                currentLang === 'hi'
+                    ? 'कार्ड तैयार'
+                    : currentLang === 'en'
+                        ? 'Card Created'
+                        : 'কার্ড তৈরি সম্পন্ন'
+            );
+
+            $('share-actions').scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        } catch (error) {
+            console.error('Card generation error:', error);
+
+            showError(
+                error instanceof Error
+                    ? error.message
+                    : t.generateError
+            );
+
+            button.textContent = t.btnGenerate;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    async function downloadCardImage() {
+        showError('');
+
+        if (!lastCardBlob) {
+            showError(translations[currentLang].generateError);
+            return;
+        }
+
+        try {
+            const filename =
+                currentLang === 'hi'
+                    ? 'shatabdi-card.png'
+                    : currentLang === 'en'
+                        ? 'centenary-card.png'
+                        : 'shatabdi-card.png';
+
+            await downloadBlob(lastCardBlob, filename);
+        } catch (error) {
+            console.error('Card download error:', error);
+            showError(
+                error instanceof Error
+                    ? error.message
+                    : translations[currentLang].generateError
+            );
+        }
+    }
+
+    $('lang-select').addEventListener('change', (event) => {
+        applyLanguage(event.target.value);
+    });
+
+    $('dham-select').addEventListener('change', toggleCustomDistrict);
+    $('photo-input').addEventListener('change', handlePhotoChange);
+    $('terms-button').addEventListener('click', showTermsAlert);
+    $('btn-generate').addEventListener('click', generateCard);
+    $('btn-dl').addEventListener('click', downloadCardImage);
+
+    populateDropdowns(DEFAULT_LANGUAGE);
+    applyLanguage(DEFAULT_LANGUAGE);
     loadSharedCard();
 })();
 </script>
