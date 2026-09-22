@@ -295,10 +295,21 @@ async function createCard(req, res, supabase) {
   if (uploadError) {
     console.error('Storage upload failed:', uploadError);
 
+    const uploadDiagnostic = [
+      uploadError?.message ? `message=${uploadError.message}` : '',
+      uploadError?.name ? `name=${uploadError.name}` : '',
+      uploadError?.statusCode ? `statusCode=${uploadError.statusCode}` : '',
+      uploadError?.error ? `error=${uploadError.error}` : '',
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
     return jsonError(
       res,
       500,
-      'Card image upload failed.',
+      uploadDiagnostic
+        ? `Card image upload failed: ${uploadDiagnostic}`
+        : 'Card image upload failed.',
       'IMAGE_UPLOAD_FAILED'
     );
   }
