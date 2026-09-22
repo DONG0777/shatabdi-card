@@ -902,6 +902,8 @@
         }
     };
 
+    const $ = (id) => document.getElementById(id);
+
     let currentLang = DEFAULT_LANGUAGE;
     const DEFAULT_PHOTO_DATA_URL =
         $('card-img-preview').getAttribute('src') || '';
@@ -909,8 +911,6 @@
     let selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
     let lastCardBlob = null;
     let lastShareUrl = null;
-
-    const $ = (id) => document.getElementById(id);
 
     function setText(id, value) {
         const element = $(id);
