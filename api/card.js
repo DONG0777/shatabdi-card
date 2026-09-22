@@ -296,13 +296,26 @@ async function createCard(req, res, supabase) {
     console.error('Storage upload failed:', uploadError);
 
     let serviceKeyRole = '';
+    let serviceKeyFormat = '';
+    let serviceKeyJwtParts = 0;
+    let serviceKeyPayloadDecoded = false;
+
     try {
-      const tokenParts = String(SUPABASE_SERVICE_ROLE_KEY || '').split('.');
+      const key = String(SUPABASE_SERVICE_ROLE_KEY || '');
+      const tokenParts = key.split('.');
+      serviceKeyJwtParts = tokenParts.length;
+
       if (tokenParts.length === 3) {
+        serviceKeyFormat = 'legacy_jwt';
         const payload = JSON.parse(
           Buffer.from(tokenParts[1], 'base64url').toString('utf8')
         );
+        serviceKeyPayloadDecoded = true;
         serviceKeyRole = payload?.role ? String(payload.role) : '';
+      } else if (key.startsWith('sb_secret_')) {
+        serviceKeyFormat = 'new_secret';
+      } else if (key) {
+        serviceKeyFormat = 'other';
       }
     } catch {}
 
@@ -311,6 +324,9 @@ async function createCard(req, res, supabase) {
       uploadError?.name ? `name=${uploadError.name}` : '',
       uploadError?.statusCode ? `statusCode=${uploadError.statusCode}` : '',
       uploadError?.error ? `error=${uploadError.error}` : '',
+      serviceKeyFormat ? `serviceKeyFormat=${serviceKeyFormat}` : '',
+      `serviceKeyJwtParts=${serviceKeyJwtParts}`,
+      `serviceKeyPayloadDecoded=${serviceKeyPayloadDecoded}`,
       serviceKeyRole ? `serviceKeyRole=${serviceKeyRole}` : '',
     ]
       .filter(Boolean)
