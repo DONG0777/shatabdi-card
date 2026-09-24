@@ -255,23 +255,73 @@
         .profile-frame-tagline {
             position: absolute;
             left: 50%;
-            top: 28px;
+            top: 24px;
             transform: translateX(-50%);
-            width: 78%;
+            width: 82%;
+            padding: 12px 34px;
+            box-sizing: border-box;
             text-align: center;
             font-size: 22px;
             line-height: 1.35;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.01em;
-            color: #172554;
+            color: #fef3c7;
             white-space: nowrap;
             z-index: 5;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(15, 23, 42, 0.72),
+                    rgba(30, 41, 59, 0.96) 18%,
+                    rgba(30, 41, 59, 0.96) 82%,
+                    rgba(15, 23, 42, 0.72)
+                );
+
+            border-top: 1px solid rgba(251, 191, 36, 0.78);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.78);
+            border-radius: 999px;
+
+            box-shadow:
+                0 4px 18px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+        }
+
+        .profile-frame-tagline::before,
+        .profile-frame-tagline::after {
+            content: "◆";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 9px;
+            color: #fbbf24;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.45);
+        }
+
+        .profile-frame-tagline::before {
+            left: 14px;
+        }
+
+        .profile-frame-tagline::after {
+            right: 14px;
         }
 
         @media (max-width: 700px) {
             .profile-frame-tagline {
+                top: 20px;
+                width: 86%;
+                padding: 10px 28px;
                 font-size: 18px;
-                width: 82%;
+            }
+
+            .profile-frame-tagline::before {
+                left: 10px;
+            }
+
+            .profile-frame-tagline::after {
+                right: 10px;
             }
         }
 
