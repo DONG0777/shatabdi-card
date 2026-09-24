@@ -252,6 +252,29 @@
             color: #f8fafc;
         }
 
+        .profile-frame-tagline {
+            position: absolute;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%);
+            width: 78%;
+            text-align: center;
+            font-size: 22px;
+            line-height: 1.35;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            color: #172554;
+            white-space: nowrap;
+            z-index: 5;
+        }
+
+        @media (max-width: 700px) {
+            .profile-frame-tagline {
+                font-size: 18px;
+                width: 82%;
+            }
+        }
+
         .profile-frame-corner {
             position: absolute;
             z-index: 3;
@@ -1259,6 +1282,13 @@
             </div>
         </div>
 
+        <div
+            id="profile-frame-tagline"
+            class="profile-frame-tagline"
+        >
+            প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!
+        </div>
+
         <div class="profile-frame-corner profile-frame-corner-tl"></div>
         <div class="profile-frame-corner profile-frame-corner-tr"></div>
         <div class="profile-frame-corner profile-frame-corner-bl"></div>
@@ -1474,6 +1504,7 @@
             fbBtn: '📘 Facebook এ পোস্ট করুন',
             dlBtn: '📥 গ্যালারিতে কার্ড সেভ করুন',
             profileFrameDlBtn: '🖼️ প্রোফাইল ফ্রেম সেভ করুন',
+            profileFrameTagline: 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!',
             success: 'আপনার স্মারক কার্ড তৈরি হয়েছে।',
             requiredName: 'দয়া করে আপনার নাম লিখুন।',
             requiredPhoto: 'দয়া করে একটি ছবি নির্বাচন করুন।',
@@ -1544,6 +1575,7 @@
             fbBtn: '📘 Facebook पर पोस्ट करें',
             dlBtn: '📥 गैलरी में सेव करें',
             profileFrameDlBtn: '🖼️ प्रोफ़ाइल फ़्रेम सेव करें',
+            profileFrameTagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
             success: 'आपका स्मारक कार्ड तैयार हो गया है।',
             requiredName: 'कृपया अपना नाम लिखें।',
             requiredPhoto: 'कृपया एक फोटो चुनें।',
@@ -1614,6 +1646,7 @@
             fbBtn: '📘 Post on Facebook',
             dlBtn: '📥 Save to Gallery',
             profileFrameDlBtn: '🖼️ Save Profile Frame',
+            profileFrameTagline: 'Not for promotion, this is my identity — I am a Swayamsevak!',
             success: 'Your commemorative card has been created.',
             requiredName: 'Please enter your name.',
             requiredPhoto: 'Please select a photo.',
@@ -1964,6 +1997,7 @@
         );
 
         setText('profile-frame-years', '1925 — 2026');
+        setText('profile-frame-tagline', translations[currentLang].profileFrameTagline);
     }
 
     async function waitForImages() {
