@@ -274,6 +274,60 @@
             z-index: 2;
         }
 
+        /* Step flow safety: never expose all steps before JS initializes. */
+        .step-flow-item[data-step="2"],
+        .step-flow-item[data-step="3"],
+        .step-flow-item[data-step="4"],
+        .step-flow-item[data-step="5"],
+        .step-flow-item[data-step="6"],
+        .step-flow-item[data-step="7"] {
+            display: none;
+        }
+
+        #language-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(8px);
+        }
+
+        #language-modal.hidden {
+            display: none;
+        }
+
+        .language-modal-card {
+            width: min(100%, 360px);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 1.5rem;
+            background: rgba(15, 23, 42, 0.98);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            padding: 1.25rem;
+        }
+
+        .language-choice {
+            width: 100%;
+            border: 1px solid rgba(71, 85, 105, 0.9);
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            border-radius: 0.9rem;
+            padding: 0.8rem 1rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        }
+
+        .language-choice:hover {
+            border-color: rgba(245, 158, 11, 0.75);
+            background: rgba(51, 65, 85, 0.98);
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 480px) {
             body {
                 padding-bottom: env(safe-area-inset-bottom);
@@ -283,6 +337,34 @@
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen py-5 px-3">
+
+<div id="language-modal" role="dialog" aria-modal="true" aria-labelledby="language-modal-title">
+    <div class="language-modal-card">
+        <div class="text-center">
+            <div class="text-3xl mb-2" aria-hidden="true">🚩</div>
+            <h2 id="language-modal-title" class="text-xl font-bold text-amber-300">
+                ভাষা নির্বাচন করুন
+            </h2>
+            <p id="language-modal-help" class="mt-2 text-xs leading-relaxed text-slate-400">
+                কার্ড তৈরি শুরু করার আগে আপনার ভাষা বেছে নিন।
+            </p>
+        </div>
+
+        <div class="mt-5 space-y-2.5">
+            <button type="button" class="language-choice" data-language="bn">
+                বাংলা
+            </button>
+
+            <button type="button" class="language-choice" data-language="hi">
+                हिन्दी
+            </button>
+
+            <button type="button" class="language-choice" data-language="en">
+                English
+            </button>
+        </div>
+    </div>
+</div>
 
 <main class="mx-auto w-full max-w-md">
 
@@ -371,7 +453,7 @@
         </div>
 
         <!-- Step 2 -->
-        <div data-step="2" class="step-flow-item">
+        <div data-step="2" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-2-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-2-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -418,7 +500,7 @@
         </div>
 
         <!-- Step 3 -->
-        <div data-step="3" class="step-flow-item">
+        <div data-step="3" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-3-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-3-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -460,7 +542,7 @@
         </div>
 
         <!-- Step 4 -->
-        <div data-step="4" class="step-flow-item">
+        <div data-step="4" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-4-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-4-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -501,7 +583,7 @@
         </div>
 
         <!-- Step 5 -->
-        <div data-step="5" class="step-flow-item">
+        <div data-step="5" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-5-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-5-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -526,7 +608,7 @@
         </div>
 
         <!-- Step 6 -->
-        <div data-step="6" class="step-flow-item">
+        <div data-step="6" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-6-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-6-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -558,7 +640,7 @@
         </div>
 
         <!-- Step 7 -->
-        <div data-step="7" class="step-flow-item">
+        <div data-step="7" class="step-flow-item" style="display: none;">
             <div class="mb-4">
                 <h2 id="step-7-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-7-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -2210,9 +2292,47 @@
         }
     }
 
+    function setSelectedLanguage(lang) {
+        if (!SUPPORTED_LANGUAGES.includes(lang)) {
+            lang = DEFAULT_LANGUAGE;
+        }
+
+        applyLanguage(lang);
+        currentStep = 1;
+        showError('');
+        updateStepFlow();
+
+        const modal = $('language-modal');
+
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+
+        try {
+            sessionStorage.setItem('shatabdi-card-language', lang);
+        } catch (error) {
+            // Storage may be unavailable; language still works for this page.
+        }
+    }
+
+    document.querySelectorAll('.language-choice').forEach((button) => {
+        button.addEventListener('click', () => {
+            setSelectedLanguage(button.dataset.language);
+        });
+    });
+
     $('lang-select').addEventListener('change', (event) => {
         applyLanguage(event.target.value);
         updateStepFlow();
+
+        try {
+            sessionStorage.setItem(
+                'shatabdi-card-language',
+                event.target.value
+            );
+        } catch (error) {
+            // Ignore storage errors.
+        }
     });
 
     $('step-flow-back').addEventListener('click', () => {
@@ -2240,9 +2360,36 @@
     $('btn-generate').addEventListener('click', generateCard);
     $('btn-dl').addEventListener('click', downloadCardImage);
 
-    populateDropdowns(DEFAULT_LANGUAGE);
-    applyLanguage(DEFAULT_LANGUAGE);
+    let initialLanguage = DEFAULT_LANGUAGE;
+    let hasSavedLanguage = false;
+
+    try {
+        const savedLanguage = sessionStorage.getItem(
+            'shatabdi-card-language'
+        );
+
+        if (SUPPORTED_LANGUAGES.includes(savedLanguage)) {
+            initialLanguage = savedLanguage;
+            hasSavedLanguage = true;
+        }
+    } catch (error) {
+        // Ignore storage errors and use Bengali as the safe default.
+    }
+
+    populateDropdowns(initialLanguage);
+    applyLanguage(initialLanguage);
     initStepFlow();
+
+    const languageModal = $('language-modal');
+
+    if (languageModal) {
+        if (hasSavedLanguage) {
+            languageModal.classList.add('hidden');
+        } else {
+            languageModal.classList.remove('hidden');
+        }
+    }
+
     loadSharedCard();
 })();
 </script>
