@@ -1343,6 +1343,7 @@
 
             <text class="ring-tagline">
                 <textPath
+                    id="profile-frame-ring-tagline-text"
                     href="#profile-ring-tagline"
                     startOffset="50%"
                     text-anchor="middle"
@@ -1384,14 +1385,7 @@
             >
         </div>
 
-        <div class="profile-frame-bottom">
-            <div id="profile-frame-badge" class="profile-frame-badge">
-                CENTENARY
-            </div>
-            <div id="profile-frame-name" class="profile-frame-name">
-                XXXX YYYY ZZZ
-            </div>
-        </div>
+        <div class="profile-frame-bottom" aria-hidden="true"></div>
 
         <div
             id="profile-frame-tagline"
@@ -2085,10 +2079,6 @@
             framePhoto.src = selectedPhotoDataUrl || DEFAULT_PHOTO_DATA_URL;
         }
 
-        if (data?.full_name) {
-            setText('profile-frame-name', data.full_name);
-        }
-
         setText(
             'profile-frame-title',
             currentLang === 'hi'
@@ -2098,17 +2088,24 @@
                     : 'শতবর্ষপূর্তি'
         );
 
+        setText('profile-frame-years', '1925 — 2026');
+
+        const profileFrameTagline =
+            translations[currentLang].profileFrameTagline;
+
+        const profileFrameName =
+            data?.full_name?.trim() ||
+            $('name-input')?.value?.trim() ||
+            '';
+
         setText(
-            'profile-frame-badge',
-            currentLang === 'hi'
-                ? 'शताब्दी'
-                : currentLang === 'en'
-                    ? 'CENTENARY'
-                    : 'শতবর্ষ'
+            'profile-frame-ring-tagline-text',
+            profileFrameName
+                ? `${profileFrameTagline} (${profileFrameName})`
+                : profileFrameTagline
         );
 
-        setText('profile-frame-years', '1925 — 2026');
-        setText('profile-frame-tagline', translations[currentLang].profileFrameTagline);
+        setText('profile-frame-tagline', profileFrameTagline);
     }
 
     async function waitForImages() {
