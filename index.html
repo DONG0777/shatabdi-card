@@ -255,74 +255,58 @@
         .profile-frame-tagline {
             position: absolute;
             left: 50%;
-            top: 24px;
+            bottom: 54px;
             transform: translateX(-50%);
-            width: 82%;
-            padding: 12px 34px;
-            box-sizing: border-box;
+            width: 760px;
             text-align: center;
+            font-family: 'Hind Siliguri', sans-serif;
             font-size: 22px;
-            line-height: 1.35;
-            font-weight: 800;
-            letter-spacing: 0.01em;
+            line-height: 1.3;
+            font-weight: 700;
             color: #fef3c7;
             white-space: nowrap;
-            z-index: 5;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(15, 23, 42, 0.72),
-                    rgba(30, 41, 59, 0.96) 18%,
-                    rgba(30, 41, 59, 0.96) 82%,
-                    rgba(15, 23, 42, 0.72)
-                );
-
-            border-top: 1px solid rgba(251, 191, 36, 0.78);
-            border-bottom: 1px solid rgba(251, 191, 36, 0.78);
-            border-radius: 999px;
-
-            box-shadow:
-                0 4px 18px rgba(0, 0, 0, 0.28),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+            z-index: 4;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .profile-frame-tagline::before,
-        .profile-frame-tagline::after {
-            content: "◆";
+        .profile-frame-ring-text {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 9px;
-            color: #fbbf24;
-            text-shadow: 0 0 8px rgba(251, 191, 36, 0.45);
+            inset: 0;
+            width: 1080px;
+            height: 1080px;
+            z-index: 4;
+            pointer-events: none;
+            overflow: visible;
         }
 
-        .profile-frame-tagline::before {
-            left: 14px;
+        .profile-frame-ring-text text {
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 700;
+            fill: #fde68a;
+            letter-spacing: 0.08em;
         }
 
-        .profile-frame-tagline::after {
-            right: 14px;
+        .profile-frame-ring-text .ring-side {
+            font-size: 27px;
         }
 
-        @media (max-width: 700px) {
-            .profile-frame-tagline {
-                top: 20px;
-                width: 86%;
-                padding: 10px 28px;
-                font-size: 18px;
-            }
+        .profile-frame-ring-text .ring-tagline {
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            fill: #fef3c7;
+        }
 
-            .profile-frame-tagline::before {
-                left: 10px;
-            }
+        .profile-frame-ring-text .ring-dot {
+            fill: #fbbf24;
+            font-size: 18px;
+        }
 
-            .profile-frame-tagline::after {
-                right: 10px;
-            }
+        .profile-frame-ring-text .ring-line {
+            stroke: rgba(251, 191, 36, 0.72);
+            stroke-width: 2;
+            fill: none;
         }
 
         .profile-frame-corner {
@@ -1304,6 +1288,75 @@
 <!-- 1080×1080 profile-frame export surface -->
 <div id="profile-frame-export" aria-hidden="true">
     <div id="profile-frame-card" class="profile-frame-card">
+
+        <svg
+            class="profile-frame-ring-text"
+            viewBox="0 0 1080 1080"
+            aria-hidden="true"
+        >
+            <defs>
+                <path
+                    id="profile-ring-left"
+                    d="M 188 540 A 352 352 0 0 0 540 188"
+                />
+                <path
+                    id="profile-ring-right"
+                    d="M 540 892 A 352 352 0 0 0 892 540"
+                />
+                <path
+                    id="profile-ring-tagline"
+                    d="M 205 705 A 385 385 0 0 0 875 705"
+                />
+            </defs>
+
+            <circle
+                class="ring-line"
+                cx="540"
+                cy="540"
+                r="392"
+                opacity="0.32"
+            />
+
+            <text class="ring-side">
+                <textPath
+                    href="#profile-ring-left"
+                    startOffset="50%"
+                    text-anchor="middle"
+                >সেবা • সাধনা</textPath>
+            </text>
+
+            <text class="ring-side">
+                <textPath
+                    href="#profile-ring-right"
+                    startOffset="50%"
+                    text-anchor="middle"
+                >সংস্কার • সমর্পণ</textPath>
+            </text>
+
+            <text class="ring-tagline">
+                <textPath
+                    href="#profile-ring-tagline"
+                    startOffset="50%"
+                    text-anchor="middle"
+                >প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!</textPath>
+            </text>
+
+            <text class="ring-dot">
+                <textPath
+                    href="#profile-ring-left"
+                    startOffset="7%"
+                    text-anchor="middle"
+                >◆</textPath>
+            </text>
+
+            <text class="ring-dot">
+                <textPath
+                    href="#profile-ring-right"
+                    startOffset="93%"
+                    text-anchor="middle"
+                >◆</textPath>
+            </text>
+        </svg>
 
         <div class="profile-frame-top">
             <div id="profile-frame-years" class="profile-frame-years">
