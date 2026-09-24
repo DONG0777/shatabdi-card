@@ -274,16 +274,6 @@
             z-index: 2;
         }
 
-        /* Step flow safety: never expose all steps before JS initializes. */
-        .step-flow-item[data-step="2"],
-        .step-flow-item[data-step="3"],
-        .step-flow-item[data-step="4"],
-        .step-flow-item[data-step="5"],
-        .step-flow-item[data-step="6"],
-        .step-flow-item[data-step="7"] {
-            display: none;
-        }
-
         #language-modal {
             position: fixed;
             inset: 0;
@@ -453,7 +443,7 @@
         </div>
 
         <!-- Step 2 -->
-        <div data-step="2" class="step-flow-item" style="display: none;">
+        <div data-step="2" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-2-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-2-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -500,7 +490,7 @@
         </div>
 
         <!-- Step 3 -->
-        <div data-step="3" class="step-flow-item" style="display: none;">
+        <div data-step="3" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-3-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-3-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -542,7 +532,7 @@
         </div>
 
         <!-- Step 4 -->
-        <div data-step="4" class="step-flow-item" style="display: none;">
+        <div data-step="4" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-4-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-4-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -583,7 +573,7 @@
         </div>
 
         <!-- Step 5 -->
-        <div data-step="5" class="step-flow-item" style="display: none;">
+        <div data-step="5" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-5-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-5-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -608,7 +598,7 @@
         </div>
 
         <!-- Step 6 -->
-        <div data-step="6" class="step-flow-item" style="display: none;">
+        <div data-step="6" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-6-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-6-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -640,7 +630,7 @@
         </div>
 
         <!-- Step 7 -->
-        <div data-step="7" class="step-flow-item" style="display: none;">
+        <div data-step="7" class="step-flow-item" hidden>
             <div class="mb-4">
                 <h2 id="step-7-title" class="text-lg font-bold text-amber-300"></h2>
                 <p id="step-7-help" class="mt-1 text-xs leading-relaxed text-slate-400"></p>
@@ -2040,7 +2030,7 @@
 
         items.forEach((item) => {
             const step = Number(item.dataset.step);
-            item.style.display = step === currentStep ? '' : 'none';
+            item.hidden = step !== currentStep;
         });
 
         header.classList.remove('hidden');
