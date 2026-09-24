@@ -290,6 +290,72 @@
             display: none;
         }
 
+        /* Clean guided creation flow */
+        #creation-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(8px);
+        }
+
+        #creation-modal.hidden {
+            display: none;
+        }
+
+        .creation-modal-card {
+            width: min(100%, 420px);
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 1.5rem;
+            background: rgba(15, 23, 42, 0.98);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            padding: 1.25rem;
+        }
+
+        .creation-modal-field {
+            margin-top: 1.25rem;
+        }
+
+        .creation-modal-navigation {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .creation-modal-navigation button {
+            flex: 1;
+        }
+
+        body.creation-active > main > header,
+        body.creation-active > main > #counter-text,
+        body.creation-active > main > section:not(#card-preview),
+        body.creation-active > main > #step-flow-navigation,
+        body.creation-active > main > #card-preview {
+            display: none !important;
+        }
+
+        body.creation-active #card-preview {
+            display: none !important;
+        }
+
+        body.card-created #creation-modal {
+            display: none !important;
+        }
+
+        body.card-created > main > #card-preview {
+            display: block !important;
+        }
+
+        body.card-created > main > #share-actions {
+            display: block !important;
+        }
+
         .language-modal-card {
             width: min(100%, 360px);
             border: 1px solid rgba(245, 158, 11, 0.4);
@@ -351,6 +417,72 @@
 
             <button type="button" class="language-choice" data-language="en">
                 English
+            </button>
+        </div>
+    </div>
+</div>
+
+<div
+    id="creation-modal"
+    class="hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="creation-modal-title"
+>
+    <div class="creation-modal-card">
+        <div class="flex items-center justify-between gap-3">
+            <span
+                id="creation-modal-progress"
+                class="text-[10px] font-semibold text-amber-300"
+            >
+                1 / 10
+            </span>
+
+            <span
+                id="creation-modal-label"
+                class="text-[10px] text-slate-500"
+            >
+                ধাপ 1
+            </span>
+        </div>
+
+        <div class="mt-3">
+            <h2
+                id="creation-modal-title"
+                class="text-xl font-bold text-amber-300"
+            ></h2>
+
+            <p
+                id="creation-modal-help"
+                class="mt-1 text-xs leading-relaxed text-slate-400"
+            ></p>
+        </div>
+
+        <div id="creation-modal-field" class="creation-modal-field"></div>
+
+        <div id="creation-modal-review" class="hidden mt-5"></div>
+
+        <p
+            id="creation-modal-error"
+            class="hidden mt-3 text-center text-xs text-red-300"
+            role="alert"
+        ></p>
+
+        <div class="creation-modal-navigation">
+            <button
+                type="button"
+                id="creation-modal-back"
+                class="focus-ring border border-slate-700 bg-slate-800 text-slate-200 font-semibold py-2.5 rounded-xl text-xs disabled:opacity-40"
+            >
+                ← পিছনে
+            </button>
+
+            <button
+                type="button"
+                id="creation-modal-next"
+                class="focus-ring gold-gradient text-slate-950 font-bold py-2.5 rounded-xl text-xs"
+            >
+                পরবর্তী →
             </button>
         </div>
     </div>
@@ -2011,175 +2143,366 @@
         }
     }
 
-    // Step Flow controller
+    // Clean guided creation flow
     const STEP_FLOW_TOTAL = 10;
     let currentStep = 1;
 
-    function updateStepFlow() {
-        const header = $('step-flow-header');
-        const navigation = $('step-flow-navigation');
-        const backButton = $('step-flow-back');
-        const nextButton = $('step-flow-next');
-        const progress = $('step-flow-progress');
+    const creationFlowFields = {
+        1: 'name-input',
+        2: 'dham-select',
+        3: 'kaam-input',
+        4: 'shakha-input',
+        5: 'role-input',
+        6: 'barga-select',
+        7: 'year-input',
+        8: 'sanghayu-input',
+        9: 'wa-input',
+        10: 'photo-input'
+    };
 
-        if (!header || !navigation || !backButton || !nextButton || !progress) {
+    const creationFlowMeta = {
+        1: ['step1Title', 'step1Help'],
+        2: ['lblDham', 'step2Help'],
+        3: ['lblKaam', 'step2Help'],
+        4: ['lblShakha', 'step3Help'],
+        5: ['lblRole', 'step3Help'],
+        6: ['lblBarga', 'step4Help'],
+        7: ['lblYear', 'step4Help'],
+        8: ['step5Title', 'step5Help'],
+        9: ['step6Title', 'step6Help'],
+        10: ['step7Title', 'step7Help']
+    };
+
+    function getCreationField(step) {
+        const id = creationFlowFields[step];
+
+        if (!id) {
+            return null;
+        }
+
+        return $(id);
+    }
+
+    function getCreationFieldWrapper(step) {
+        const field = getCreationField(step);
+
+        if (!field) {
+            return null;
+        }
+
+        return field.closest('[data-flow-field]') || field.parentElement;
+    }
+
+    function clearCreationModalError() {
+        const error = $('creation-modal-error');
+
+        if (!error) {
             return;
         }
 
-        const parentStepMap = {
-            1: 1,
-            2: 2,
-            3: 2,
-            4: 3,
-            5: 3,
-            6: 4,
-            7: 4,
-            8: 5,
-            9: 6,
-            10: 7
-        };
+        error.textContent = '';
+        error.classList.add('hidden');
+    }
 
-        const activeParentStep = parentStepMap[currentStep];
+    function showCreationModalError(message) {
+        const error = $('creation-modal-error');
 
-        document.querySelectorAll('.step-flow-item').forEach((item) => {
-            const step = Number(item.dataset.step);
-            item.hidden = step !== activeParentStep;
+        if (!error) {
+            return;
+        }
+
+        error.textContent = message;
+        error.classList.remove('hidden');
+    }
+
+    const creationFlowAnchors = new Map();
+
+    function registerCreationFlowAnchors() {
+        if (creationFlowAnchors.size > 0) {
+            return;
+        }
+
+        for (const step of Object.keys(creationFlowFields)) {
+            const wrapper = getCreationFieldWrapper(Number(step));
+
+            if (!wrapper) {
+                continue;
+            }
+
+            const anchor = document.createComment(
+                `creation-flow-anchor-${step}`
+            );
+
+            wrapper.parentNode.insertBefore(anchor, wrapper);
+
+            creationFlowAnchors.set(`field-${step}`, {
+                element: wrapper,
+                anchor
+            });
+        }
+
+        const review = $('step-review');
+
+        if (review && review.parentNode) {
+            const anchor = document.createComment('creation-review-anchor');
+
+            review.parentNode.insertBefore(anchor, review);
+
+            creationFlowAnchors.set('review', {
+                element: review,
+                anchor
+            });
+        }
+
+        const terms = $('terms-check')?.closest('.flex');
+
+        if (terms && terms.parentNode) {
+            const anchor = document.createComment('creation-terms-anchor');
+
+            terms.parentNode.insertBefore(anchor, terms);
+
+            creationFlowAnchors.set('terms', {
+                element: terms,
+                anchor
+            });
+        }
+
+        const generate = $('btn-generate');
+
+        if (generate && generate.parentNode) {
+            const anchor = document.createComment('creation-generate-anchor');
+
+            generate.parentNode.insertBefore(anchor, generate);
+
+            creationFlowAnchors.set('generate', {
+                element: generate,
+                anchor
+            });
+        }
+    }
+
+    function restoreCreationElement(key) {
+        const entry = creationFlowAnchors.get(key);
+
+        if (!entry || !entry.anchor?.parentNode) {
+            return;
+        }
+
+        entry.anchor.parentNode.insertBefore(
+            entry.element,
+            entry.anchor.nextSibling
+        );
+    }
+
+    function restoreAllCreationElements() {
+        for (const key of creationFlowAnchors.keys()) {
+            restoreCreationElement(key);
+        }
+    }
+
+    function moveCreationElementToModal(key, mount) {
+        const entry = creationFlowAnchors.get(key);
+
+        if (!entry || !mount) {
+            return;
+        }
+
+        mount.appendChild(entry.element);
+    }
+
+    function moveFieldToCreationModal(step) {
+        const mount = $('creation-modal-field');
+
+        if (!mount) {
+            return;
+        }
+
+        const key = `field-${step}`;
+        const entry = creationFlowAnchors.get(key);
+
+        if (!entry) {
+            return;
+        }
+
+        moveCreationElementToModal(key, mount);
+
+        const wrapper = entry.element;
+
+        wrapper.hidden = false;
+        wrapper.classList.remove('col-span-2');
+
+        const label = wrapper.querySelector('label');
+
+        if (label) {
+            label.classList.remove('block');
+            label.classList.add(
+                'block',
+                'text-sm',
+                'text-amber-200',
+                'mb-2',
+                'font-semibold'
+            );
+        }
+
+        const input = wrapper.querySelector('input, select');
+
+        if (input) {
+            input.classList.remove(
+                'text-xs',
+                'px-1.5',
+                'py-1.5',
+                'py-2'
+            );
+
+            input.classList.add(
+                'w-full',
+                'text-sm',
+                'py-3'
+            );
+        }
+    }
+
+    function restoreCreationFieldWrappers() {
+        registerCreationFlowAnchors();
+        restoreAllCreationElements();
+
+        document.querySelectorAll('[data-flow-field]').forEach((wrapper) => {
+            wrapper.hidden = false;
         });
 
-        document.querySelectorAll('[data-flow-field]').forEach((field) => {
-            const fieldStep = Number(field.dataset.flowField);
-            field.hidden = fieldStep !== currentStep;
-        });
+        const review = $('step-review');
 
-        header.classList.remove('hidden');
-        navigation.classList.remove('hidden');
+        if (review) {
+            review.classList.add('hidden');
+        }
+
+        const terms = $('terms-check')?.closest('.flex');
+
+        if (terms) {
+            terms.classList.add('hidden');
+        }
+
+        const generate = $('btn-generate');
+
+        if (generate) {
+            generate.classList.add('hidden');
+        }
+    }
+
+    function updateCreationReview() {
+        if (typeof updateStepReview === 'function') {
+            updateStepReview();
+        }
+
+        const review = $('step-review');
+        const reviewMount = $('creation-modal-review');
+
+        if (!review || !reviewMount) {
+            return;
+        }
+
+        reviewMount.replaceChildren();
+
+        moveCreationElementToModal('review', reviewMount);
+
+        review.classList.remove('hidden');
+    }
+
+    function updateCreationModal() {
+        const modal = $('creation-modal');
+        const title = $('creation-modal-title');
+        const help = $('creation-modal-help');
+        const progress = $('creation-modal-progress');
+        const label = $('creation-modal-label');
+        const back = $('creation-modal-back');
+        const next = $('creation-modal-next');
+        const fieldMount = $('creation-modal-field');
+        const reviewMount = $('creation-modal-review');
+
+        if (
+            !modal ||
+            !title ||
+            !help ||
+            !progress ||
+            !label ||
+            !back ||
+            !next ||
+            !fieldMount ||
+            !reviewMount
+        ) {
+            return;
+        }
 
         const t = translations[currentLang];
+        const meta = creationFlowMeta[currentStep];
 
-        const flowMeta = {
-            1: [t.step1Title, t.step1Help],
-            2: [t.lblDham, t.step2Help],
-            3: [t.lblKaam, t.step2Help],
-            4: [t.lblShakha, t.step3Help],
-            5: [t.lblRole, t.step3Help],
-            6: [t.lblBarga, t.step4Help],
-            7: [t.lblYear, t.step4Help],
-            8: [t.step5Title, t.step5Help],
-            9: [t.step6Title, t.step6Help],
-            10: [t.step7Title, t.step7Help]
-        };
+        clearCreationModalError();
 
-        const activeParent = document.querySelector(
-            `.step-flow-item[data-step="${activeParentStep}"]`
-        );
+        registerCreationFlowAnchors();
+        restoreAllCreationElements();
 
-        if (activeParent && flowMeta[currentStep]) {
-            const title = activeParent.querySelector('h2');
-            const help = activeParent.querySelector('p');
+        fieldMount.replaceChildren();
+        reviewMount.replaceChildren();
+        reviewMount.classList.add('hidden');
 
-            if (title) {
-                title.textContent = flowMeta[currentStep][0];
-            }
+        modal.classList.remove('hidden');
 
-            if (help) {
-                help.textContent = flowMeta[currentStep][1];
-            }
-        }
+        progress.textContent =
+            `${currentStep}${t.stepProgressSeparator}${STEP_FLOW_TOTAL}`;
 
-        setText(
-            'step-flow-label',
-            `${t.stepLabel} ${currentStep}`
-        );
-
-        setText(
-            'step-flow-progress-text',
-            `${currentStep}${t.stepProgressSeparator}${STEP_FLOW_TOTAL}`
-        );
-
-        progress.style.width =
-            `${(currentStep / STEP_FLOW_TOTAL) * 100}%`;
-
-        backButton.textContent = t.stepBack;
-        backButton.disabled = currentStep === 1;
+        label.textContent =
+            `${t.stepLabel} ${currentStep}`;
 
         if (currentStep === STEP_FLOW_TOTAL) {
-            nextButton.classList.add('hidden');
-        } else {
-            nextButton.classList.remove('hidden');
-            nextButton.textContent = t.stepNext;
+            title.textContent = t.step7Title;
+            help.textContent = t.step7Help;
+
+            moveFieldToCreationModal(currentStep);
+            updateCreationReview();
+
+            const terms = creationFlowAnchors.get('terms')?.element;
+            const generate = creationFlowAnchors.get('generate')?.element;
+
+            if (terms) {
+                terms.classList.remove('hidden');
+                fieldMount.appendChild(terms);
+            }
+
+            if (generate) {
+                generate.classList.remove('hidden');
+                generate.classList.add('mt-4');
+                fieldMount.appendChild(generate);
+            }
+
+            next.classList.add('hidden');
+            back.textContent = t.stepBack;
+            back.disabled = false;
+
+            return;
         }
 
-        const activeField = document.querySelector(
-            `[data-flow-field="${currentStep}"]`
-        );
+        if (meta) {
+            title.textContent = t[meta[0]];
+            help.textContent = t[meta[1]];
+        }
 
-        const focusTarget = activeField
-            ? activeField.querySelector('input, select, button')
-            : null;
+        moveFieldToCreationModal(currentStep);
+
+        back.textContent = t.stepBack;
+        back.disabled = currentStep === 1;
+
+        next.classList.remove('hidden');
+        next.textContent = t.stepNext;
+
+        const focusTarget = getCreationField(currentStep);
 
         if (focusTarget) {
             window.setTimeout(() => focusTarget.focus(), 0);
         }
     }
 
-    function updateStepReview() {
-        const fields = [
-            ['name', 'name-input'],
-            ['dham', 'dham-select'],
-            ['kaam', 'kaam-input'],
-            ['shakha', 'shakha-input'],
-            ['role', 'role-input'],
-            ['barga', 'barga-select'],
-            ['year', 'year-input'],
-            ['sanghayu', 'sanghayu-input']
-        ];
+    function validateCreationStep(step) {
 
-        fields.forEach(([key, inputId]) => {
-            const input = $(inputId);
-            const label = document.querySelector(`label[for="${inputId}"]`);
-
-            setText(
-                `review-label-${key}`,
-                label ? label.textContent.trim() : ''
-            );
-
-            let value = input ? input.value.trim() : '';
-
-            if (key === 'dham' && isCustomDistrict(value)) {
-                const customDham = $('custom-dham-input').value.trim();
-                if (customDham) {
-                    value = customDham;
-                }
-            }
-
-            if (key === 'kaam' && !value) {
-                value = translations[currentLang].defaultKaam;
-            }
-
-            if (key === 'shakha' && !value) {
-                value = translations[currentLang].defaultShakha;
-            }
-
-            if (key === 'role' && !value) {
-                value = translations[currentLang].defaultRole;
-            }
-
-            if (key === 'year' && !value) {
-                value = '2021';
-            }
-
-            if (key === 'sanghayu' && !value) {
-                value = translations[currentLang].defaultSanghayu;
-            }
-
-            setText(
-                `review-value-${key}`,
-                value || '—'
-            );
-        });
-    }
-
-    function validateStep(step) {
         const t = translations[currentLang];
 
         if (step === 1) {
@@ -2229,10 +2552,6 @@
                 throw new Error(t.invalidYear);
             }
         }
-
-        if (step === 10 && !$('terms-check').checked) {
-            throw new Error(t.termsRequired);
-        }
     }
 
     function goToStep(step) {
@@ -2247,18 +2566,20 @@
         }
 
         currentStep = nextStep;
-        showError('');
+        clearCreationModalError();
 
-        if (currentStep === 10) {
-            updateStepReview();
+        if (currentStep === STEP_FLOW_TOTAL) {
+            updateCreationReview();
         }
 
-        updateStepFlow();
+        updateCreationModal();
     }
 
     function initStepFlow() {
+        document.body.classList.add('creation-active');
+        restoreCreationFieldWrappers();
         currentStep = 1;
-        updateStepFlow();
+        updateCreationModal();
     }
 
     async function generateCard() {
@@ -2287,6 +2608,8 @@
             setupShareLinks(result.shareUrl);
 
             $('share-actions').classList.remove('hidden');
+            document.body.classList.remove('creation-active');
+            document.body.classList.add('card-created');
 
             button.textContent = '✅ ' + (
                 currentLang === 'hi'
@@ -2350,7 +2673,9 @@
         applyLanguage(lang);
         currentStep = 1;
         showError('');
-        updateStepFlow();
+        clearCreationModalError();
+        document.body.classList.add('creation-active');
+        updateCreationModal();
 
         const modal = $('language-modal');
 
@@ -2373,7 +2698,9 @@
 
     $('lang-select').addEventListener('change', (event) => {
         applyLanguage(event.target.value);
-        updateStepFlow();
+        currentStep = 1;
+        clearCreationModalError();
+        updateCreationModal();
 
         try {
             sessionStorage.setItem(
@@ -2385,22 +2712,38 @@
         }
     });
 
-    $('step-flow-back').addEventListener('click', () => {
+    $('creation-modal-back').addEventListener('click', () => {
         if (currentStep > 1) {
             goToStep(currentStep - 1);
         }
     });
 
-    $('step-flow-next').addEventListener('click', () => {
+    $('creation-modal-next').addEventListener('click', () => {
         if (currentStep >= STEP_FLOW_TOTAL) {
             return;
         }
 
         try {
-            validateStep(currentStep);
+            validateCreationStep(currentStep);
             goToStep(currentStep + 1);
         } catch (error) {
-            showError(error.message);
+            showCreationModalError(
+                error instanceof Error
+                    ? error.message
+                    : translations[currentLang].generateError
+            );
+        }
+    });
+
+    $('dham-select').addEventListener('change', () => {
+        toggleCustomDistrict();
+
+        if (isCustomDistrict($('dham-select').value)) {
+            const customInput = $('custom-dham-input');
+
+            if (customInput) {
+                window.setTimeout(() => customInput.focus(), 0);
+            }
         }
     });
 
