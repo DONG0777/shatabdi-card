@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.3.0/dist/dom-to-image-more.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 
     <style>
         :root {
@@ -1369,7 +1369,7 @@
     padding: 0 !important;
     border-radius: 14px !important;
     border: none !important;
-    background: linear-gradient(135deg, #0a1128 0%, #0f1b3d 50%, #0a1128 100%) !important;
+    background: #0a1128 !important;
     position: relative !important;
     overflow: hidden !important;
     color: #f8fafc !important;
@@ -2965,30 +2965,29 @@
             })
         );
     }
-
     async function createCardBlob() {
-        if (typeof domtoimage === 'undefined') {
-            throw new Error('Card rendering engine is still loading. Please try again.');
+        if (typeof html2canvas === "undefined") {
+            throw new Error("Card rendering engine is still loading. Please try again.");
         }
-
         await document.fonts.ready;
         await waitForImages();
-
-        const cardElement = $('export-card');
-
-        const blob = await domtoimage.toBlob(cardElement, {
+        const cardElement = $("export-card");
+        const canvas = await html2canvas(cardElement, {
             width: 1200,
             height: 630,
-            bgcolor: '#0a1128',
-            quality: 1
+            scale: 1,
+            useCORS: true,
+            backgroundColor: "#0a1128",
+            logging: false
         });
-
-        if (!blob) {
-            throw new Error('PNG generation failed.');
-        }
-
-        return blob;
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) { reject(new Error("PNG generation failed.")); return; }
+                resolve(blob);
+            }, "image/png", 1);
+        });
     }
+
     async function downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
 
