@@ -247,132 +247,6 @@
             font-size: 21px !important;
             font-weight: 800;
             letter-spacing: 0.12em;
-
-        /* ============================================
-           LANDSCAPE IDENTITY CARD (1200 x 630)
-           ============================================ */
-        .export-card {
-            padding: 28px 40px 24px;
-            border-radius: 28px;
-        }
-
-        .export-top {
-            gap: 22px;
-            align-items: center;
-        }
-
-        .export-brand {
-            gap: 16px;
-        }
-
-        .export-logo {
-            width: 78px;
-            height: 78px;
-            flex: 0 0 78px;
-        }
-
-        .export-title {
-            font-size: 30px !important;
-            line-height: 1.12 !important;
-        }
-
-        .export-subtitle {
-            margin-top: 4px;
-            font-size: 16px !important;
-            line-height: 1.2 !important;
-        }
-
-        .export-badge {
-            padding: 9px 18px;
-            font-size: 15px !important;
-        }
-
-        .export-profile {
-            position: absolute;
-            left: 40px;
-            right: 40px;
-            top: 130px;
-            height: 340px;
-            display: flex;
-            align-items: center;
-            gap: 34px;
-            padding: 26px 32px;
-            border: 2px solid rgba(251, 191, 36, 0.42);
-            border-radius: 26px;
-            background:
-                linear-gradient(135deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.92));
-            box-shadow:
-                inset 0 0 50px rgba(245, 158, 11, 0.045),
-                0 18px 55px rgba(0, 0, 0, 0.22);
-            z-index: 2;
-        }
-
-        .export-photo {
-            width: 230px !important;
-            height: 230px !important;
-            flex: 0 0 230px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 6px solid #fbbf24;
-            box-shadow:
-                0 0 0 8px rgba(251, 191, 36, 0.10),
-                0 16px 40px rgba(0, 0, 0, 0.35);
-        }
-
-        .export-name {
-            margin-bottom: 14px;
-            font-size: 44px !important;
-            line-height: 1.05 !important;
-            font-weight: 900 !important;
-            letter-spacing: -0.01em;
-            color: #fbbf24;
-        }
-
-        .export-line {
-            font-size: 17px !important;
-            line-height: 1.5 !important;
-        }
-
-        .export-tagline {
-            position: absolute !important;
-            left: 40px;
-            right: 40px;
-            bottom: 90px;
-            margin: 0 !important;
-            padding: 14px 24px !important;
-            font-size: 26px !important;
-            line-height: 1.3 !important;
-            font-weight: 800 !important;
-            text-align: center;
-            border-radius: 14px;
-            background: rgba(15, 23, 42, 0.85);
-            border-top: 2px solid rgba(251, 191, 36, 0.5);
-            border-bottom: 2px solid rgba(251, 191, 36, 0.5);
-            color: #fbbf24;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-        }
-
-        .export-footer {
-            position: absolute;
-            left: 40px;
-            right: 40px;
-            bottom: 22px;
-            font-size: 13px;
-            letter-spacing: 0.1em;
-        }
-        }
-
-        .export-card::after {
-            right: 54px;
-            bottom: 90px;
-            font-size: 52px;
-        }
-
-        /*
-         * Square 1080×1080 profile-frame export.
-         * Kept separate from the existing 1200×630 card.
-         */
-        #profile-frame-export {
             position: fixed;
             left: -22000px;
             top: 0;
@@ -554,146 +428,6 @@
             letter-spacing: 0.10em;
         }
 
-        .profile-frame-name {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(251, 191, 36, 0.4);
-            letter-spacing: 0.02em;
-            font-size: 48px !important;
-            display: block;
-            position: absolute;
-            left: 210px;
-            right: 210px;
-            top: 760px;
-            margin: 0;
-            font-family: 'Hind Siliguri', sans-serif;
-            line-height: 1.12;
-            font-weight: 900;
-            text-align: center;
-            color: #ffffff;
-            z-index: 5;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .profile-frame-tagline {
-            font-size: 32px !important;
-            display: block;
-            position: absolute;
-            left: 100px;
-            right: 100px;
-            top: 820px;
-            width: auto;
-            margin: 0;
-            text-align: center;
-            font-family: 'Hind Siliguri', sans-serif;
-            line-height: 1.18;
-            font-weight: 900;
-            color: #fff7ed;
-            white-space: nowrap;
-            z-index: 5;
-            opacity: 1;
-            pointer-events: none;
-        }
-
-        .profile-frame-ring-text {
-            position: absolute;
-            inset: 0;
-            width: 1080px;
-            height: 1080px;
-            z-index: 4;
-            pointer-events: none;
-            overflow: visible;
-        }
-
-        .profile-frame-ring-text text {
-            font-family: 'Hind Siliguri', sans-serif;
-            font-weight: 700;
-            fill: #fde68a;
-            letter-spacing: 0.08em;
-        }
-
-        .profile-frame-ring-text .ring-side {
-            font-size: 27px;
-        }
-
-        .profile-frame-ring-text .ring-tagline {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 0.018em;
-            fill: #e8790b;
-        }
-
-        .profile-frame-ring-text #ring-name-span {
-            fill: #fbbf24;
-            font-weight: 900;
-            font-size: 30px;
-        }
-
-        .profile-frame-ring-text .ring-dot {
-            fill: #fbbf24;
-            font-size: 18px;
-        }
-
-        .profile-frame-ring-text .ring-line {
-            stroke: rgba(251, 191, 36, 0.72);
-            stroke-width: 2;
-            fill: none;
-        }
-
-        .profile-frame-corner {
-            position: absolute;
-            z-index: 3;
-            width: 76px;
-            height: 76px;
-            border-color: rgba(251, 191, 36, 0.65);
-        }
-
-        .profile-frame-corner-tl {
-            top: 106px;
-            left: 106px;
-            border-top: 2px solid;
-            border-left: 2px solid;
-            border-radius: 22px 0 0 0;
-        }
-
-        .profile-frame-corner-tr {
-            top: 106px;
-            right: 106px;
-            border-top: 2px solid;
-            border-right: 2px solid;
-            border-radius: 0 22px 0 0;
-        }
-
-        .profile-frame-corner-bl {
-            bottom: 106px;
-            left: 106px;
-            border-bottom: 2px solid;
-            border-left: 2px solid;
-            border-radius: 0 0 0 22px;
-        }
-
-        .profile-frame-corner-br {
-            right: 106px;
-            bottom: 106px;
-            border-bottom: 2px solid;
-            border-right: 2px solid;
-            border-radius: 0 0 22px 0;
-        }
-
-        .export-card::before {
-            content: "";
-            position: absolute;
-            width: 360px;
-            height: 360px;
-            right: -150px;
-            top: -170px;
-            border-radius: 50%;
-            border: 1px solid rgba(251, 191, 36, 0.18);
-            box-shadow:
-                0 0 0 24px rgba(251, 191, 36, 0.025),
-                0 0 0 48px rgba(251, 191, 36, 0.018);
-            pointer-events: none;
-        }
 
         .export-card::after {
             content: "1925 — 2026";
@@ -956,6 +690,152 @@
                 padding-bottom: env(safe-area-inset-bottom);
             }
         }
+/* PREMIUM LANDSCAPE IDENTITY CARD (1200 x 630) */
+.export-card {
+    width: 1200px;
+    height: 630px;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    background: linear-gradient(135deg, #0a1128 0%, #0f1b3d 40%, #1a2550 100%);
+    position: relative;
+    overflow: hidden;
+    color: #f8fafc;
+}
+.export-card::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 3px solid #d4a017;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1;
+}
+.export-top {
+    position: absolute;
+    top: 28px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 5;
+}
+.export-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.export-logo {
+    width: 110px;
+    height: 110px;
+    flex: 0 0 110px;
+}
+.export-title {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 34px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+    color: #fbbf24;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+.export-subtitle {
+    margin-top: 4px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 17px !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+    color: #cbd5e1;
+}
+.export-badge {
+    padding: 12px 24px;
+    border: 2px solid #d4a017;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.7);
+    color: #fbbf24;
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+.export-profile {
+    position: absolute;
+    top: 160px;
+    left: 40px;
+    right: 40px;
+    height: 340px;
+    display: flex;
+    align-items: center;
+    gap: 44px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    z-index: 5;
+}
+.export-photo {
+    width: 300px !important;
+    height: 300px !important;
+    flex: 0 0 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #d4a017;
+    box-shadow: 0 0 0 10px rgba(212, 160, 23, 0.15), 0 0 40px rgba(212, 160, 23, 0.25), 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+.export-name {
+    margin-bottom: 22px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 68px !important;
+    line-height: 1.0 !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.01em;
+    color: #fbbf24;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+}
+.export-line {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 22px !important;
+    line-height: 1.55 !important;
+    font-weight: 600 !important;
+    color: #e2e8f0;
+}
+.export-line strong {
+    color: #fbbf24;
+    font-weight: 700;
+}
+.export-tagline {
+    position: absolute !important;
+    left: 40px;
+    right: 40px;
+    bottom: 100px;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 40px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.9);
+    z-index: 5;
+}
+.export-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.12em;
+    color: #d4a017;
+    z-index: 5;
+}
     </style>
 </head>
 
