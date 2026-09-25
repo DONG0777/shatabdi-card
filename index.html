@@ -1357,6 +1357,208 @@
 #export-card .export-footer span:last-child {
     color: #fbbf24 !important;
 }
+
+/* ============================================================
+   CLEAN FINAL CSS - Premium Landscape Identity Card
+   ============================================================ */
+
+/* Card Container */
+#export-card.export-card {
+    width: 1200px !important;
+    height: 630px !important;
+    padding: 0 !important;
+    border-radius: 14px !important;
+    border: none !important;
+    background: linear-gradient(135deg, #0a1128 0%, #0f1b3d 50%, #0a1128 100%) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    color: #f8fafc !important;
+    font-family: 'Hind Siliguri', sans-serif !important;
+}
+
+/* Golden Frame */
+#export-card.export-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 14px !important;
+    border: 3px solid #d4a017 !important;
+    border-radius: 10px !important;
+    pointer-events: none !important;
+    z-index: 20 !important;
+}
+
+/* Pattern Overlay */
+#export-card.export-card::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-image: radial-gradient(circle, rgba(212, 160, 23, 0.06) 1px, transparent 1px) !important;
+    background-size: 35px 35px !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
+/* Top Section */
+#export-card .export-top {
+    position: absolute !important;
+    top: 40px !important;
+    left: 60px !important;
+    right: 60px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    z-index: 10 !important;
+}
+
+#export-card .export-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 18px !important;
+}
+
+#export-card .export-logo {
+    width: 115px !important;
+    height: 115px !important;
+    flex: 0 0 115px !important;
+}
+
+#export-card .export-title {
+    font-size: 36px !important;
+    line-height: 1.1 !important;
+    font-weight: 900 !important;
+    color: #fbbf24 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+    white-space: nowrap !important;
+}
+
+#export-card .export-subtitle {
+    margin-top: 6px !important;
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+    color: #cbd5e1 !important;
+    white-space: nowrap !important;
+}
+
+#export-card .export-badge-wrap {
+    width: 130px !important;
+    height: 130px !important;
+    flex: 0 0 130px !important;
+}
+
+#export-card .export-badge-wrap svg {
+    width: 130px !important;
+    height: 130px !important;
+}
+
+/* Profile Section */
+#export-card .export-profile {
+    position: absolute !important;
+    top: 180px !important;
+    left: 75px !important;
+    right: 60px !important;
+    height: 330px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 55px !important;
+    z-index: 5 !important;
+}
+
+#export-card .export-photo {
+    width: 330px !important;
+    height: 330px !important;
+    flex: 0 0 330px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 7px solid #d4a017 !important;
+    box-shadow:
+        0 0 0 14px rgba(212, 160, 23, 0.15),
+        0 0 60px rgba(212, 160, 23, 0.4),
+        0 25px 60px rgba(0, 0, 0, 0.5) !important;
+    background: #1e293b !important;
+}
+
+#export-card .export-details {
+    min-width: 0 !important;
+    flex: 1 !important;
+}
+
+#export-card .export-name {
+    margin-bottom: 24px !important;
+    font-size: 74px !important;
+    line-height: 1.0 !important;
+    font-weight: 900 !important;
+    color: #fbbf24 !important;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 160, 23, 0.3) !important;
+}
+
+#export-card .export-line {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+    font-size: 25px !important;
+    line-height: 1.45 !important;
+    font-weight: 600 !important;
+    color: #e2e8f0 !important;
+}
+
+#export-card .export-line strong {
+    color: #fbbf24 !important;
+    font-weight: 800 !important;
+    flex: 0 0 auto !important;
+}
+
+#export-card .export-line span {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+/* Tagline */
+#export-card .export-tagline {
+    position: absolute !important;
+    left: 60px !important;
+    right: 60px !important;
+    bottom: 95px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 40px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+    text-align: center !important;
+    color: #ffffff !important;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 1), 0 0 30px rgba(212, 160, 23, 0.4) !important;
+    z-index: 10 !important;
+}
+
+/* Footer */
+#export-card .export-footer {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 32px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 28px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.16em !important;
+    z-index: 10 !important;
+}
+
+#export-card .export-footer span:first-child {
+    color: #d4a017 !important;
+}
+
+#export-card .export-footer .footer-dot {
+    color: #d4a017 !important;
+}
+
+#export-card .export-footer span:last-child {
+    color: #fbbf24 !important;
+}
     </style>
 </head>
 
