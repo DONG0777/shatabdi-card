@@ -3355,10 +3355,6 @@
             console.log('[Shatabdi Card] createCardBlob:done', blob?.size);
             lastCardBlob = blob;
 
-            console.log('[Shatabdi Card] createProfileFrameBlob:start');
-            const profileFrameBlob = await createProfileFrameBlob();
-            console.log('[Shatabdi Card] createProfileFrameBlob:done', profileFrameBlob?.size);
-            lastProfileFrameBlob = profileFrameBlob;
 
             console.log('[Shatabdi Card] createCardOnServer:start');
             const result = await createCardOnServer(blob, formData);
