@@ -3026,6 +3026,13 @@
             scale: 1,
             useCORS: true,
             backgroundColor: null,
+            onclone: (clonedDoc) => {
+                const clonedCard = clonedDoc.getElementById('export-card');
+                if (clonedCard) {
+                    clonedCard.style.background = 'linear-gradient(135deg, #0a1128 0%, #0f1b3d 50%, #0a1128 100%)';
+                    clonedCard.style.boxShadow = 'none';
+                }
+            },
             logging: false
         });
 
