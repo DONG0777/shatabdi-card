@@ -318,14 +318,19 @@
             height: 100%;
         }
 
-        .profile-frame-top {
+        .profile-frame-bottom-bar {
             position: absolute;
             bottom: 40px;
             left: 0;
             right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
             text-align: center;
-            z-index: 3;
+            z-index: 5;
         }
+
 
         .profile-frame-years {
             font-family: 'Hind Siliguri', sans-serif;
@@ -1462,10 +1467,6 @@
 <!-- 1080×1080 profile-frame export surface -->
 <div id="profile-frame-export" aria-hidden="true">
     <div id="profile-frame-card" class="profile-frame-card">
-        <div class="profile-frame-top">
-            <span class="profile-frame-badge">RSS CENTENARY</span>
-            <div id="profile-frame-years" class="profile-frame-years">১৯২৫ – ২০২৬</div>
-        </div>
 
         <div class="profile-frame-photo-wrap">
             <img
@@ -1475,19 +1476,24 @@
                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Crect width='600' height='600' fill='%231e293b'/%3E%3Ccircle cx='300' cy='235' r='105' fill='%2394a3b8'/%3E%3Cpath d='M115 530c25-125 105-180 185-180s160 55 185 180' fill='%2394a3b8'/%3E%3C/svg%3E"
             >
         </div>
-
         <svg class="profile-frame-ring-text" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <path id="ringPath" d="M 540,540 m -400,0 a 400,400 0 1,1 800,0 a 400,400 0 1,1 -800,0" fill="none"/>
             </defs>
             <text class="ring-tagline">
                 <textPath href="#ringPath" startOffset="0%">
-                    প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক! ★ <tspan id="ring-name-span">XXXX YYYY ZZZ</tspan>
+                    <tspan id="ring-tagline-text">প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!</tspan>
+                    <tspan id="ring-name-span"> ★ XXXX YYYY ZZZ</tspan>
                 </textPath>
             </text>
             <circle class="ring-dot" cx="940" cy="540" r="6"/>
             <circle class="ring-dot" cx="140" cy="540" r="6"/>
         </svg>
+
+        <div class="profile-frame-bottom-bar">
+            <span class="profile-frame-badge">RSS CENTENARY</span>
+            <div id="profile-frame-years" class="profile-frame-years">১৯২৫ – ২০২৬</div>
+        </div>
 
         <div class="profile-frame-corner profile-frame-corner-tl"></div>
         <div class="profile-frame-corner profile-frame-corner-tr"></div>
@@ -2254,10 +2260,10 @@
             $('name-input')?.value?.trim() ||
             '';
 
-        setText('ring-name-span', profileFrameName);
+        setText('ring-name-span', ' ★ ' + profileFrameName);
 
         setText(
-            'ring-tagline',
+            'ring-tagline-text',
             currentLang === 'hi'
                 ? 'प्रचार नहीं, यह मेरी पहचान — मैं स्वयंसेवक!'
                 : currentLang === 'en'
