@@ -3378,16 +3378,22 @@
                 behavior: 'smooth',
                 block: 'nearest'
             });
-        } catch (error) {
-            console.error('Card generation error:', error);
 
+            // Auto-download identity card after generation
+            try {
+                await downloadCardImage();
+                console.log("[Shatabdi Card] Auto-download completed");
+            } catch (dlError) {
+                console.warn("[Shatabdi Card] Auto-download failed:", dlError);
+            }
+
+        } catch (error) {
             showError(
                 error instanceof Error
                     ? error.message
                     : t.generateError
             );
 
-            button.textContent = t.btnGenerate;
         } finally {
             button.disabled = false;
         }
