@@ -1908,6 +1908,58 @@
         if (element) element.textContent = value;
     }
 
+    function updateRingText(name, tagline) {
+        // নাম ও স্লোগানের মোট দৈর্ঘ্য হিসাব করা
+        const nameLength = (name || '').length;
+        const taglineLength = (tagline || '').length;
+        const totalLength = nameLength + taglineLength;
+
+        // ফন্ট সাইজ নির্ধারণ (নাম ছোট হলে স্লোগান বড়, নাম বড় হলে স্লোগান ছোট)
+        let taglineSize, nameSize;
+
+        if (totalLength <= 40) {
+            taglineSize = 32;
+            nameSize = 34;
+        } else if (totalLength <= 55) {
+            taglineSize = 28;
+            nameSize = 30;
+        } else if (totalLength <= 70) {
+            taglineSize = 25;
+            nameSize = 27;
+        } else {
+            taglineSize = 22;
+            nameSize = 24;
+        }
+
+        // CSS ভেরিয়েবল সেট করা
+        const taglineEl = document.querySelector('.ring-tagline');
+        const nameEl = document.getElementById('ring-name-span');
+
+        if (taglineEl) {
+            taglineEl.style.fontSize = taglineSize + 'px';
+        }
+
+        if (nameEl) {
+            nameEl.style.fontSize = nameSize + 'px';
+        }
+
+        // ট্যাগলাইন টেক্সট সেট করা (নাম ছাড়া)
+        const taglineTextEl = document.querySelector('.ring-tagline textPath');
+        if (taglineTextEl && tagline) {
+            // নাম বাদ দিয়ে শুধু স্লোগান
+            const starIndex = taglineTextEl.textContent.indexOf('★');
+            if (starIndex > -1) {
+                const newText = tagline + ' ★ ';
+                // নামের tspan আলাদা রাখতে হবে
+                const nameSpan = document.getElementById('ring-name-span');
+                if (nameSpan) {
+                    taglineTextEl.textContent = newText;
+                    taglineTextEl.appendChild(nameSpan);
+                }
+            }
+        }
+    }
+
     function setHTML(id, value) {
         const element = $(id);
         if (element) element.innerHTML = value;
@@ -2206,6 +2258,14 @@
 
         setText(
             'ring-tagline',
+            currentLang === 'hi'
+                ? 'प्रचार नहीं, यह मेरी पहचान — मैं स्वयंसेवक!'
+                : currentLang === 'en'
+                    ? 'Not publicity, this is my identity — I am a Swayamsevak!'
+                    : 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!'
+        );
+        updateRingText(
+            profileFrameName,
             currentLang === 'hi'
                 ? 'प्रचार नहीं, यह मेरी पहचान — मैं स्वयंसेवक!'
                 : currentLang === 'en'
