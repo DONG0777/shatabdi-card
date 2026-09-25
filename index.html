@@ -320,7 +320,7 @@
 
         .profile-frame-top {
             position: absolute;
-            top: 94px;
+            bottom: 40px;
             left: 0;
             right: 0;
             text-align: center;
@@ -2196,10 +2196,10 @@
             $('name-input')?.value?.trim() ||
             '';
 
-        setText('profile-frame-name', profileFrameName);
+        setText('ring-name-span', profileFrameName);
 
         setText(
-            'profile-frame-tagline',
+            'ring-tagline',
             currentLang === 'hi'
                 ? 'प्रचार नहीं, यह मेरी पहचान — मैं स्वयंसेवक!'
                 : currentLang === 'en'
