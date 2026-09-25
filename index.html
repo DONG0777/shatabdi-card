@@ -1844,19 +1844,9 @@
 
         <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-center">
             <p id="share-success" class="text-xs text-emerald-300 font-medium">
-                আপনার স্মারক কার্ড তৈরি হয়েছে।
+                আপনার স্মারক কার্ড তৈরি হয়েছে এবং ডাউনলোড হয়েছে।
             </p>
         </div>
-
-        <a
-            id="btn-wa-share"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="focus-ring w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition duration-200"
-        >
-            <span id="txt-wa-btn">📲 WhatsApp এ শেয়ার করুন</span>
-        </a>
 
         <a
             id="btn-fb-share"
@@ -1867,34 +1857,7 @@
         >
             <span id="txt-fb-btn">📘 Facebook এ পোস্ট করুন</span>
         </a>
-
-        <button
-            type="button"
-            id="btn-dl"
-            class="focus-ring w-full bg-slate-800 border border-slate-700 text-slate-200 font-medium py-2 rounded-xl text-xs hover:bg-slate-700 transition duration-200"
-        >
-            📥 গ্যালারিতে কার্ড সেভ করুন
-        </button>
-
-        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mt-2">
-            <p id="identity-use-title" class="text-xs text-amber-200 font-bold text-center">
-                পরিচয়পত্র তৈরি হয়েছে — এবার Profile Frame
-            </p>
-            <p id="identity-use-help" class="text-[11px] leading-relaxed text-slate-300 text-center mt-1.5">
-                পরিচয়পত্রটি WhatsApp / Facebook-এ শেয়ার বা গ্যালারিতে সেভ করুন। তারপর নিজের প্রোফাইল ছবির জন্য Profile Frame ব্যবহার করুন।
-            </p>
-        </div>
-
-        <button
-            type="button"
-            id="btn-profile-frame-dl"
-            class="focus-ring w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs shadow-lg transition duration-200"
-        >
-            🖼️ প্রোফাইল ফ্রেম সেভ করুন
-        </button>
     </section>
-</main>
-
 <!-- 1080×1080 profile-frame export surface -->
 <!-- Fixed 1200×630 export surface -->
 <div id="card-export" aria-hidden="true">
@@ -2479,14 +2442,9 @@
         setText('c-lbl-sanghayu', t.cLblSanghayu);
         setText('card-tagline', t.tagline);
 
-        setText('txt-wa-btn', t.waBtn);
         setText('txt-fb-btn', t.fbBtn);
-        setText('btn-dl', t.dlBtn);
-        setText('btn-profile-frame-dl', t.profileFrameUseBtn || t.profileFrameDlBtn);
-        setText('identity-use-title', t.identityUseTitle);
-        setText('identity-use-help', t.identityUseHelp);
-        setText('share-success', t.success);
 
+        setText("share-success", t.success);
         setText('export-header-title', t.headerTitle);
         setText('export-header-sub', t.headerSub);
         setText('export-dham-label', t.cLblDham);
@@ -2839,19 +2797,17 @@
     function setupShareLinks(shareUrl) {
         lastShareUrl = shareUrl;
 
-        const shareText = currentLang === 'hi'
-            ? `🚩 मैंने अपना शताब्दी स्मारक कार्ड बनाया है। आप भी अपना कार्ड बनाएं:\n👉 ${shareUrl}`
-            : currentLang === 'en'
-                ? `🚩 I created my centenary commemorative card. Create yours too:\n👉 ${shareUrl}`
-                : `🚩 শতবর্ষের স্মারক পরিচিতিপত্র তৈরি করেছি। আপনিও আপনার কার্ড তৈরি করুন:\n👉 ${shareUrl}`;
+        const fbLink = $('btn-fb-share');
+        if (fbLink) {
+            const quoteText = currentLang === 'hi'
+                ? '🚩 मैं गर्वित स्वयंसेवक! शताब्दी वर्ष पर मेरा डिजिटल परिचय पत्र। आप भी बनाएं।'
+                : currentLang === 'en'
+                    ? '🚩 I am a proud Swayamsevak! Created my digital ID for the centenary. Create yours too.'
+                    : '🚩 আমি গর্বিত স্বয়ংসেবক! শতবর্ষপূর্তিতে আমার ডিজিটাল পরিচয়পত্র তৈরি করলাম। আপনিও আপনারটি তৈরি করুন।';
 
-        $('btn-wa-share').href =
-            `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-
-        $('btn-fb-share').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(currentLang === 'hi' ? '🚩 मैं गर्वित स्वयंसेवक! शताब्दी वर्ष पर मेरा डिजिटल परिचय पत्र। आप भी बनाएं।' : currentLang === 'en' ? '🚩 I am a proud Swayamsevak! Created my digital ID for the centenary. Create yours too.' : '🚩 আমি গর্বিত স্বয়ংসেবক! শতবর্ষপূর্তিতে আমার ডিজিটাল পরিচয়পত্র তৈরি করলাম। আপনিও আপনারটি তৈরি করুন।')}`; //
-            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+            fbLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(quoteText)}`;
+        }
     }
-
     async function loadSharedCard() {
         const params = new URLSearchParams(window.location.search);
         const cardId = params.get('id');
@@ -3809,8 +3765,6 @@
     $('photo-input').addEventListener('change', handlePhotoChange);
     $('terms-button').addEventListener('click', showTermsAlert);
     $('btn-generate').addEventListener('click', generateCard);
-    $('btn-dl').addEventListener('click', downloadCardImage);
-    $('btn-profile-frame-dl').addEventListener('click', downloadProfileFrameImage);
 
     let initialLanguage = DEFAULT_LANGUAGE;
     let hasSavedLanguage = false;
