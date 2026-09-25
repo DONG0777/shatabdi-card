@@ -1456,17 +1456,9 @@
 <!-- 1080×1080 profile-frame export surface -->
 <div id="profile-frame-export" aria-hidden="true">
     <div id="profile-frame-card" class="profile-frame-card">
-
-
-
         <div class="profile-frame-top">
-            <div id="profile-frame-years" class="profile-frame-years">
-                ১৯২৫ – ২০২৬
-            </div>
-        </div>
-
-        <div class="profile-frame-bottom" aria-hidden="true">
             <span class="profile-frame-badge">RSS CENTENARY</span>
+            <div id="profile-frame-years" class="profile-frame-years">১৯২৫ – ২০২৬</div>
         </div>
 
         <div class="profile-frame-photo-wrap">
@@ -1478,24 +1470,26 @@
             >
         </div>
 
-        <div
-            id="profile-frame-name"
-            class="profile-frame-name"
-        >
-            XXXX YYYY ZZZ
-        </div>
-
-        <div
-            id="profile-frame-tagline"
-            class="profile-frame-tagline"
-        >
-            প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!
-        </div>
+        <svg class="profile-frame-ring-text" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <path id="ringPath" d="M 540,540 m -400,0 a 400,400 0 1,1 800,0 a 400,400 0 1,1 -800,0" fill="none"/>
+            </defs>
+            <text class="ring-tagline">
+                <textPath href="#ringPath" startOffset="0%">
+                    প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক! ★ <tspan id="ring-name-span">XXXX YYYY ZZZ</tspan>
+                </textPath>
+            </text>
+            <circle class="ring-dot" cx="940" cy="540" r="6"/>
+            <circle class="ring-dot" cx="140" cy="540" r="6"/>
+        </svg>
 
         <div class="profile-frame-corner profile-frame-corner-tl"></div>
         <div class="profile-frame-corner profile-frame-corner-tr"></div>
         <div class="profile-frame-corner profile-frame-corner-bl"></div>
         <div class="profile-frame-corner profile-frame-corner-br"></div>
+
+
+
     </div>
 </div>
 
