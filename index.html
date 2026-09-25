@@ -1863,88 +1863,76 @@
 <div id="card-export" aria-hidden="true">
     <div id="export-card" class="export-card">
 
+        <!-- TOP: Logo + Title + Badge -->
         <div class="export-top">
             <div class="export-brand">
-
                 <div class="export-logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="108" height="108">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
                         <defs>
-                            <linearGradient id="goldGradientExport" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#fbbf24"/>
-                                <stop offset="50%" stop-color="#d97706"/>
+                            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#fde68a"/>
+                                <stop offset="50%" stop-color="#d4a017"/>
                                 <stop offset="100%" stop-color="#b45309"/>
                             </linearGradient>
-                            <linearGradient id="saffronGradientExport" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ff7700"/>
+                            <linearGradient id="flagGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ff8c00"/>
                                 <stop offset="100%" stop-color="#e65100"/>
                             </linearGradient>
-                            <linearGradient id="bgGradientExport" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#1e1b4b"/>
-                                <stop offset="100%" stop-color="#0f172a"/>
-                            </linearGradient>
                         </defs>
-
-                        <circle cx="100" cy="100" r="95" fill="url(#bgGradientExport)" stroke="url(#goldGradientExport)" stroke-width="5"/>
-                        <text x="100" y="65" font-family="'Poppins', sans-serif" font-weight="900" font-size="30" fill="url(#goldGradientExport)" text-anchor="middle">100</text>
-                        <text x="100" y="80" font-family="'Hind Siliguri', sans-serif" font-weight="700" font-size="10" fill="#fef08a" text-anchor="middle">YEARS</text>
-
-                        <g transform="translate(68, 82)">
-                            <line x1="10" y1="5" x2="10" y2="65" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
-                            <circle cx="10" cy="4" r="3" fill="#fbbf24"/>
-                            <path d="M 11 8 Q 35 3 55 15 Q 35 22 55 32 L 11 32 Z" fill="url(#saffronGradientExport)"/>
-                        </g>
-
-                        <rect x="35" y="152" width="130" height="26" rx="13" fill="#1e293b" stroke="url(#goldGradientExport)" stroke-width="1.5"/>
-                        <text x="100" y="169" font-family="'Poppins', sans-serif" font-weight="700" font-size="12" fill="#fbbf24" text-anchor="middle">1925 – 2026</text>
+                        <!-- Flag pole -->
+                        <rect x="28" y="18" width="4" height="70" rx="2" fill="url(#goldGrad)"/>
+                        <!-- Flag -->
+                        <path d="M 32 20 Q 60 15 80 30 Q 60 42 80 52 L 32 52 Z" fill="url(#flagGrad)"/>
+                        <!-- Om symbol -->
+                        <text x="48" y="42" font-family="serif" font-weight="bold" font-size="16" fill="#ffffff" text-anchor="middle">ॐ</text>
+                        <!-- 100 text -->
+                        <text x="60" y="88" font-family="'Poppins', sans-serif" font-weight="900" font-size="26" fill="url(#goldGrad)" text-anchor="middle">100</text>
+                        <!-- YEARS text -->
+                        <text x="60" y="105" font-family="'Poppins', sans-serif" font-weight="700" font-size="12" fill="#fde68a" text-anchor="middle" letter-spacing="2">YEARS</text>
                     </svg>
                 </div>
-
                 <div>
-                    <div id="export-header-title" class="export-title">
-                        रাষ্ট্রীয় স্বয়ংসেবক সঙ্ঘ
-                    </div>
-
-                    <div id="export-header-sub" class="export-subtitle">
-                        শতবর্ষপূর্তি স্মারক | RSS Centenary
-                    </div>
+                    <div id="export-header-title" class="export-title">রাষ্ট্রীয় স্বয়ংসেবক সঙ্ঘ</div>
+                    <div id="export-header-sub" class="export-subtitle">শতবর্ষপূর্তি স্মারক | RSS Centenary</div>
                 </div>
             </div>
-
-            <div class="export-badge">
-                100 YEARS
+            <div class="export-badge-wrap">
+                <svg viewBox="0 0 140 140" width="140" height="140">
+                    <defs>
+                        <linearGradient id="badgeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fde68a"/>
+                            <stop offset="50%" stop-color="#d4a017"/>
+                            <stop offset="100%" stop-color="#92400e"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="70" cy="70" r="62" fill="none" stroke="url(#badgeGold)" stroke-width="3"/>
+                    <circle cx="70" cy="70" r="54" fill="none" stroke="url(#badgeGold)" stroke-width="1"/>
+                    <text x="70" y="60" font-family="'Poppins', sans-serif" font-weight="900" font-size="34" fill="url(#badgeGold)" text-anchor="middle">100</text>
+                    <text x="70" y="80" font-family="'Poppins', sans-serif" font-weight="700" font-size="14" fill="#fde68a" text-anchor="middle" letter-spacing="2">YEARS</text>
+                    <rect x="20" y="96" width="100" height="22" rx="11" fill="#1a2550" stroke="url(#badgeGold)" stroke-width="1.5"/>
+                    <text x="70" y="111" font-family="'Poppins', sans-serif" font-weight="700" font-size="11" fill="#fde68a" text-anchor="middle">1925 – 2026</text>
+                </svg>
             </div>
         </div>
 
+        <!-- CENTER: Photo + Details -->
         <div class="export-profile">
-
-            <img
-                id="export-photo"
-                class="export-photo"
-                alt=""
-                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%231e293b'/%3E%3Ccircle cx='90' cy='70' r='30' fill='%2394a3b8'/%3E%3Cpath d='M35 160c7-36 29-52 55-52s48 16 55 52' fill='%2394a3b8'/%3E%3C/svg%3E"
-            >
-
-            <div class="min-w-0 flex-1">
-                <div id="export-name" class="export-name">
-                    XXXX YYYY ZZZ
-                </div>
-
+            <img id="export-photo" class="export-photo" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%231e293b'/%3E%3Ccircle cx='150' cy='115' r='50' fill='%2394a3b8'/%3E%3Cpath d='M60 270c12-60 48-87 90-87s78 27 90 87' fill='%2394a3b8'/%3E%3C/svg%3E">
+            <div class="export-details">
+                <div id="export-name" class="export-name">XXXX YYYY ZZZ</div>
                 <div class="export-line">
                     <strong id="export-dham-label">ধাম:</strong>
                     <span id="export-dham">জলপাইগুড়ি</span>
                 </div>
-
                 <div class="export-line">
-                    <strong id="export-shakha-label">শাখা / দায়িত্ব:</strong>
-                    <span id="export-shakha-role">বর্তমানে নির্দিষ্ট শাখা/মিলন নেই (সাধারণ স্বয়ংসেবক)</span>
+                    <strong id="export-shakha-label">শাখা:</strong>
+                    <span id="export-shakha-role">সাধারণ স্বয়ংসেবক</span>
                 </div>
-
                 <div class="export-line">
                     <strong id="export-barga-label">বর্গ:</strong>
                     <span id="export-barga">পরিচিতি বর্গ</span>
-                    <span>(</span><span id="export-year">2021</span><span>)</span>
+                    <span>(<span id="export-year">2021</span>)</span>
                 </div>
-
                 <div class="export-line">
                     <strong id="export-sanghayu-label">সংঘায়ু:</strong>
                     <span id="export-sanghayu">১০ বছর</span>
@@ -1952,13 +1940,12 @@
             </div>
         </div>
 
-        <div id="export-tagline" class="export-tagline">
-            "প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!"
-        </div>
-
+        <!-- BOTTOM: Tagline + Footer -->
+        <div id="export-tagline" class="export-tagline">প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!</div>
         <div class="export-footer">
             <span>SHATABDI CARD</span>
-            <span>1925 – 2026</span>
+            <span class="footer-dot">•</span>
+            <span>1925 — 2026</span>
         </div>
     </div>
 </div>
