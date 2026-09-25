@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.3.0/dist/dom-to-image-more.min.js" defer></script>
 
     <style>
         :root {
@@ -1519,7 +1519,7 @@
     position: absolute !important;
     left: 60px !important;
     right: 60px !important;
-    bottom: 95px !important;
+    bottom: 118px !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 40px !important;
@@ -1536,7 +1536,7 @@
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: 32px !important;
+    bottom: 28px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -2966,92 +2966,29 @@
         );
     }
 
-    async function createProfileFrameBlob() {
-        if (typeof html2canvas === 'undefined') {
-            throw new Error('Card rendering engine is still loading. Please try again.');
-        }
-
-        await document.fonts.ready;
-
-        const framePhoto = $('profile-frame-photo');
-
-        if (
-            framePhoto &&
-            (!framePhoto.complete || framePhoto.naturalWidth === 0)
-        ) {
-            await new Promise((resolve, reject) => {
-                framePhoto.onload = resolve;
-                framePhoto.onerror = () => {
-                    reject(new Error('Profile frame image could not be loaded.'));
-                };
-            });
-        }
-
-        const canvas = await html2canvas($('profile-frame-card'), {
-            width: 1080,
-            height: 1080,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: '#0f172a',
-            logging: false
-        });
-
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(
-                (blob) => {
-                    if (!blob) {
-                        reject(new Error('Profile frame PNG generation failed.'));
-                        return;
-                    }
-
-                    resolve(blob);
-                },
-                'image/png',
-                1
-            );
-        });
-    }
-
     async function createCardBlob() {
-        if (typeof html2canvas === 'undefined') {
+        if (typeof domtoimage === 'undefined') {
             throw new Error('Card rendering engine is still loading. Please try again.');
         }
 
         await document.fonts.ready;
         await waitForImages();
 
-        const canvas = await html2canvas($('export-card'), {
+        const cardElement = $('export-card');
+
+        const blob = await domtoimage.toBlob(cardElement, {
             width: 1200,
             height: 630,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: null,
-            onclone: (clonedDoc) => {
-                const clonedCard = clonedDoc.getElementById('export-card');
-                if (clonedCard) {
-                    clonedCard.style.background = 'linear-gradient(135deg, #0a1128 0%, #0f1b3d 50%, #0a1128 100%)';
-                    clonedCard.style.boxShadow = 'none';
-                }
-            },
-            logging: false
+            bgcolor: '#0a1128',
+            quality: 1
         });
 
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(
-                (blob) => {
-                    if (!blob) {
-                        reject(new Error('PNG generation failed.'));
-                        return;
-                    }
+        if (!blob) {
+            throw new Error('PNG generation failed.');
+        }
 
-                    resolve(blob);
-                },
-                'image/png',
-                1
-            );
-        });
+        return blob;
     }
-
     async function downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
 
