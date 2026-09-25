@@ -836,6 +836,202 @@
     color: #d4a017;
     z-index: 5;
 }
+
+/* ============================================================
+   PREMIUM LANDSCAPE IDENTITY CARD (1200 x 630)
+   Matching the reference design
+   ============================================================ */
+.export-card {
+    width: 1200px;
+    height: 630px;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    background: linear-gradient(135deg, #0a1128 0%, #0f1b3d 40%, #1a2550 100%);
+    position: relative;
+    overflow: hidden;
+    color: #f8fafc;
+    font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* Golden outer frame */
+.export-card::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 3px solid #d4a017;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Subtle radial glow */
+.export-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 85%, rgba(245, 158, 11, 0.08), transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.08), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ---- TOP SECTION ---- */
+.export-top {
+    position: absolute;
+    top: 35px;
+    left: 45px;
+    right: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 5;
+}
+
+.export-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.export-logo {
+    width: 110px;
+    height: 110px;
+    flex: 0 0 110px;
+}
+
+.export-title {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 34px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+    color: #fbbf24;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.export-subtitle {
+    margin-top: 5px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 17px !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+    color: #cbd5e1;
+}
+
+.export-badge {
+    padding: 14px 28px;
+    border: 2px solid #d4a017;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.7);
+    color: #fbbf24;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(212, 160, 23, 0.2);
+}
+
+/* ---- CENTER SECTION ---- */
+.export-profile {
+    position: absolute;
+    top: 175px;
+    left: 60px;
+    right: 45px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    z-index: 5;
+}
+
+.export-photo {
+    width: 300px !important;
+    height: 300px !important;
+    flex: 0 0 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #d4a017;
+    box-shadow:
+        0 0 0 10px rgba(212, 160, 23, 0.15),
+        0 0 45px rgba(212, 160, 23, 0.3),
+        0 22px 55px rgba(0, 0, 0, 0.45);
+}
+
+.export-profile > .min-w-0 {
+    min-width: 0;
+    flex: 1;
+}
+
+.export-name {
+    margin-bottom: 22px;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 70px !important;
+    line-height: 1.0 !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.01em;
+    color: #fbbf24;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.7);
+}
+
+.export-line {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 23px !important;
+    line-height: 1.55 !important;
+    font-weight: 600 !important;
+    color: #e2e8f0;
+}
+
+.export-line strong {
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+/* ---- TAGLINE ---- */
+.export-tagline {
+    position: absolute !important;
+    left: 60px;
+    right: 60px;
+    bottom: 90px;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 42px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.95);
+    z-index: 5;
+}
+
+/* ---- FOOTER ---- */
+.export-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.14em;
+    color: #d4a017;
+    z-index: 5;
+}
+
+.export-footer span:first-child {
+    color: #d4a017;
+}
+
+.export-footer span:last-child {
+    color: #fbbf24;
+}
     </style>
 </head>
 
