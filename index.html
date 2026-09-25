@@ -81,15 +81,15 @@
         }
 
         /*
-         * The export surface is deliberately fixed at 1200×630.
-         * This guarantees that the generated PNG and OG dimensions match.
+         * Square 1200×1200 identity-card export.
+         * The generated PNG and OG dimensions intentionally match.
          */
         #card-export {
             position: fixed;
             left: -20000px;
             top: 0;
             width: 1200px;
-            height: 630px;
+            height: 1200px;
             overflow: hidden;
             z-index: -1;
             pointer-events: none;
@@ -97,7 +97,7 @@
 
         .export-card {
             width: 1200px;
-            height: 630px;
+            height: 1200px;
             padding: 30px 34px 28px;
             position: relative;
             overflow: hidden;
@@ -113,6 +113,147 @@
                 inset 0 -80px 120px rgba(0, 0, 0, 0.16);
         }
 
+
+
+        /*
+         * Square identity-card composition.
+         * The original card identity, dynamic data and profile image remain intact;
+         * this layer only gives the export a larger, social-friendly visual hierarchy.
+         */
+        .export-card {
+            padding: 42px 54px 38px;
+            border-radius: 42px;
+        }
+
+        .export-top {
+            gap: 28px;
+        }
+
+        .export-brand {
+            gap: 22px;
+        }
+
+        .export-logo {
+            width: 108px;
+            height: 108px;
+            flex: 0 0 108px;
+        }
+
+        .export-title {
+            font-size: 40px !important;
+            line-height: 1.15 !important;
+        }
+
+        .export-subtitle {
+            margin-top: 7px;
+            font-size: 21px !important;
+            line-height: 1.25 !important;
+        }
+
+        .export-badge {
+            padding: 12px 22px;
+            font-size: 19px !important;
+        }
+
+        .export-profile {
+            position: absolute;
+            left: 42px;
+            right: 42px;
+            top: 210px;
+            height: 620px;
+            display: flex;
+            align-items: center;
+            gap: 46px;
+            padding: 38px 42px;
+            border: 2px solid rgba(251, 191, 36, 0.42);
+            border-radius: 38px;
+            background:
+                linear-gradient(135deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.92));
+            box-shadow:
+                inset 0 0 50px rgba(245, 158, 11, 0.045),
+                0 22px 70px rgba(0, 0, 0, 0.22);
+            z-index: 2;
+        }
+
+        .export-photo {
+            width: 310px !important;
+            height: 310px !important;
+            flex: 0 0 310px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid #fbbf24;
+            box-shadow:
+                0 0 0 10px rgba(251, 191, 36, 0.10),
+                0 20px 45px rgba(0, 0, 0, 0.35);
+        }
+
+        .export-profile > .min-w-0 {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .export-name {
+            margin-bottom: 26px;
+            font-size: 72px !important;
+            line-height: 1.03 !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.015em;
+        }
+
+        .export-line {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-top: 18px;
+            font-size: 36px !important;
+            line-height: 1.24 !important;
+            font-weight: 800 !important;
+        }
+
+        .export-line strong {
+            flex: 0 0 auto;
+            font-weight: 900 !important;
+            color: #fbbf24;
+        }
+
+        .export-line span {
+            min-width: 0;
+            font-weight: 800 !important;
+            color: #f8fafc;
+        }
+
+        .export-tagline {
+            position: absolute !important;
+            left: 110px;
+            right: 110px;
+            bottom: 196px;
+            margin: 0 !important;
+            padding: 22px 30px 20px !important;
+            font-size: 30px !important;
+            line-height: 1.35 !important;
+            font-weight: 800 !important;
+            text-align: center;
+            border-top: 2px solid rgba(251, 191, 36, 0.32);
+            border-bottom: 2px solid rgba(251, 191, 36, 0.32);
+            color: #fff7ed;
+        }
+
+        .export-footer {
+            position: absolute;
+            left: 54px;
+            right: 54px;
+            bottom: 52px;
+            z-index: 3;
+            font-size: 21px !important;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+        }
+
+        .export-card::after {
+            right: 54px;
+            bottom: 90px;
+            font-size: 52px;
+        }
 
         /*
          * Square 1080×1080 profile-frame export.
@@ -135,8 +276,9 @@
             position: relative;
             overflow: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             background:
                 radial-gradient(circle at 50% 45%, rgba(245, 158, 11, 0.16), transparent 34%),
                 radial-gradient(circle at 12% 90%, rgba(217, 119, 6, 0.12), transparent 30%),
@@ -181,28 +323,25 @@
         }
 
         .profile-frame-years {
-            font-family: 'Poppins', sans-serif;
-            font-size: 34px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 27px;
             line-height: 1;
             font-weight: 800;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.06em;
             color: #fbbf24;
         }
 
         .profile-frame-title {
-            margin-top: 12px;
-            font-family: 'Hind Siliguri', sans-serif;
-            font-size: 34px;
-            line-height: 1.15;
-            font-weight: 700;
-            color: #fde68a;
         }
 
         .profile-frame-photo-wrap {
-            position: relative;
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 2;
-            width: 610px;
-            height: 610px;
+            width: 720px;
+            height: 720px;
             border-radius: 50%;
             padding: 12px;
             background: linear-gradient(135deg, #fbbf24, #d97706, #f59e0b);
@@ -225,48 +364,62 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 92px;
-            z-index: 3;
+            top: 52px;
+            z-index: 5;
             text-align: center;
         }
 
         .profile-frame-badge {
             display: inline-block;
-            padding: 12px 30px;
-            border: 2px solid rgba(251, 191, 36, 0.72);
+            padding: 6px 16px;
+            border: 1px solid rgba(251, 191, 36, 0.58);
             border-radius: 999px;
-            background: rgba(15, 23, 42, 0.88);
+            background: rgba(15, 23, 42, 0.72);
             color: #fbbf24;
             font-family: 'Poppins', sans-serif;
-            font-size: 22px;
+            font-size: 14px;
             font-weight: 800;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.10em;
         }
 
         .profile-frame-name {
-            margin-top: 14px;
+            font-size: 48px !important;
+            display: block;
+            position: absolute;
+            left: 210px;
+            right: 210px;
+            top: 760px;
+            margin: 0;
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 30px;
-            line-height: 1.15;
-            font-weight: 700;
-            color: #f8fafc;
+            font-size: 38px;
+            line-height: 1.12;
+            font-weight: 900;
+            text-align: center;
+            color: #ffffff;
+            z-index: 5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .profile-frame-tagline {
+            font-size: 36px !important;
+            display: block;
             position: absolute;
-            left: 50%;
-            bottom: 54px;
-            transform: translateX(-50%);
-            width: 760px;
+            left: 220px;
+            right: 220px;
+            top: 830px;
+            width: auto;
+            margin: 0;
             text-align: center;
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 22px;
-            line-height: 1.3;
-            font-weight: 700;
-            color: #fef3c7;
-            white-space: nowrap;
-            z-index: 4;
-            opacity: 0;
+            font-size: 28px;
+            line-height: 1.18;
+            font-weight: 900;
+            color: #fff7ed;
+            white-space: normal;
+            z-index: 5;
+            opacity: 1;
             pointer-events: none;
         }
 
@@ -401,8 +554,8 @@
 
         .export-title {
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 32px;
-            line-height: 1.18;
+            font-size: 35px;
+            line-height: 1.15;
             font-weight: 700;
             color: #fbbf24;
             white-space: nowrap;
@@ -411,7 +564,7 @@
         .export-subtitle {
             margin-top: 5px;
             font-family: 'Poppins', sans-serif;
-            font-size: 16px;
+            font-size: 18px;
             color: rgba(253, 230, 138, 0.82);
         }
 
@@ -422,7 +575,7 @@
             padding: 10px 20px;
             color: #fde68a;
             font-family: 'Poppins', sans-serif;
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 800;
             letter-spacing: 0.09em;
             white-space: nowrap;
@@ -459,8 +612,8 @@
 
         .export-name {
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 48px;
-            line-height: 1.08;
+            font-size: 56px;
+            line-height: 1.04;
             font-weight: 800;
             color: #fff;
             margin-bottom: 13px;
@@ -469,8 +622,8 @@
 
         .export-line {
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 21px;
-            line-height: 1.45;
+            font-size: 25px;
+            line-height: 1.30;
             color: #dbe4ef;
         }
 
@@ -480,13 +633,14 @@
         }
 
         .export-tagline {
-            margin: 20px 80px 0;
-            padding: 13px 24px 11px;
+            font-size: 26px !important;
+            margin: 18px 80px 0;
+            padding: 11px 24px 9px;
             border-top: 1px solid rgba(251, 191, 36, 0.28);
             border-bottom: 1px solid rgba(251, 191, 36, 0.16);
             text-align: center;
             font-family: 'Hind Siliguri', sans-serif;
-            font-size: 21px;
+            font-size: 24px;
             font-weight: 700;
             line-height: 1.35;
             color: #fde68a;
@@ -523,7 +677,6 @@
         }
 
         #language-modal.hidden {
-            display: none;
         }
 
         /* Clean guided creation flow */
@@ -540,7 +693,6 @@
         }
 
         #creation-modal.hidden {
-            display: none;
         }
 
         .creation-modal-card {
@@ -1275,6 +1427,15 @@
             📥 গ্যালারিতে কার্ড সেভ করুন
         </button>
 
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mt-2">
+            <p id="identity-use-title" class="text-xs text-amber-200 font-bold text-center">
+                পরিচয়পত্র তৈরি হয়েছে — এবার Profile Frame
+            </p>
+            <p id="identity-use-help" class="text-[11px] leading-relaxed text-slate-300 text-center mt-1.5">
+                পরিচয়পত্রটি WhatsApp / Facebook-এ শেয়ার বা গ্যালারিতে সেভ করুন। তারপর নিজের প্রোফাইল ছবির জন্য Profile Frame ব্যবহার করুন।
+            </p>
+        </div>
+
         <button
             type="button"
             id="btn-profile-frame-dl"
@@ -1289,91 +1450,16 @@
 <div id="profile-frame-export" aria-hidden="true">
     <div id="profile-frame-card" class="profile-frame-card">
 
-        <svg
-            class="profile-frame-ring-text"
-            viewBox="0 0 1080 1080"
-            aria-hidden="true"
-        >
-            <defs>
-                <path
-                    id="profile-ring-left"
-                    d="M 188 540 A 352 352 0 0 1 540 188"
-                />
-                <path
-                    id="profile-ring-right"
-                    d="M 540 188 A 352 352 0 0 1 892 540"
-                />
-                <path
-                    id="profile-ring-tagline"
-                    d="M 180 690 A 405 405 0 0 0 900 690"
-                />
-            </defs>
 
-            <circle
-                class="ring-line"
-                cx="540"
-                cy="540"
-                r="392"
-                opacity="0.32"
-            />
-
-            <circle
-                class="ring-line"
-                cx="540"
-                cy="540"
-                r="420"
-                opacity="0.18"
-            />
-
-            <text class="ring-side">
-                <textPath
-                    href="#profile-ring-left"
-                    startOffset="50%"
-                    text-anchor="middle"
-                >সেবা • সাধনা</textPath>
-            </text>
-
-            <text class="ring-side">
-                <textPath
-                    href="#profile-ring-right"
-                    startOffset="50%"
-                    text-anchor="middle"
-                >সংস্কার • সমর্পণ</textPath>
-            </text>
-
-            <text class="ring-tagline">
-                <textPath
-                    id="profile-frame-ring-tagline-text"
-                    href="#profile-ring-tagline"
-                    startOffset="50%"
-                    text-anchor="middle"
-                >প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!</textPath>
-            </text>
-
-            <text class="ring-dot">
-                <textPath
-                    href="#profile-ring-left"
-                    startOffset="7%"
-                    text-anchor="middle"
-                >◆</textPath>
-            </text>
-
-            <text class="ring-dot">
-                <textPath
-                    href="#profile-ring-right"
-                    startOffset="93%"
-                    text-anchor="middle"
-                >◆</textPath>
-            </text>
-        </svg>
 
         <div class="profile-frame-top">
             <div id="profile-frame-years" class="profile-frame-years">
-                1925 — 2026
+                ১৯২৫ – ২০২৬
             </div>
-            <div id="profile-frame-title" class="profile-frame-title">
-                শতবর্ষপূর্তি
-            </div>
+        </div>
+
+        <div class="profile-frame-bottom" aria-hidden="true">
+            <span class="profile-frame-badge">RSS CENTENARY</span>
         </div>
 
         <div class="profile-frame-photo-wrap">
@@ -1385,7 +1471,12 @@
             >
         </div>
 
-        <div class="profile-frame-bottom" aria-hidden="true"></div>
+        <div
+            id="profile-frame-name"
+            class="profile-frame-name"
+        >
+            XXXX YYYY ZZZ
+        </div>
 
         <div
             id="profile-frame-tagline"
@@ -1609,6 +1700,9 @@
             fbBtn: '📘 Facebook এ পোস্ট করুন',
             dlBtn: '📥 গ্যালারিতে কার্ড সেভ করুন',
             profileFrameDlBtn: '🖼️ প্রোফাইল ফ্রেম সেভ করুন',
+            identityUseTitle: 'পরিচয়পত্র তৈরি হয়েছে — এবার Profile Frame',
+            identityUseHelp: 'পরিচয়পত্রটি WhatsApp / Facebook-এ শেয়ার বা গ্যালারিতে সেভ করুন। তারপর নিজের প্রোফাইল ছবির জন্য Profile Frame ব্যবহার করুন।',
+            profileFrameUseBtn: '🖼️ প্রোফাইলের জন্য Profile Frame সেভ করুন',
             profileFrameTagline: 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!',
             success: 'আপনার স্মারক কার্ড তৈরি হয়েছে।',
             requiredName: 'দয়া করে আপনার নাম লিখুন।',
@@ -1680,6 +1774,9 @@
             fbBtn: '📘 Facebook पर पोस्ट करें',
             dlBtn: '📥 गैलरी में सेव करें',
             profileFrameDlBtn: '🖼️ प्रोफ़ाइल फ़्रेम सेव करें',
+            identityUseTitle: 'परिचय-पत्र तैयार है — अब Profile Frame',
+            identityUseHelp: 'परिचय-पत्र को WhatsApp / Facebook पर शेयर करें या गैलरी में सेव करें। फिर अपनी प्रोफ़ाइल फोटो के लिए Profile Frame का उपयोग करें।',
+            profileFrameUseBtn: '🖼️ प्रोफ़ाइल के लिए Profile Frame सेव करें',
             profileFrameTagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
             success: 'आपका स्मारक कार्ड तैयार हो गया है।',
             requiredName: 'कृपया अपना नाम लिखें।',
@@ -1751,6 +1848,9 @@
             fbBtn: '📘 Post on Facebook',
             dlBtn: '📥 Save to Gallery',
             profileFrameDlBtn: '🖼️ Save Profile Frame',
+            identityUseTitle: 'Your Identity Card is Ready — Now Profile Frame',
+            identityUseHelp: 'Share your identity card on WhatsApp / Facebook or save it to your gallery. Then use the Profile Frame for your profile photo.',
+            profileFrameUseBtn: '🖼️ Save Profile Frame for Your Profile',
             profileFrameTagline: 'Not for promotion, this is my identity — I am a Swayamsevak!',
             success: 'Your commemorative card has been created.',
             requiredName: 'Please enter your name.',
@@ -1926,7 +2026,9 @@
         setText('txt-wa-btn', t.waBtn);
         setText('txt-fb-btn', t.fbBtn);
         setText('btn-dl', t.dlBtn);
-        setText('btn-profile-frame-dl', t.profileFrameDlBtn);
+        setText('btn-profile-frame-dl', t.profileFrameUseBtn || t.profileFrameDlBtn);
+        setText('identity-use-title', t.identityUseTitle);
+        setText('identity-use-help', t.identityUseHelp);
         setText('share-success', t.success);
 
         setText('export-header-title', t.headerTitle);
@@ -2080,32 +2182,29 @@
         }
 
         setText(
-            'profile-frame-title',
+            'profile-frame-years',
             currentLang === 'hi'
-                ? 'शताब्दी वर्षगांठ'
+                ? '१९२५ – २०२६'
                 : currentLang === 'en'
-                    ? 'Centenary Celebration'
-                    : 'শতবর্ষপূর্তি'
+                    ? '1925 – 2026'
+                    : '১৯২৫ – ২০২৬'
         );
-
-        setText('profile-frame-years', '1925 — 2026');
-
-        const profileFrameTagline =
-            translations[currentLang].profileFrameTagline;
 
         const profileFrameName =
             data?.full_name?.trim() ||
             $('name-input')?.value?.trim() ||
             '';
 
-        setText(
-            'profile-frame-ring-tagline-text',
-            profileFrameName
-                ? `${profileFrameTagline} (${profileFrameName})`
-                : profileFrameTagline
-        );
+        setText('profile-frame-name', profileFrameName);
 
-        setText('profile-frame-tagline', profileFrameTagline);
+        setText(
+            'profile-frame-tagline',
+            currentLang === 'hi'
+                ? 'प्रचार नहीं, यह मेरी पहचान — मैं स्वयंसेवक!'
+                : currentLang === 'en'
+                    ? 'Not publicity, this is my identity — I am a Swayamsevak!'
+                    : 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!'
+        );
     }
 
     async function waitForImages() {
@@ -2181,7 +2280,7 @@
 
         const canvas = await html2canvas($('export-card'), {
             width: 1200,
-            height: 630,
+            height: 1200,
             scale: 1,
             useCORS: true,
             backgroundColor: '#0f172a',
@@ -2285,7 +2384,7 @@
         $('btn-wa-share').href =
             `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 
-        $('btn-fb-share').href =
+        $('btn-fb-share').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(currentLang === 'hi' ? '🚩 मैं गर्वित स्वयंसेवक! शताब्दी वर्ष पर मेरा डिजिटल परिचय पत्र। आप भी बनाएं।' : currentLang === 'en' ? '🚩 I am a proud Swayamsevak! Created my digital ID for the centenary. Create yours too.' : '🚩 আমি গর্বিত স্বয়ংসেবক! শতবর্ষপূর্তিতে আমার ডিজিটাল পরিচয়পত্র তৈরি করলাম। আপনিও আপনারটি তৈরি করুন।')}`; //
             `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
     }
 
@@ -3057,13 +3156,19 @@
             button.disabled = true;
             button.textContent = t.generating;
 
+            console.log('[Shatabdi Card] createCardBlob:start');
             const blob = await createCardBlob();
+            console.log('[Shatabdi Card] createCardBlob:done', blob?.size);
             lastCardBlob = blob;
 
+            console.log('[Shatabdi Card] createProfileFrameBlob:start');
             const profileFrameBlob = await createProfileFrameBlob();
+            console.log('[Shatabdi Card] createProfileFrameBlob:done', profileFrameBlob?.size);
             lastProfileFrameBlob = profileFrameBlob;
 
+            console.log('[Shatabdi Card] createCardOnServer:start');
             const result = await createCardOnServer(blob, formData);
+            console.log('[Shatabdi Card] createCardOnServer:done', result?.shareUrl);
 
             setupShareLinks(result.shareUrl);
 
