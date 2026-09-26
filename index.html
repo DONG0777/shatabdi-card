@@ -1106,13 +1106,18 @@ body {
 (() => {
     'use strict';
 
-    const SUPPORTED_LANGUAGES = Object.freeze(['bn', 'hi', 'en']);
+    // ============================================================
+    // ১. ধ্রুবক (Constants)
+    // ============================================================
+    const SUPPORTED_LANGUAGES = ['bn', 'hi', 'en'];
     const DEFAULT_LANGUAGE = 'bn';
     const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
     const MAX_TEXT_LENGTH = 80;
-    const MIN_YEAR = 1900;
-    const MAX_YEAR = 2026;
+    const STEP_FLOW_TOTAL = 10;
 
+    // ============================================================
+    // ২. ড্রপ ডাউন ডেটা (Dropdown Data)
+    // ============================================================
     const wbDistricts = {
         bn: [
             'জলপাইগুড়ি', 'দার্জিলিং', 'কালিম্পং', 'আলীপুরদুয়ার',
@@ -1167,1592 +1172,759 @@ body {
         ]
     };
 
+    // ============================================================
+    // ৩. অনুবাদ (Translations)
+    // ============================================================
     const translations = {
         bn: {
-            topTitle: 'স্মারক পরিচিতিপত্র 🚩',
-            lblPhoto: 'আপনার ছবি বেছে নিন',
-            photoHelp: 'JPG, PNG বা WebP • সর্বোচ্চ 5 MB',
-            photoSelected: 'ছবি নির্বাচিত হয়েছে। প্রয়োজনে আবার ছবি বেছে নিতে পারেন।',
-            lblName: 'আপনার নাম *',
-            phName: 'যেমন: XXXX YYYY ZZZ',
-            lblDham: 'ধাম / জেলা',
-            phCustomDham: 'জেলা/রাজ্যের নাম লিখুন',
-            lblKaam: 'কাজ / পেশা',
-            lblShakha: 'শাখা / মিলন',
-            lblRole: 'দায়িত্ব / ভূমিকা',
-            defaultShakha: 'বর্তমানে নির্দিষ্ট শাখা/মিলন নেই',
-            defaultRole: 'সাধারণ স্বয়ংসেবক',
-            defaultKaam: 'অন্যান্য',
-            defaultSanghayu: '১০ বছর',
-            lblBarga: 'সংঘ শিক্ষা বর্গ',
-            lblYear: 'সম্পন্ন বছর',
-            lblSanghayu: 'সংঘায়ু',
-            lblWa: 'হোয়াটসঅ্যাপ নম্বর (ঐচ্ছিক)',
-            waHelp: '১০ সংখ্যার বৈধ ভারতীয় মোবাইল নম্বর দিন',
-            termsLink: 'নিয়ম ও ব্যবহারের শর্তাবলী',
-            agreeText: 'আমি সব',
-            agreeEnd: 'মেনে চলছি',
-            btnGenerate: '🚩 কার্ড তৈরি করুন',
-            generating: 'কার্ড তৈরি হচ্ছে... ⏳',
-            counter: '🚩 এখনও পর্যন্ত <b class="text-white font-bold">১৮,৪৫০+</b> জন স্মারক কার্ড তৈরি করেছেন!',
-            headerTitle: 'রাষ্ট্রীয় স্বয়ংসেবক সংঘ',
-            headerSub: 'শতবর্ষপূর্তি স্মারক | RSS Centenary',
-            cLblDham: 'ধাম:',
-            cLblShakha: 'শাখা/দায়িত্ব:',
-            cLblBarga: 'বর্গ:',
-            cLblSanghayu: 'সংঘায়ু:',
-            tagline: '"প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!"',
-            waBtn: '📲 WhatsApp এ শেয়ার করুন',
-            fbBtn: '📘 Facebook এ পোস্ট করুন',
-            dlBtn: '📥 গ্যালারিতে কার্ড সেভ করুন',
-            profileFrameDlBtn: '🖼️ প্রোফাইল ফ্রেম সেভ করুন',
-            identityUseTitle: 'পরিচয়পত্র তৈরি হয়েছে — এবার Profile Frame',
-            identityUseHelp: 'পরিচয়পত্রটি WhatsApp / Facebook-এ শেয়ার বা গ্যালারিতে সেভ করুন। তারপর নিজের প্রোফাইল ছবির জন্য Profile Frame ব্যবহার করুন।',
-            profileFrameUseBtn: '🖼️ প্রোফাইলের জন্য Profile Frame সেভ করুন',
-            profileFrameTagline: 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!',
-            success: 'আপনার স্মারক কার্ড তৈরি হয়েছে।',
-            requiredName: 'দয়া করে আপনার নাম লিখুন।',
-            requiredPhoto: 'দয়া করে একটি ছবি নির্বাচন করুন।',
-            invalidPhoto: 'শুধু JPG, PNG বা WebP ছবি ব্যবহার করুন।',
-            photoTooLarge: 'ছবির আকার 5 MB-এর বেশি হতে পারবে না।',
-            invalidYear: 'অনুগ্রহ করে 1900 থেকে 2026-এর মধ্যে একটি বছর দিন।',
-            termsRequired: 'আপনাকে নিয়ম ও শর্তাবলী মেনে নিতে হবে।',
-            stepLabel: 'ধাপ',
-            stepProgressSeparator: ' / ',
-            stepDhamRequired: 'অনুগ্রহ করে ধাম / স্থান নির্বাচন বা লিখুন।',
-            stepBack: '← পিছনে',
-            stepNext: 'পরবর্তী →',
-            stepReviewTitle: 'আপনার তথ্য যাচাই করুন',
-            stepReviewText: 'কার্ড তৈরি করার আগে আপনার দেওয়া তথ্য একবার দেখে নিন।',
+            // Language modal
+            langTitle: 'ভাষা নির্বাচন করুন',
+            langHelp: 'কার্ড তৈরি শুরু করার আগে আপনার ভাষা বেছে নিন।',
+
+            // Steps (Form)
             step1Title: 'আপনার পরিচয়',
             step1Help: 'প্রথমে আপনার নাম লিখুন। এই নামই স্মারক পরিচিতিপত্রে প্রধানভাবে দেখা যাবে।',
-            step2Title: 'আপনার স্থান ও কাজ',
-            step2Help: 'আপনার ধাম / জেলা এবং কাজ বা পেশা লিখুন।',
-            step3Title: 'শাখা ও দায়িত্ব',
-            step3Help: 'আপনার শাখা / মিলন এবং দায়িত্বের তথ্য দিন। প্রযোজ্য না হলে সাধারণ তথ্য রাখুন।',
-            step4Title: 'বর্গ ও বছর',
-            step4Help: 'আপনার বর্গ নির্বাচন করুন এবং প্রযোজ্য হলে কোন বছরে করেছেন তা লিখুন।',
-            step5Title: 'সংঘায়ু',
-            step5Help: 'আপনার সংঘায়ু কত বছর, তা লিখুন।',
-            step6Title: 'যোগাযোগ',
-            step6Help: 'প্রয়োজনে আপনার WhatsApp নম্বর দিতে পারেন।',
-            step7Title: 'ছবি ও চূড়ান্ত যাচাই',
-            step7Help: 'আপনার ছবি বেছে নিন, তথ্য একবার দেখে নিয়ে তারপর কার্ড তৈরি করুন।',
-            generateError: 'কার্ড তৈরি করার সময় একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।',
-            termsAlert: '📢 ঘোষণা ও ব্যবহারের শর্তাবলী:\n১. এটি একটি অনফিসিয়াল ডিজিটাল স্মারক।\n২. তথ্যের সঠিকতার দায় সম্পূর্ণ ব্যবহারকারীর।'
-        },
+            step2Title: 'ছবি নির্বাচন',
+            step2Help: 'আপনার একটি পরিষ্কার ছবি বেছে নিন। JPG, PNG বা WebP (সর্বোচ্চ 5 MB)।',
+            step3Title: 'ধাম / জেলা',
+            step3Help: 'আপনার ধাম বা জেলা নির্বাচন করুন।',
+            step4Title: 'কাজ / পেশা',
+            step4Help: 'আপনার কাজ বা পেশা লিখুন।',
+            step5Title: 'শাখা / মিলন',
+            step5Help: 'আপনার শাখা বা মিলনের নাম লিখুন।',
+            step6Title: 'দায়িত্ব',
+            step6Help: 'আপনার দায়িত্ব লিখুন (প্রযোজ্য না হলে "সাধারণ স্বয়ংসেবক" লিখুন)।',
+            step7Title: 'বর্গ',
+            step7Help: 'আপনার বর্গ নির্বাচন করুন।',
+            step8Title: 'বর্ষ',
+            step8Help: 'আপনার বর্গের বছর লিখুন।',
+            step9Title: 'সংঘায়ু',
+            step9Help: 'আপনার সংঘায়ু কত বছর, তা লিখুন।',
+            step10Title: 'চূড়ান্ত যাচাই',
+            step10Help: 'আপনার তথ্য একবার দেখে নিন, তারপর কার্ড তৈরি করুন।',
 
+            // Labels
+            lblName: 'আপনার নাম *',
+            phName: 'যেমন: Sukanta Shil',
+            lblDham: 'ধাম / জেলা *',
+            lblKaam: 'কাজ / পেশা',
+            phKaam: 'যেমন: ব্যবসায়ী',
+            lblShakha: 'শাখা / মিলন',
+            phShakha: 'যেমন: ধূপগুড়ি শাখা',
+            lblRole: 'দায়িত্ব',
+            phRole: 'যেমন: শাখা দায়িত্ববান',
+            lblBarga: 'বর্গ *',
+            lblYear: 'বর্ষ *',
+            phYear: 'যেমন: 2021',
+            lblSanghayu: 'সংঘায়ু (বছর) *',
+            phSanghayu: 'যেমন: 10',
+            lblPhoto: 'ছবি নির্বাচন করুন *',
+            photoHelp: 'JPG, PNG বা WebP (সর্বোচ্চ 5 MB)',
+            btnGenerate: '✅ কার্ড তৈরি করুন',
+
+            // Card labels
+            cLblDham: 'ধাম:',
+            cLblShakha: 'শাখা:',
+            cLblBarga: 'বর্গ:',
+            cSanghayu: 'সংঘায়ু:',
+            tagline: 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!',
+
+            // Buttons
+            btnBack: '← পিছনে',
+            btnNext: 'পরবর্তী →',
+            btnShare: '📘 Facebook এ পোস্ট করুন',
+            successMsg: 'আপনার স্মারক কার্ড তৈরি হয়েছে এবং ডাউনলোড হয়েছে।',
+
+            // Errors
+            errNameRequired: 'অনুগ্রহ করে আপনার নাম লিখুন।',
+            errDhamRequired: 'অনুগ্রহ করে আপনার ধাম নির্বাচন করুন।',
+            errBargaRequired: 'অনুগ্রহ করে আপনার বর্গ নির্বাচন করুন।',
+            errYearRequired: 'অনুগ্রহ করে আপনার বর্ষ লিখুন।',
+            errSanghayuRequired: 'অনুগ্রহ করে আপনার সংঘায়ু লিখুন।',
+            errPhotoRequired: 'অনুগ্রহ করে একটি ছবি নির্বাচন করুন।',
+            errPhotoTooLarge: 'ছবির সাইজ 5 MB এর কম হতে হবে।',
+            errPhotoType: 'শুধু JPG, PNG বা WebP ছবি আপলোড করুন।',
+            errGeneric: 'কিছু ভুল হয়েছে। আবার চেষ্টা করুন।'
+        },
         hi: {
-            topTitle: 'स्मारिका पहचान पत्र 🚩',
-            lblPhoto: 'अपनी फोटो चुनें',
-            photoHelp: 'JPG, PNG या WebP • अधिकतम 5 MB',
-            photoSelected: 'फोटो चुनी गई है। आवश्यकता हो तो फिर से फोटो चुन सकते हैं।',
-            lblName: 'आपका नाम *',
-            phName: 'जैसे: XXXX YYYY ZZZ',
-            lblDham: 'धाम / जिला',
-            phCustomDham: 'जिला/राज्य का नाम लिखें',
-            lblKaam: 'कार्य / व्यवसाय',
-            lblShakha: 'शाखा / मिलन',
-            lblRole: 'दायित्व / भूमिका',
-            defaultShakha: 'वर्तमान में कोई निश्चित शाखा/मिलन नहीं है',
-            defaultRole: 'सामान्य स्वयंसेवक',
-            defaultKaam: 'अन्य',
-            defaultSanghayu: '१० वर्ष',
-            lblBarga: 'संघ शिक्षा वर्ग',
-            lblYear: 'पूर्ण वर्ष',
-            lblSanghayu: 'संघ आयु',
-            lblWa: 'व्हाट्सएप नंबर (वैकल्पिक)',
-            waHelp: '10 अंकों का वैध भारतीय मोबाइल नंबर दर्ज करें',
-            termsLink: 'नियम एवं शर्तें',
-            agreeText: 'मैं सभी',
-            agreeEnd: 'का पालन करता हूँ',
-            btnGenerate: '🚩 कार्ड बनाएं',
-            generating: 'कार्ड तैयार हो रहा है... ⏳',
-            counter: '🚩 अब तक <b class="text-white font-bold">१८,४५०+</b> स्वयंसेवकों ने अपना कार्ड बनाया है!',
-            headerTitle: 'राष्ट्रीय स्वयंसेवक संघ',
-            headerSub: 'शताब्दी पूर्ति स्मारिका | RSS Centenary',
-            cLblDham: 'धाम:',
-            cLblShakha: 'शाखा/दायित्व:',
-            cLblBarga: 'वर्ग:',
-            cLblSanghayu: 'संघ आयु:',
-            tagline: '"प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!"',
-            waBtn: '📲 WhatsApp पर शेयर करें',
-            fbBtn: '📘 Facebook पर पोस्ट करें',
-            dlBtn: '📥 गैलरी में सेव करें',
-            profileFrameDlBtn: '🖼️ प्रोफ़ाइल फ़्रेम सेव करें',
-            identityUseTitle: 'परिचय-पत्र तैयार है — अब Profile Frame',
-            identityUseHelp: 'परिचय-पत्र को WhatsApp / Facebook पर शेयर करें या गैलरी में सेव करें। फिर अपनी प्रोफ़ाइल फोटो के लिए Profile Frame का उपयोग करें।',
-            profileFrameUseBtn: '🖼️ प्रोफ़ाइल के लिए Profile Frame सेव करें',
-            profileFrameTagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
-            success: 'आपका स्मारक कार्ड तैयार हो गया है।',
-            requiredName: 'कृपया अपना नाम लिखें।',
-            requiredPhoto: 'कृपया एक फोटो चुनें।',
-            invalidPhoto: 'केवल JPG, PNG या WebP फोटो का उपयोग करें।',
-            photoTooLarge: 'फोटो का आकार 5 MB से अधिक नहीं होना चाहिए।',
-            invalidYear: 'कृपया 1900 से 2026 के बीच का वर्ष दें।',
-            termsRequired: 'आपको नियम एवं शर्तों को स्वीकार करना होगा।',
-            stepLabel: 'चरण',
-            stepProgressSeparator: ' / ',
-            stepDhamRequired: 'कृपया धाम / स्थान चुनें या लिखें।',
-            stepBack: '← पीछे',
-            stepNext: 'आगे →',
-            stepReviewTitle: 'अपनी जानकारी जाँचें',
-            stepReviewText: 'कार्ड बनाने से पहले अपनी दी हुई जानकारी एक बार जाँच लें।',
+            langTitle: 'भाषा चुनें',
+            langHelp: 'कार्ड बनाना शुरू करने से पहले अपनी भाषा चुनें।',
             step1Title: 'आपकी पहचान',
-            step1Help: 'सबसे पहले अपना नाम लिखें। यही नाम स्मारक परिचय-पत्र पर प्रमुख रूप से दिखाई देगा।',
-            step2Title: 'आपका स्थान और कार्य',
-            step2Help: 'अपना धाम / जिला और कार्य या व्यवसाय लिखें।',
-            step3Title: 'शाखा और दायित्व',
-            step3Help: 'अपनी शाखा / मिलन और दायित्व की जानकारी दें। लागू न हो तो सामान्य जानकारी रखें।',
-            step4Title: 'वर्ग और वर्ष',
-            step4Help: 'अपना वर्ग चुनें और लागू होने पर किस वर्ष किया था, वह लिखें।',
-            step5Title: 'संघायु',
-            step5Help: 'आपकी संघायु कितने वर्ष है, वह लिखें।',
-            step6Title: 'संपर्क',
-            step6Help: 'आवश्यक हो तो अपना WhatsApp नंबर दे सकते हैं।',
-            step7Title: 'फोटो और अंतिम जाँच',
-            step7Help: 'अपनी फोटो चुनें, जानकारी एक बार जाँचें और फिर कार्ड बनाएँ।',
-            generateError: 'कार्ड बनाते समय समस्या हुई। कृपया फिर प्रयास करें।',
-            termsAlert: '📢 नियम एवं शर्तें:\n1. यह एक अनौपचारिक डिजिटल स्मारिका है।\n2. जानकारी की जिम्मेदारी उपयोगकर्ता की है।'
+            step1Help: 'सबसे पहले अपना नाम लिखें। यह नाम स्मारक परिचय पत्र में प्रमुखता से दिखेगा।',
+            step2Title: 'फोटो चुनें',
+            step2Help: 'अपनी एक साफ फोटो चुनें। JPG, PNG या WebP (अधिकतम 5 MB)।',
+            step3Title: 'धाम / जिला',
+            step3Help: 'अपना धाम या जिला चुनें।',
+            step4Title: 'काम / पेशा',
+            step4Help: 'अपना काम या पेशा लिखें।',
+            step5Title: 'शाखा / मिलन',
+            step5Help: 'अपनी शाखा या मिलन का नाम लिखें।',
+            step6Title: 'दायित्व',
+            step6Help: 'अपना दायित्व लिखें (लागू न हो तो "सामान्य स्वयंसेवक" लिखें)।',
+            step7Title: 'वर्ग',
+            step7Help: 'अपना वर्ग चुनें।',
+            step8Title: 'वर्ष',
+            step8Help: 'अपने वर्ग का वर्ष लिखें।',
+            step9Title: 'संघायु',
+            step9Help: 'आपका संघायु कितने वर्ष है, लिखें।',
+            step10Title: 'अंतिम जाँच',
+            step10Help: 'अपनी जानकारी एक बार देखें, फिर कार्ड बनाएं।',
+            lblName: 'आपका नाम *',
+            phName: 'जैसे: Sukanta Shil',
+            lblDham: 'धाम / जिला *',
+            lblKaam: 'काम / पेशा',
+            phKaam: 'जैसे: व्यवसायी',
+            lblShakha: 'शाखा / मिलन',
+            phShakha: 'जैसे: धूपगुड़ी शाखा',
+            lblRole: 'दायित्व',
+            phRole: 'जैसे: शाखा दायित्ववान',
+            lblBarga: 'वर्ग *',
+            lblYear: 'वर्ष *',
+            phYear: 'जैसे: 2021',
+            lblSanghayu: 'संघायु (वर्ष) *',
+            phSanghayu: 'जैसे: 10',
+            lblPhoto: 'फोटो चुनें *',
+            photoHelp: 'JPG, PNG या WebP (अधिकतम 5 MB)',
+            btnGenerate: '✅ कार्ड बनाएं',
+            cLblDham: 'धाम:',
+            cLblShakha: 'शाखा:',
+            cLblBarga: 'वर्ग:',
+            cSanghayu: 'संघायु:',
+            tagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
+            btnBack: '← पीछे',
+            btnNext: 'आगे →',
+            btnShare: '📘 Facebook पर पोस्ट करें',
+            successMsg: 'आपका स्मारक कार्ड बन गया है और डाउनलोड हो गया है।',
+            errNameRequired: 'कृपया अपना नाम लिखें।',
+            errDhamRequired: 'कृपया अपना धाम चुनें।',
+            errBargaRequired: 'कृपया अपना वर्ग चुनें।',
+            errYearRequired: 'कृपया अपना वर्ष लिखें।',
+            errSanghayuRequired: 'कृपया अपना संघायु लिखें।',
+            errPhotoRequired: 'कृपया एक फोटो चुनें।',
+            errPhotoTooLarge: 'फोटो का आकार 5 MB से कम होना चाहिए।',
+            errPhotoType: 'केवल JPG, PNG या WebP अपलोड करें।',
+            errGeneric: 'कुछ गलत हो गया। फिर से प्रयास करें।'
         },
-
         en: {
-            topTitle: 'Centenary Card 🚩',
-            lblPhoto: 'Upload Your Photo',
-            photoHelp: 'JPG, PNG or WebP • Maximum 5 MB',
-            photoSelected: 'Photo selected. You can choose another photo if needed.',
-            lblName: 'Full Name *',
-            phName: 'e.g. XXXX YYYY ZZZ',
-            lblDham: 'Dham / District',
-            phCustomDham: 'Enter District/State name',
-            lblKaam: 'Occupation',
-            lblShakha: 'Shakha / Milan',
-            lblRole: 'Role',
-            defaultShakha: 'No specific Shakha / Milan currently',
-            defaultRole: 'General Swayamsevak',
-            defaultKaam: 'Other',
-            defaultSanghayu: '10 years',
-            lblBarga: 'Sangh Shiksha Varga',
-            lblYear: 'Year Completed',
-            lblSanghayu: 'Sangh Age',
-            lblWa: 'WhatsApp Number (Optional)',
-            waHelp: 'Enter a valid 10-digit Indian mobile number',
-            termsLink: 'Terms & Conditions',
-            agreeText: 'I agree to all',
-            agreeEnd: '',
-            btnGenerate: '🚩 Generate Card',
-            generating: 'Generating card... ⏳',
-            counter: '🚩 Over <b class="text-white font-bold">18,450+</b> Swayamsevaks created their card!',
-            headerTitle: 'Rashtriya Swayamsevak Sangh',
-            headerSub: 'Centenary Souvenir | RSS Centenary',
-            cLblDham: 'Dham:',
-            cLblShakha: 'Shakha/Role:',
-            cLblBarga: 'Varga:',
-            cLblSanghayu: 'Sangh Age:',
-            tagline: '"Not publicity, this is my identity — I am a Swayamsevak!"',
-            waBtn: '📲 Share on WhatsApp',
-            fbBtn: '📘 Post on Facebook',
-            dlBtn: '📥 Save to Gallery',
-            profileFrameDlBtn: '🖼️ Save Profile Frame',
-            identityUseTitle: 'Your Identity Card is Ready — Now Profile Frame',
-            identityUseHelp: 'Share your identity card on WhatsApp / Facebook or save it to your gallery. Then use the Profile Frame for your profile photo.',
-            profileFrameUseBtn: '🖼️ Save Profile Frame for Your Profile',
-            profileFrameTagline: 'Not for promotion, this is my identity — I am a Swayamsevak!',
-            success: 'Your commemorative card has been created.',
-            requiredName: 'Please enter your name.',
-            requiredPhoto: 'Please select a photo.',
-            invalidPhoto: 'Please use a JPG, PNG or WebP image.',
-            photoTooLarge: 'Photo size must not exceed 5 MB.',
-            invalidYear: 'Please enter a year between 1900 and 2026.',
-            termsRequired: 'You must accept the terms and conditions.',
-            stepLabel: 'Step',
-            stepProgressSeparator: ' / ',
-            stepDhamRequired: 'Please select or enter your Dham / place.',
-            stepBack: '← Back',
-            stepNext: 'Next →',
-            stepReviewTitle: 'Review your information',
-            stepReviewText: 'Please review the information you provided before creating your card.',
+            langTitle: 'Select Language',
+            langHelp: 'Choose your language before creating the card.',
             step1Title: 'Your Identity',
             step1Help: 'Start by entering your name. This name will appear prominently on the commemorative card.',
-            step2Title: 'Your Place and Work',
-            step2Help: 'Enter your Dham / district and occupation or work.',
-            step3Title: 'Shakha and Responsibility',
-            step3Help: 'Enter your Shakha / Milan and responsibility details. Use general information if not applicable.',
-            step4Title: 'Varga and Year',
-            step4Help: 'Select your Varga and, if applicable, enter the year you completed it.',
-            step5Title: 'Sangh Age',
-            step5Help: 'Enter how many years you have been associated with the Sangh.',
-            step6Title: 'Contact',
-            step6Help: 'You may provide your WhatsApp number if needed.',
-            step7Title: 'Photo and Final Review',
-            step7Help: 'Choose your photo, review your information once, and then create the card.',
-            generateError: 'There was a problem creating the card. Please try again.',
-            termsAlert: '📢 Terms & Conditions:\n1. This is an unofficial digital souvenir.\n2. The user is responsible for the accuracy of the information.'
+            step2Title: 'Select Photo',
+            step2Help: 'Choose a clear photo. JPG, PNG or WebP (max 5 MB).',
+            step3Title: 'Dham / District',
+            step3Help: 'Select your dham or district.',
+            step4Title: 'Work / Profession',
+            step4Help: 'Enter your work or profession.',
+            step5Title: 'Shakha / Milan',
+            step5Help: 'Enter your shakha or milan name.',
+            step6Title: 'Responsibility',
+            step6Help: 'Enter your responsibility (if not applicable, write "General Swayamsevak").',
+            step7Title: 'Varga',
+            step7Help: 'Select your varga.',
+            step8Title: 'Year',
+            step8Help: 'Enter the year of your varga.',
+            step9Title: 'Sanghayu',
+            step9Help: 'Enter your years of association (Sanghayu).',
+            step10Title: 'Final Review',
+            step10Help: 'Review your information, then create the card.',
+            lblName: 'Your Name *',
+            phName: 'e.g. Sukanta Shil',
+            lblDham: 'Dham / District *',
+            lblKaam: 'Work / Profession',
+            phKaam: 'e.g. Businessman',
+            lblShakha: 'Shakha / Milan',
+            phShakha: 'e.g. Dhupguri Shakha',
+            lblRole: 'Responsibility',
+            phRole: 'e.g. Shakha Leader',
+            lblBarga: 'Varga *',
+            lblYear: 'Year *',
+            phYear: 'e.g. 2021',
+            lblSanghayu: 'Sanghayu (Years) *',
+            phSanghayu: 'e.g. 10',
+            lblPhoto: 'Select Photo *',
+            photoHelp: 'JPG, PNG or WebP (max 5 MB)',
+            btnGenerate: '✅ Create Card',
+            cLblDham: 'Dham:',
+            cLblShakha: 'Shakha:',
+            cLblBarga: 'Varga:',
+            cSanghayu: 'Sanghayu:',
+            tagline: 'Not publicity, this is my identity — I am a Swayamsevak!',
+            btnBack: '← Back',
+            btnNext: 'Next →',
+            btnShare: '📘 Post on Facebook',
+            successMsg: 'Your commemorative card has been created and downloaded.',
+            errNameRequired: 'Please enter your name.',
+            errDhamRequired: 'Please select your dham.',
+            errBargaRequired: 'Please select your varga.',
+            errYearRequired: 'Please enter your year.',
+            errSanghayuRequired: 'Please enter your sanghayu.',
+            errPhotoRequired: 'Please select a photo.',
+            errPhotoTooLarge: 'Photo size must be less than 5 MB.',
+            errPhotoType: 'Only JPG, PNG or WebP allowed.',
+            errGeneric: 'Something went wrong. Please try again.'
         }
     };
 
+    // ============================================================
+    // ৪. স্টেট (State)
+    // ============================================================
+    let currentLang = DEFAULT_LANGUAGE;
+    let currentStep = 1;
+    let formData = {
+        name: '',
+        photoDataUrl: '',
+        dham: '',
+        kaam: '',
+        shakha: '',
+        role: '',
+        varga: '',
+        year: '',
+        sanghayu: ''
+    };
+
+    // ============================================================
+    // ৫. হেল্পার ফাংশন (Helpers)
+    // ============================================================
     const $ = (id) => document.getElementById(id);
 
-    let currentLang = DEFAULT_LANGUAGE;
-    const DEFAULT_PHOTO_DATA_URL = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27220%27 height=%27220%27 viewBox=%270 0 220 220%27%3E%3Crect width=%27220%27 height=%27220%27 fill=%27%231e293b%27/%3E%3Ccircle cx=%27110%27 cy=%2785%27 r=%2738%27 fill=%27%2394a3b8%27/%3E%3Cpath d=%27M45 200c9-45 36-65 65-65s56 20 65 65%27 fill=%27%2394a3b8%27/%3E%3C/svg%3E';
-
-    let selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
-    let lastCardBlob = null;
-    let lastPosterBlob = null;
-    let lastProfileFrameBlob = null;
-    let lastShareUrl = null;
-
-    function setText(id, value) {
-        const element = $(id);
-        if (element) element.textContent = value;
+    function setText(id, text) {
+        const el = $(id);
+        if (el) el.textContent = text;
     }
 
-    function updateRingText(name, tagline) {
-        // নাম ও স্লোগানের মোট দৈর্ঘ্য হিসাব করা
-        const nameLength = (name || '').length;
-        const taglineLength = (tagline || '').length;
-        const totalLength = nameLength + taglineLength;
-
-        // ফন্ট সাইজ নির্ধারণ (নাম ছোট হলে স্লোগান বড়, নাম বড় হলে স্লোগান ছোট)
-        let taglineSize, nameSize;
-
-        if (totalLength <= 40) {
-            taglineSize = 32;
-            nameSize = 34;
-        } else if (totalLength <= 55) {
-            taglineSize = 28;
-            nameSize = 30;
-        } else if (totalLength <= 70) {
-            taglineSize = 25;
-            nameSize = 27;
+    function showError(msg) {
+        const el = $('creation-modal-error');
+        if (!el) return;
+        if (msg) {
+            el.textContent = msg;
+            el.style.display = 'block';
         } else {
-            taglineSize = 22;
-            nameSize = 24;
-        }
-
-        // CSS ভেরিয়েবল সেট করা
-        const taglineEl = document.querySelector('.ring-tagline');
-        const nameEl = document.getElementById('ring-name-span');
-
-        if (taglineEl) {
-            taglineEl.style.fontSize = taglineSize + 'px';
-        }
-
-        if (nameEl) {
-            nameEl.style.fontSize = nameSize + 'px';
-        }
-
-        // ট্যাগলাইন টেক্সট সেট করা (নাম ছাড়া)
-        const taglineTextEl = document.querySelector('.ring-tagline textPath');
-        if (taglineTextEl && tagline) {
-            // নাম বাদ দিয়ে শুধু স্লোগান
-            const starIndex = taglineTextEl.textContent.indexOf('★');
-            if (starIndex > -1) {
-                const newText = tagline + ' ★ ';
-                // নামের tspan আলাদা রাখতে হবে
-                const nameSpan = document.getElementById('ring-name-span');
-                if (nameSpan) {
-                    taglineTextEl.textContent = newText;
-                    taglineTextEl.appendChild(nameSpan);
-                }
-            }
+            el.textContent = '';
+            el.style.display = 'none';
         }
     }
 
-    function setHTML(id, value) {
-        const element = $(id);
-        if (element) element.innerHTML = value;
-    }
-
-    function showError(message) {
-        const error = $('form-error');
-
-        if (!message) {
-            error.textContent = '';
-            error.classList.add('hidden');
-            return;
-        }
-
-        error.textContent = message;
-        error.classList.remove('hidden');
-        error.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-
-    function populateDropdowns(lang) {
-        const dhamSelect = $('dham-select');
-        const bargaSelect = $('barga-select');
-
-        if (dhamSelect) dhamSelect.replaceChildren();
-        if (bargaSelect) bargaSelect.replaceChildren();
-
-        if (dhamSelect) {
-            wbDistricts[lang].forEach((district) => {
-                const option = document.createElement('option');
-                option.value = district;
-                option.textContent = district;
-                dhamSelect.appendChild(option);
-            });
-        }
-
-        if (bargaSelect) {
-            vargaList[lang].forEach((varga) => {
-                const option = document.createElement('option');
-                option.value = varga;
-                option.textContent = varga;
-                bargaSelect.appendChild(option);
-            });
-        }
-    }
-
+    // ============================================================
+    // ৬. ভাষা নির্বাচন (Language Selection)
+    // ============================================================
     function applyLanguage(lang) {
-        if (!SUPPORTED_LANGUAGES.includes(lang)) {
-            lang = DEFAULT_LANGUAGE;
-        }
-
+        if (!SUPPORTED_LANGUAGES.includes(lang)) lang = DEFAULT_LANGUAGE;
         currentLang = lang;
         const t = translations[lang];
 
-        // Share section texts
-        setText('txt-fb-btn', t.fbBtn);
-        setText('share-success', t.success);
+        // Language modal texts
+        setText('language-modal-title', t.langTitle);
+        setText('language-modal-help', t.langHelp);
 
-        // Card texts (identity card)
+        // Card labels
         setText('card-dham-label', t.cLblDham);
         setText('card-shakha-label', t.cLblShakha);
         setText('card-barga-label', t.cLblBarga);
         setText('card-sanghayu-label', t.cSanghayu);
         setText('card-tagline', t.tagline);
 
-        // Poster texts
+        // Poster labels
         setText('poster-dham-label', t.cLblDham);
         setText('poster-shakha-label', t.cLblShakha);
-        setText('poster-sanghayu-label', t.cSanghayu);
         setText('poster-barga-label', t.cLblBarga);
+        setText('poster-sanghayu-label', t.cSanghayu);
         setText('poster-tagline', t.tagline);
 
-        // Update current step UI
-        if (typeof updateCreationModal === 'function') {
-            updateCreationModal();
-        }
-    }
-    function showTermsAlert() {
-        window.alert(translations[currentLang].termsAlert);
-    }
+        // Share section
+        setText('txt-fb-btn', t.btnShare);
+        setText('share-success', t.successMsg);
 
-    function validateText(value, fieldName, maxLength = MAX_TEXT_LENGTH) {
-        const normalized = String(value || '').trim();
-
-        if (normalized.length > maxLength) {
-            throw new Error(`${fieldName} cannot exceed ${maxLength} characters.`);
-        }
-
-        return normalized;
+        // Current step UI
+        updateStepUI();
     }
 
-    function validatePhoto(file) {
-        if (!file) {
-            throw new Error(translations[currentLang].requiredPhoto);
-        }
+    function selectLanguage(lang) {
+        applyLanguage(lang);
 
-        const allowedTypes = new Set([
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ]);
+        // Hide language modal
+        const langModal = $('language-modal');
+        if (langModal) langModal.classList.add('hidden');
 
-        if (!allowedTypes.has(file.type)) {
-            throw new Error(translations[currentLang].invalidPhoto);
-        }
+        // Show creation modal
+        const creationModal = $('creation-modal');
+        if (creationModal) creationModal.classList.remove('hidden');
 
-        if (file.size > MAX_PHOTO_BYTES) {
-            throw new Error(translations[currentLang].photoTooLarge);
-        }
+        currentStep = 1;
+        renderStep();
     }
 
-    async function fileToDataUrl(file) {
-        validatePhoto(file);
-
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onerror = () => reject(new Error('Unable to read the selected photo.'));
-
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function getFormData() {
-        const name = validateText($('name-input').value, 'Name');
-        const selectedDham = $('dham-select').value;
-        const customDham = validateText($('custom-dham-input').value, 'Dham');
-        const dham = isCustomDistrict(selectedDham) && customDham
-            ? customDham
-            : selectedDham;
-
+    // ============================================================
+    // ৭. ফর্ম স্টেপ (Form Steps)
+    // ============================================================
+    function renderStep() {
         const t = translations[currentLang];
-        const kaam = validateText($('kaam-input').value || t.defaultKaam, 'Occupation');
-        const shakha = validateText(
-            $('shakha-input').value || t.defaultShakha,
-            'Shakha'
-        );
-        const role = validateText(
-            $('role-input').value || t.defaultRole,
-            'Role'
-        );
-        const barga = validateText($('barga-select').value, 'Varga');
-        const sanghayu = validateText($('sanghayu-input').value || t.defaultSanghayu, 'Sangh Age');
-        const whatsapp = validateText($('wa-input').value, 'WhatsApp number', 20);
-
-        const yearRaw = $('year-input').value.trim();
-        const year = yearRaw ? Number(yearRaw) : 2021;
-
-        if (!name) {
-            throw new Error(translations[currentLang].requiredName);
-        }
-
-        if (!Number.isInteger(year) || year < MIN_YEAR || year > MAX_YEAR) {
-            throw new Error(translations[currentLang].invalidYear);
-        }
-
-        if (!$('terms-check').checked) {
-            throw new Error(translations[currentLang].termsRequired);
-        }
-
-        const photoDataUrl =
-            selectedPhotoDataUrl || DEFAULT_PHOTO_DATA_URL;
-
-        if (!photoDataUrl) {
-            throw new Error(translations[currentLang].generateError);
-        }
-
-        return {
-            full_name: name,
-            dham,
-            kaam,
-            shakha,
-            role,
-            barga,
-            year,
-            sanghayu,
-            whatsapp_number: whatsapp,
-            lang: currentLang,
-            terms_accepted: true
-        };
-    }
-
-    function updatePreview(data) {
-        setText('card-name', data.full_name);
-        setText('card-dham', data.dham);
-        setText('card-shakha', `${data.shakha} (${data.role})`);
-        setText('card-barga', data.barga);
-        setText('card-year', String(data.year));
-        setText('card-sanghayu', data.sanghayu);
-
-        $('card-photo').src = selectedPhotoDataUrl;
-    }
-    async function createCardBlob() {
-        if (typeof html2canvas === "undefined") {
-            throw new Error("Card rendering engine is still loading. Please try again.");
-        }
-        await document.fonts.ready;
-        await waitForImages();
-        const cardElement = $("card-export");
-        const canvas = await html2canvas(cardElement, {
-            width: 1200,
-            height: 630,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: "#0a1128",
-            logging: false
-        });
-        return new Promise((resolve, reject) => {
-            canvas.toBlob((blob) => {
-                if (!blob) { reject(new Error("PNG generation failed.")); return; }
-                resolve(blob);
-            }, "image/png", 1);
-        });
-    }
-
-    async function createPosterBlob() {
-        if (typeof html2canvas === "undefined") {
-            throw new Error("Card rendering engine is still loading. Please try again.");
-        }
-        await document.fonts.ready;
-        await waitForImages();
-        const posterElement = $("poster-export");
-        const canvas = await html2canvas(posterElement, {
-            width: 1080,
-            height: 1350,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: "#0a1128",
-            logging: false
-        });
-        return new Promise((resolve, reject) => {
-            canvas.toBlob((blob) => {
-                if (!blob) { reject(new Error("Poster generation failed.")); return; }
-                resolve(blob);
-            }, "image/png", 1);
-        });
-    }
-
-
-    async function downloadBlob(blob, filename) {
-        const url = URL.createObjectURL(blob);
-
-        try {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.rel = 'noopener';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        } finally {
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-        }
-    }
-
-    async function createCardOnServer(blob, formData) {
-        const imageDataUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                if (typeof reader.result !== 'string' || !reader.result) {
-                    reject(new Error('Card image conversion failed.'));
-                    return;
-                }
-
-                resolve(reader.result);
-            };
-
-            reader.onerror = () => {
-                reject(new Error('Card image conversion failed.'));
-            };
-
-            reader.readAsDataURL(blob);
-        });
-
-        const payload = {
-            ...formData,
-            image_data_url: imageDataUrl
-        };
-
-        const response = await fetch('/api/card', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        let result = null;
-
-        try {
-            result = await response.json();
-        } catch {
-            throw new Error('Server returned an invalid response.');
-        }
-
-        if (!response.ok || !result?.ok) {
-            throw new Error(result?.error || translations[currentLang].generateError);
-        }
-
-        if (!result.shareUrl) {
-            throw new Error('Server did not return a share URL.');
-        }
-
-        return result;
-    }
-
-    function setupShareLinks(shareUrl) {
-        lastShareUrl = shareUrl;
-
-        const fbLink = $('btn-fb-share');
-        if (fbLink) {
-            const quoteText = currentLang === 'hi'
-                ? '🚩 मैं गर्वित स्वयंसेवक! शताब्दी वर्ष पर मेरा डिजिटल परिचय पत्र। आप भी बनाएं।'
-                : currentLang === 'en'
-                    ? '🚩 I am a proud Swayamsevak! Created my digital ID for the centenary. Create yours too.'
-                    : '🚩 আমি গর্বিত স্বয়ংসেবক! শতবর্ষপূর্তিতে আমার ডিজিটাল পরিচয়পত্র তৈরি করলাম। আপনিও আপনারটি তৈরি করুন।';
-
-            fbLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(quoteText)}`;
-        }
-    }
-    async function loadSharedCard() {
-        const params = new URLSearchParams(window.location.search);
-        const cardId = params.get('id');
-
-        if (!cardId) {
-            return;
-        }
-
-        const showSharedCardError = (message) => {
-            const existing = document.getElementById('shared-card-view');
-
-            if (existing) {
-                existing.remove();
-            }
-
-            const errorView = document.createElement('section');
-            errorView.id = 'shared-card-view';
-            errorView.className =
-                'min-h-screen bg-slate-950 text-white px-4 py-8 flex items-center justify-center';
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'w-full max-w-lg text-center';
-
-            const title = document.createElement('h1');
-            title.className = 'text-xl sm:text-2xl font-bold text-white';
-            title.textContent =
-                currentLang === 'hi'
-                    ? 'कार्ड लोड नहीं हो सका'
-                    : currentLang === 'en'
-                        ? 'Unable to Load Card'
-                        : 'কার্ড লোড করা যায়নি';
-
-            const description = document.createElement('p');
-            description.className = 'mt-3 text-sm text-slate-300';
-            description.textContent = message;
-
-            const createLink = document.createElement('a');
-            createLink.href = '/';
-            createLink.className =
-                'inline-block mt-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-6 rounded-xl text-sm transition duration-200';
-            createLink.textContent =
-                currentLang === 'hi'
-                    ? 'अपना कार्ड बनाएं'
-                    : currentLang === 'en'
-                        ? 'Create Your Own Card'
-                        : 'আপনার নিজের কার্ড তৈরি করুন';
-
-            wrapper.appendChild(title);
-            wrapper.appendChild(description);
-            wrapper.appendChild(createLink);
-            errorView.appendChild(wrapper);
-            document.body.prepend(errorView);
-
-            const appMain = document.querySelector('main');
-
-            if (appMain) {
-                appMain.classList.add('hidden');
-            }
-        };
-
-        if (!/^\d{6,12}$/.test(cardId)) {
-            showSharedCardError(
-                currentLang === 'hi'
-                    ? 'कृपया एक मान्य कार्ड लिंक का उपयोग करें।'
-                    : currentLang === 'en'
-                        ? 'Please use a valid card link.'
-                        : 'অনুগ্রহ করে একটি বৈধ কার্ড লিংক ব্যবহার করুন।'
-            );
-            return;
-        }
-
-        try {
-            const response = await fetch(
-                `/api/card?id=${encodeURIComponent(cardId)}&format=json`,
-                {
-                    method: 'GET',
-                    headers: {
-                        Accept: 'application/json'
-                    }
-                }
-            );
-
-            let result = null;
-
-            try {
-                result = await response.json();
-            } catch {
-                throw new Error('Shared card response was invalid.');
-            }
-
-            if (!response.ok || !result?.ok || !result?.card?.image_url) {
-                throw new Error(
-                    result?.error ||
-                    translations[currentLang].generateError
-                );
-            }
-
-            const card = result.card;
-
-            if (card.lang && translations[card.lang]) {
-                applyLanguage(card.lang);
-            }
-
-            const sharedView = document.createElement('section');
-            sharedView.id = 'shared-card-view';
-            sharedView.className =
-                'min-h-screen bg-slate-950 text-white px-4 py-8 flex items-center justify-center';
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'w-full max-w-4xl';
-
-            const header = document.createElement('div');
-            header.className = 'text-center mb-5';
-
-            const cardTitle = document.createElement('p');
-            cardTitle.className =
-                'text-xs font-medium tracking-wide text-amber-400';
-            cardTitle.textContent =
-                currentLang === 'hi'
-                    ? 'शताब्दी स्मारक परिचितिपत्र'
-                    : currentLang === 'en'
-                        ? 'Centenary Commemorative Card'
-                        : 'শতবর্ষী স্মারক পরিচিতিপত্র';
-
-            const nameTitle = document.createElement('h1');
-            nameTitle.className =
-                'mt-1 text-lg sm:text-xl font-bold text-white';
-            nameTitle.textContent = String(card.full_name || '') || (
-                currentLang === 'hi'
-                    ? 'शताब्दी स्मारक परिचितिपत्र'
-                    : currentLang === 'en'
-                        ? 'Centenary Commemorative Card'
-                        : 'শতবর্ষী স্মারক পরিচিতিপত্র'
-            );
-
-            header.appendChild(cardTitle);
-            header.appendChild(nameTitle);
-
-            const imageFrame = document.createElement('div');
-            imageFrame.className =
-                'overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl';
-
-            const cardImage = document.createElement('img');
-            cardImage.id = 'shared-card-image';
-            cardImage.src = String(card.image_url);
-            cardImage.alt = nameTitle.textContent;
-            cardImage.className = 'block w-full h-auto';
-            cardImage.loading = 'eager';
-            cardImage.decoding = 'async';
-
-            imageFrame.appendChild(cardImage);
-
-            const actions = document.createElement('div');
-            actions.className = 'mt-5 grid gap-2 sm:grid-cols-2';
-
-            const shareButton = document.createElement('button');
-            shareButton.type = 'button';
-            shareButton.id = 'shared-card-share';
-            shareButton.className =
-                'focus-ring w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition duration-200';
-            shareButton.textContent =
-                currentLang === 'hi'
-                    ? '📲 कार्ड साझा करें'
-                    : currentLang === 'en'
-                        ? '📲 Share Card'
-                        : '📲 কার্ড শেয়ার করুন';
-
-            const createLink = document.createElement('a');
-            createLink.href = '/';
-            createLink.className =
-                'focus-ring w-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 font-bold py-3 rounded-xl text-sm text-center transition duration-200';
-            createLink.textContent =
-                currentLang === 'hi'
-                    ? '✨ अपना कार्ड बनाएं'
-                    : currentLang === 'en'
-                        ? '✨ Create Your Own Card'
-                        : '✨ আপনার নিজের কার্ড তৈরি করুন';
-
-            actions.appendChild(shareButton);
-            actions.appendChild(createLink);
-
-            wrapper.appendChild(header);
-            wrapper.appendChild(imageFrame);
-            wrapper.appendChild(actions);
-            sharedView.appendChild(wrapper);
-            document.body.prepend(sharedView);
-
-            const appMain = document.querySelector('main');
-
-            if (appMain) {
-                appMain.classList.add('hidden');
-            }
-
-            shareButton.addEventListener('click', async () => {
-                const shareUrl = window.location.href;
-
-                if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            title: cardTitle.textContent,
-                            text: `${cardTitle.textContent} — ${nameTitle.textContent}`.trim(),
-                            url: shareUrl
-                        });
-                        return;
-                    } catch (error) {
-                        if (error?.name === 'AbortError') {
-                            return;
-                        }
-                    }
-                }
-
-                try {
-                    await navigator.clipboard.writeText(shareUrl);
-
-                    shareButton.textContent =
-                        currentLang === 'hi'
-                            ? '✅ लिंक कॉपी हो गया'
-                            : currentLang === 'en'
-                                ? '✅ Link Copied'
-                                : '✅ লিংক কপি হয়েছে';
-
-                    setTimeout(() => {
-                        shareButton.textContent =
-                            currentLang === 'hi'
-                                ? '📲 कार्ड साझा करें'
-                                : currentLang === 'en'
-                                    ? '📲 Share Card'
-                                    : '📲 কার্ড শেয়ার করুন';
-                    }, 2200);
-                } catch {
-                    window.prompt(
-                        currentLang === 'hi'
-                            ? 'इस लिंक को कॉपी करें:'
-                            : currentLang === 'en'
-                                ? 'Copy this link:'
-                                : 'এই লিংকটি কপি করুন:',
-                        shareUrl
-                    );
-                }
-            });
-        } catch (error) {
-            console.error('Shared card loading error:', error);
-
-            showSharedCardError(
-                currentLang === 'hi'
-                    ? 'यह कार्ड उपलब्ध नहीं है या अभी लोड नहीं हो सका।'
-                    : currentLang === 'en'
-                        ? 'This card is unavailable or could not be loaded right now.'
-                        : 'এই কার্ডটি পাওয়া যাচ্ছে না অথবা এই মুহূর্তে লোড করা সম্ভব হয়নি।'
-            );
-        }
-    }
-
-    function handlePhotoChange(event) {
-        showError('');
-
-        const file = event.target.files?.[0] || null;
-
-        try {
-            if (!file) {
-                selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
-                $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
-                $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
-                updateProfileFrame();
-                $('selected-photo-status').textContent = '';
-                $('selected-photo-preview-wrap').classList.add('hidden');
-                return;
-            }
-
-            fileToDataUrl(file)
-                .then((dataUrl) => {
-                    selectedPhotoDataUrl = dataUrl;
-                    $('card-photo').src = dataUrl;
-                    $('export-photo').src = dataUrl;
-                    updateProfileFrame();
-                    $('selected-photo-preview').src = dataUrl;
-                    setText(
-                        'selected-photo-status',
-                        translations[currentLang].photoSelected
-                    );
-                    $('selected-photo-preview-wrap').classList.remove('hidden');
-                })
-                .catch((error) => {
-                    selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
-                    event.target.value = '';
-                    $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
-                    $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
-                    updateProfileFrame();
-                    $('selected-photo-preview-wrap').classList.add('hidden');
-                    showError(
-                        error instanceof Error
-                            ? error.message
-                            : translations[currentLang].invalidPhoto
-                    );
-                });
-        } catch (error) {
-            selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
-            event.target.value = '';
-            $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
-            $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
-            updateProfileFrame();
-            $('selected-photo-status').textContent = '';
-            $('selected-photo-preview-wrap').classList.add('hidden');
-            showError(
-                error instanceof Error
-                    ? error.message
-                    : translations[currentLang].invalidPhoto
-            );
-        }
-    }
-
-    // Clean guided creation flow
-    const STEP_FLOW_TOTAL = 10;
-    let currentStep = 1;
-
-    const creationFlowFields = {
-        1: 'name-input',
-        2: 'dham-select',
-        3: 'kaam-input',
-        4: 'shakha-input',
-        5: 'role-input',
-        6: 'barga-select',
-        7: 'year-input',
-        8: 'sanghayu-input',
-        9: 'wa-input',
-        10: 'photo-input'
-    };
-
-    const creationFlowMeta = {
-        1: ['step1Title', 'step1Help'],
-        2: ['lblDham', 'step2Help'],
-        3: ['lblKaam', 'step2Help'],
-        4: ['lblShakha', 'step3Help'],
-        5: ['lblRole', 'step3Help'],
-        6: ['lblBarga', 'step4Help'],
-        7: ['lblYear', 'step4Help'],
-        8: ['step5Title', 'step5Help'],
-        9: ['step6Title', 'step6Help'],
-        10: ['step7Title', 'step7Help']
-    };
-
-    function getCreationField(step) {
-        const id = creationFlowFields[step];
-
-        if (!id) {
-            return null;
-        }
-
-        return $(id);
-    }
-
-    function getCreationFieldWrapper(step) {
-        const field = getCreationField(step);
-
-        if (!field) {
-            return null;
-        }
-
-        return field.closest('[data-flow-field]') || field.parentElement;
-    }
-
-    function clearCreationModalError() {
-        const error = $('creation-modal-error');
-
-        if (!error) {
-            return;
-        }
-
-        error.textContent = '';
-        error.classList.add('hidden');
-    }
-
-    function showCreationModalError(message) {
-        const error = $('creation-modal-error');
-
-        if (!error) {
-            return;
-        }
-
-        error.textContent = message;
-        error.classList.remove('hidden');
-    }
-
-    const creationFlowAnchors = new Map();
-
-    function registerCreationFlowAnchors() {
-        if (creationFlowAnchors.size > 0) {
-            return;
-        }
-
-        for (const step of Object.keys(creationFlowFields)) {
-            const wrapper = getCreationFieldWrapper(Number(step));
-
-            if (!wrapper) {
-                continue;
-            }
-
-            const anchor = document.createComment(
-                `creation-flow-anchor-${step}`
-            );
-
-            wrapper.parentNode.insertBefore(anchor, wrapper);
-
-            creationFlowAnchors.set(`field-${step}`, {
-                element: wrapper,
-                anchor
-            });
-        }
-
-        const review = $('step-review');
-
-        if (review && review.parentNode) {
-            const anchor = document.createComment('creation-review-anchor');
-
-            review.parentNode.insertBefore(anchor, review);
-
-            creationFlowAnchors.set('review', {
-                element: review,
-                anchor
-            });
-        }
-
-        const terms = $('terms-check')?.closest('.flex');
-
-        if (terms && terms.parentNode) {
-            const anchor = document.createComment('creation-terms-anchor');
-
-            terms.parentNode.insertBefore(anchor, terms);
-
-            creationFlowAnchors.set('terms', {
-                element: terms,
-                anchor
-            });
-        }
-
-        const generate = $('btn-generate');
-
-        if (generate && generate.parentNode) {
-            const anchor = document.createComment('creation-generate-anchor');
-
-            generate.parentNode.insertBefore(anchor, generate);
-
-            creationFlowAnchors.set('generate', {
-                element: generate,
-                anchor
-            });
-        }
-    }
-
-    function restoreCreationElement(key) {
-        const entry = creationFlowAnchors.get(key);
-
-        if (!entry || !entry.anchor?.parentNode) {
-            return;
-        }
-
-        entry.anchor.parentNode.insertBefore(
-            entry.element,
-            entry.anchor.nextSibling
-        );
-    }
-
-    function restoreAllCreationElements() {
-        for (const key of creationFlowAnchors.keys()) {
-            restoreCreationElement(key);
-        }
-    }
-
-    function moveCreationElementToModal(key, mount) {
-        const entry = creationFlowAnchors.get(key);
-
-        if (!entry || !mount) {
-            return;
-        }
-
-        mount.appendChild(entry.element);
-    }
-
-    function moveFieldToCreationModal(step) {
-        const mount = $('creation-modal-field');
-
-        if (!mount) {
-            return;
-        }
-
-        const key = `field-${step}`;
-        const entry = creationFlowAnchors.get(key);
-
-        if (!entry) {
-            return;
-        }
-
-        moveCreationElementToModal(key, mount);
-
-        const wrapper = entry.element;
-
-        wrapper.hidden = false;
-        wrapper.classList.remove('col-span-2');
-
-        const label = wrapper.querySelector('label');
-
-        if (label) {
-            label.classList.remove('block');
-            label.classList.add(
-                'block',
-                'text-sm',
-                'text-amber-200',
-                'mb-2',
-                'font-semibold'
-            );
-        }
-
-        const input = wrapper.querySelector('input, select');
-
-        if (input) {
-            input.classList.remove(
-                'text-xs',
-                'px-1.5',
-                'py-1.5',
-                'py-2'
-            );
-
-            input.classList.add(
-                'w-full',
-                'text-sm',
-                'py-3'
-            );
-        }
-    }
-
-    function restoreCreationFieldWrappers() {
-        registerCreationFlowAnchors();
-        restoreAllCreationElements();
-
-        document.querySelectorAll('[data-flow-field]').forEach((wrapper) => {
-            wrapper.hidden = false;
-        });
-
-        const review = $('step-review');
-
-        if (review) {
-            review.classList.add('hidden');
-        }
-
-        const terms = $('terms-check')?.closest('.flex');
-
-        if (terms) {
-            terms.classList.add('hidden');
-        }
-
-        const generate = $('btn-generate');
-
-        if (generate) {
-            generate.classList.add('hidden');
-        }
-    }
-
-    function updateCreationReview() {
-        if (typeof updateStepReview === 'function') {
-            updateStepReview();
-        }
-
-        const review = $('step-review');
-        const reviewMount = $('creation-modal-review');
-
-        if (!review || !reviewMount) {
-            return;
-        }
-
-        reviewMount.replaceChildren();
-
-        moveCreationElementToModal('review', reviewMount);
-
-        review.classList.remove('hidden');
-    }
-
-    function updateCreationModal() {
-        const modal = $('creation-modal');
         const title = $('creation-modal-title');
         const help = $('creation-modal-help');
         const progress = $('creation-modal-progress');
         const label = $('creation-modal-label');
+        const fieldMount = $('creation-modal-field');
         const back = $('creation-modal-back');
         const next = $('creation-modal-next');
-        const fieldMount = $('creation-modal-field');
-        const reviewMount = $('creation-modal-review');
 
-        if (
-            !modal ||
-            !title ||
-            !help ||
-            !progress ||
-            !label ||
-            !back ||
-            !next ||
-            !fieldMount ||
-            !reviewMount
-        ) {
-            return;
-        }
+        if (!title || !fieldMount) return;
 
-        const t = translations[currentLang];
-        const meta = creationFlowMeta[currentStep];
+        // Progress
+        if (progress) progress.textContent = `${currentStep} / ${STEP_FLOW_TOTAL}`;
+        if (label) label.textContent = `${t.stepLabel || 'ধাপ'} ${currentStep}`;
 
-        clearCreationModalError();
+        // Title & Help
+        title.textContent = t[`step${currentStep}Title`] || '';
+        help.textContent = t[`step${currentStep}Help`] || '';
 
-        registerCreationFlowAnchors();
-        restoreAllCreationElements();
-
+        // Clear fields
         fieldMount.replaceChildren();
-        reviewMount.replaceChildren();
-        reviewMount.classList.add('hidden');
+        showError('');
 
-        modal.classList.remove('hidden');
-
-        progress.textContent =
-            `${currentStep}${t.stepProgressSeparator}${STEP_FLOW_TOTAL}`;
-
-        label.textContent =
-            `${t.stepLabel} ${currentStep}`;
-
-        if (currentStep === STEP_FLOW_TOTAL) {
-            title.textContent = t.step7Title;
-            help.textContent = t.step7Help;
-
-            moveFieldToCreationModal(currentStep);
-            updateCreationReview();
-
-            const terms = creationFlowAnchors.get('terms')?.element;
-            const generate = creationFlowAnchors.get('generate')?.element;
-
-            if (terms) {
-                terms.classList.remove('hidden');
-                fieldMount.appendChild(terms);
-            }
-
-            if (generate) {
-                generate.classList.remove('hidden');
-                generate.classList.add('mt-4');
-                fieldMount.appendChild(generate);
-            }
-
-            next.classList.add('hidden');
-            back.textContent = t.stepBack;
-            back.disabled = false;
-
-            return;
+        // Render field based on step
+        switch (currentStep) {
+            case 1: renderNameField(fieldMount); break;
+            case 2: renderPhotoField(fieldMount); break;
+            case 3: renderDhamField(fieldMount); break;
+            case 4: renderKaamField(fieldMount); break;
+            case 5: renderShakhaField(fieldMount); break;
+            case 6: renderRoleField(fieldMount); break;
+            case 7: renderBargaField(fieldMount); break;
+            case 8: renderYearField(fieldMount); break;
+            case 9: renderSanghayuField(fieldMount); break;
+            case 10: renderReviewField(fieldMount); break;
         }
 
-        if (meta) {
-            title.textContent = t[meta[0]];
-            help.textContent = t[meta[1]];
-        }
-
-        moveFieldToCreationModal(currentStep);
-
-        back.textContent = t.stepBack;
-        back.disabled = currentStep === 1;
-
-        next.classList.remove('hidden');
-        next.textContent = t.stepNext;
-
-        const focusTarget = getCreationField(currentStep);
-
-        if (focusTarget) {
-            window.setTimeout(() => focusTarget.focus(), 0);
+        // Buttons
+        if (back) back.disabled = currentStep === 1;
+        if (next) {
+            if (currentStep === STEP_FLOW_TOTAL) {
+                next.textContent = t.btnGenerate;
+                next.onclick = handleGenerate;
+            } else {
+                next.textContent = t.btnNext;
+                next.onclick = handleNext;
+            }
         }
     }
 
-    function validateCreationStep(step) {
+    function updateStepUI() {
+        if (!document.querySelector('#creation-modal:not(.hidden)')) return;
+        renderStep();
+    }
 
+    function handleNext() {
+        if (currentStep >= STEP_FLOW_TOTAL) return;
+        const t = translations[currentLang];
+        const err = validateStep(currentStep);
+        if (err) { showError(err); return; }
+        currentStep++;
+        renderStep();
+    }
+
+    function handleBack() {
+        if (currentStep <= 1) return;
+        currentStep--;
+        renderStep();
+    }
+
+    // ============================================================
+    // ৮. ফিল্ড রেন্ডারিং (Field Rendering)
+    // ============================================================
+    function renderNameField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-name">${t.lblName}</label>
+                <input type="text" id="input-name" placeholder="${t.phName}" value="${formData.name || ''}" maxlength="${MAX_TEXT_LENGTH}">
+            </div>
+        `;
+        const input = $('input-name');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.name = e.target.value; });
+        }
+    }
+
+    function renderPhotoField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-photo">${t.lblPhoto}</label>
+                <input type="file" id="input-photo" accept="image/jpeg,image/png,image/webp">
+                <p style="color:#94a3b8;font-size:12px;margin-top:8px;">${t.photoHelp}</p>
+                <img id="photo-preview" style="display:none;width:120px;height:120px;border-radius:50%;border:3px solid #f59e0b;margin-top:12px;object-fit:cover;" />
+            </div>
+        `;
+        const input = $('input-photo');
+        const preview = $('photo-preview');
+        if (formData.photoDataUrl && preview) {
+            preview.src = formData.photoDataUrl;
+            preview.style.display = 'block';
+        }
+        if (input) {
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > MAX_PHOTO_BYTES) { showError(t.errPhotoTooLarge); return; }
+                if (!['image/jpeg','image/png','image/webp'].includes(file.type)) { showError(t.errPhotoType); return; }
+                const reader = new FileReader();
+                reader.onload = () => {
+                    formData.photoDataUrl = reader.result;
+                    if (preview) { preview.src = reader.result; preview.style.display = 'block'; }
+                    showError('');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    }
+
+    function renderDhamField(mount) {
+        const t = translations[currentLang];
+        const districts = wbDistricts[currentLang];
+        const options = districts.map(d => `<option value="${d}" ${formData.dham === d ? 'selected' : ''}>${d}</option>`).join('');
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-dham">${t.lblDham}</label>
+                <select id="input-dham">
+                    <option value="">-- ${t.lblDham} --</option>
+                    ${options}
+                </select>
+            </div>
+        `;
+        const select = $('input-dham');
+        if (select) select.addEventListener('change', (e) => { formData.dham = e.target.value; });
+    }
+
+    function renderKaamField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-kaam">${t.lblKaam}</label>
+                <input type="text" id="input-kaam" placeholder="${t.phKaam}" value="${formData.kaam || ''}" maxlength="${MAX_TEXT_LENGTH}">
+            </div>
+        `;
+        const input = $('input-kaam');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.kaam = e.target.value; });
+        }
+    }
+
+    function renderShakhaField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-shakha">${t.lblShakha}</label>
+                <input type="text" id="input-shakha" placeholder="${t.phShakha}" value="${formData.shakha || ''}" maxlength="${MAX_TEXT_LENGTH}">
+            </div>
+        `;
+        const input = $('input-shakha');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.shakha = e.target.value; });
+        }
+    }
+
+    function renderRoleField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-role">${t.lblRole}</label>
+                <input type="text" id="input-role" placeholder="${t.phRole}" value="${formData.role || ''}" maxlength="${MAX_TEXT_LENGTH}">
+            </div>
+        `;
+        const input = $('input-role');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.role = e.target.value; });
+        }
+    }
+
+    function renderBargaField(mount) {
+        const t = translations[currentLang];
+        const list = vargaList[currentLang];
+        const options = list.map(v => `<option value="${v}" ${formData.varga === v ? 'selected' : ''}>${v}</option>`).join('');
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-barga">${t.lblBarga}</label>
+                <select id="input-barga">
+                    <option value="">-- ${t.lblBarga} --</option>
+                    ${options}
+                </select>
+            </div>
+        `;
+        const select = $('input-barga');
+        if (select) select.addEventListener('change', (e) => { formData.varga = e.target.value; });
+    }
+
+    function renderYearField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-year">${t.lblYear}</label>
+                <input type="number" id="input-year" placeholder="${t.phYear}" value="${formData.year || ''}" min="1900" max="2026">
+            </div>
+        `;
+        const input = $('input-year');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.year = e.target.value; });
+        }
+    }
+
+    function renderSanghayuField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <label for="input-sanghayu">${t.lblSanghayu}</label>
+                <input type="number" id="input-sanghayu" placeholder="${t.phSanghayu}" value="${formData.sanghayu || ''}" min="0" max="100">
+            </div>
+        `;
+        const input = $('input-sanghayu');
+        if (input) {
+            input.focus();
+            input.addEventListener('input', (e) => { formData.sanghayu = e.target.value; });
+        }
+    }
+
+    function renderReviewField(mount) {
+        const t = translations[currentLang];
+        mount.innerHTML = `
+            <div class="creation-field">
+                <div style="background:#1e293b;border-radius:12px;padding:16px;font-size:14px;line-height:1.8;">
+                    <div><strong style="color:#fbbf24;">${t.lblName.replace(' *','')}:</strong> ${formData.name || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblDham.replace(' *','')}:</strong> ${formData.dham || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblKaam}:</strong> ${formData.kaam || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblShakha}:</strong> ${formData.shakha || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblRole}:</strong> ${formData.role || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblBarga.replace(' *','')}:</strong> ${formData.varga || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblYear.replace(' *','')}:</strong> ${formData.year || '-'}</div>
+                    <div><strong style="color:#fbbf24;">${t.lblSanghayu}:</strong> ${formData.sanghayu || '-'}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ============================================================
+    // ৯. ভ্যালিডেশন (Validation)
+    // ============================================================
+    function validateStep(step) {
+        const t = translations[currentLang];
+        switch (step) {
+            case 1: return formData.name && formData.name.trim() ? '' : t.errNameRequired;
+            case 2: return formData.photoDataUrl ? '' : t.errPhotoRequired;
+            case 3: return formData.dham ? '' : t.errDhamRequired;
+            case 4: return '';
+            case 5: return '';
+            case 6: return '';
+            case 7: return formData.varga ? '' : t.errBargaRequired;
+            case 8: return formData.year ? '' : t.errYearRequired;
+            case 9: return formData.sanghayu ? '' : t.errSanghayuRequired;
+            default: return '';
+        }
+    }
+
+    // ============================================================
+    // ১০. কার্ড আপডেট (Update Card)
+    // ============================================================
+    function updateCardContent() {
         const t = translations[currentLang];
 
-        if (step === 1) {
-            const name = validateText(
-                $('name-input').value,
-                'Name'
-            );
+        // Identity card
+        setText('card-name', formData.name || '-');
+        setText('card-dham', formData.dham || '-');
+        setText('card-shakha', formData.shakha || '-');
+        setText('card-barga', formData.varga || '-');
+        setText('card-year', formData.year || '-');
+        setText('card-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
+        setText('card-tagline', t.tagline);
 
-            if (!name) {
-                throw new Error(t.requiredName);
+        const cardPhoto = $('card-photo');
+        if (cardPhoto && formData.photoDataUrl) cardPhoto.src = formData.photoDataUrl;
+
+        // Poster
+        setText('poster-name', formData.name || '-');
+        setText('poster-dham', formData.dham || '-');
+        setText('poster-shakha', formData.kaam || '-');
+        setText('poster-barga', formData.varga || '-');
+        setText('poster-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
+        setText('poster-tagline', t.tagline);
+
+        const posterPhoto = $('poster-photo');
+        if (posterPhoto && formData.photoDataUrl) posterPhoto.src = formData.photoDataUrl;
+    }
+
+    // ============================================================
+    // ১১. কার্ড/পোস্টার জেনারেশন (Generate Blob)
+    // ============================================================
+    async function generateBlob(elementId, width, height) {
+        const element = $(elementId);
+        if (!element) throw new Error('Element not found: ' + elementId);
+
+        await document.fonts.ready;
+
+        const canvas = await html2canvas(element, {
+            width: width,
+            height: height,
+            scale: 1,
+            useCORS: true,
+            backgroundColor: '#0a1128',
+            logging: false
+        });
+
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) { reject(new Error('Blob generation failed')); return; }
+                resolve(blob);
+            }, 'image/png', 1);
+        });
+    }
+
+    // ============================================================
+    // ১২. ডাউনলোড (Download)
+    // ============================================================
+    async function downloadCard() {
+        try {
+            const blob = await generateBlob('card-export', 1200, 630);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `shatabdi-card-${formData.name || 'card'}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (err) {
+            console.error('Download failed:', err);
+        }
+    }
+
+    // ============================================================
+    // ১৩. কার্ড তৈরি (Generate Card)
+    // ============================================================
+    async function handleGenerate() {
+        const t = translations[currentLang];
+        const btn = $('creation-modal-next');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+
+        try {
+            updateCardContent();
+            await new Promise(r => setTimeout(r, 300));
+
+            // 1. Download identity card
+            await downloadCard();
+
+            // 2. Generate poster blob
+            const posterBlob = await generateBlob('poster-export', 1080, 1350);
+            const posterDataUrl = await blobToDataUrl(posterBlob);
+
+            // 3. Hide creation modal, show share
+            const creationModal = $('creation-modal');
+            if (creationModal) creationModal.classList.add('hidden');
+
+            const shareSection = $('share-actions');
+            if (shareSection) {
+                shareSection.classList.remove('hidden');
+                shareSection.classList.add('visible');
             }
 
-            return;
+            // 4. Setup Facebook share
+            setupFacebookShare(posterDataUrl);
+
+            // 5. Scroll to share
+            if (shareSection) shareSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        } catch (err) {
+            console.error('Card generation failed:', err);
+            showError(t.errGeneric);
+            if (btn) { btn.disabled = false; btn.textContent = t.btnGenerate; }
         }
+    }
 
-        if (step === 2) {
-            const selectedDham = $('dham-select').value;
+    function blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
 
-            if (isCustomDistrict(selectedDham)) {
-                const customDham = validateText(
-                    $('custom-dham-input').value,
-                    'Dham'
-                );
+    // ============================================================
+    // ১৪. ফেসবুক শেয়ার (Facebook Share)
+    // ============================================================
+    function setupFacebookShare(posterDataUrl) {
+        const fbBtn = $('btn-fb-share');
+        if (!fbBtn) return;
 
-                if (!customDham) {
-                    throw new Error(t.stepDhamRequired);
+        // Store poster in window for later use
+        window.__posterDataUrl = posterDataUrl;
+
+        fbBtn.onclick = async (e) => {
+            e.preventDefault();
+
+            // Try Web Share API first (works on mobile)
+            if (navigator.share && navigator.canShare) {
+                try {
+                    const blob = await (await fetch(posterDataUrl)).blob();
+                    const file = new File([blob], 'shatabdi-poster.png', { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'RSS Shatabdi Card',
+                            text: translations[currentLang].tagline
+                        });
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Web Share failed, falling back to Facebook URL:', err);
                 }
             }
 
-            return;
-        }
-
-        if (step === 7) {
-            const yearRaw = $('year-input').value.trim();
-
-            if (!yearRaw) {
-                return;
-            }
-
-            const year = Number(yearRaw);
-
-            if (
-                !Number.isInteger(year) ||
-                year < MIN_YEAR ||
-                year > MAX_YEAR
-            ) {
-                throw new Error(t.invalidYear);
-            }
-        }
-    }
-
-    function goToStep(step) {
-        const nextStep = Number(step);
-
-        if (
-            !Number.isInteger(nextStep) ||
-            nextStep < 1 ||
-            nextStep > STEP_FLOW_TOTAL
-        ) {
-            return;
-        }
-
-        currentStep = nextStep;
-        clearCreationModalError();
-
-        if (currentStep === STEP_FLOW_TOTAL) {
-            updateCreationReview();
-        }
-
-        updateCreationModal();
-    }
-
-    function initStepFlow() {
-        document.body.classList.add('creation-active');
-        restoreCreationFieldWrappers();
-        currentStep = 1;
-        updateCreationModal();
-    }
-
-
-    async function generateCard() {
-        showError('');
-
-        const button = $('btn-generate');
-        const t = translations[currentLang];
-
-        if (button.disabled) {
-            return;
-        }
-
-        try {
-            const formData = getFormData();
-
-            updatePreview(formData);
-
-            button.disabled = true;
-            button.textContent = t.generating;
-
-            // 1. Create identity card
-            console.log('[Shatabdi Card] createCardBlob:start');
-            const cardBlob = await createCardBlob();
-            console.log('[Shatabdi Card] createCardBlob:done', cardBlob?.size);
-            lastCardBlob = cardBlob;
-
-            // 2. Create poster
-            console.log('[Shatabdi Card] createPosterBlob:start');
-            const posterBlob = await createPosterBlob();
-            console.log('[Shatabdi Card] createPosterBlob:done', posterBlob?.size);
-            lastPosterBlob = posterBlob;
-
-            // 3. Upload card to server
-            console.log('[Shatabdi Card] createCardOnServer:start');
-            const result = await createCardOnServer(cardBlob, formData);
-            console.log('[Shatabdi Card] createCardOnServer:done', result?.shareUrl);
-
-            setupShareLinks(result.shareUrl);
-
-            // 4. Show share actions
-            $('share-actions').classList.add('visible');
-            $('share-actions').classList.remove('hidden');
-            document.body.classList.remove('creation-active');
-            document.body.classList.add('card-created');
-
-            button.textContent = '✅ ' + (
-                currentLang === 'hi'
-                    ? 'कार्ड तैयार'
-                    : currentLang === 'en'
-                        ? 'Card Created'
-                        : 'কার্ড তৈরি সম্পন্ন'
+            // Fallback: Open Facebook share dialog with the app URL
+            const appUrl = 'https://shatabdi-card.vercel.app/';
+            const quote = encodeURIComponent(translations[currentLang].tagline);
+            window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${quote}`,
+                '_blank',
+                'width=600,height=500'
             );
+        };
+    }
 
-            $('share-actions').scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
+    // ============================================================
+    // ১৫. ইনিশিয়ালাইজেশন (Initialization)
+    // ============================================================
+    function init() {
+        // Language buttons
+        document.querySelectorAll('.language-choice').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                selectLanguage(btn.dataset.language || 'bn');
             });
-
-            // 5. Auto-download identity card
-            try {
-                await downloadCardImage();
-                console.log("[Shatabdi Card] Auto-download completed");
-            } catch (dlError) {
-                console.warn("[Shatabdi Card] Auto-download failed:", dlError);
-            }
-
-        } catch (error) {
-            console.error('Card generation error:', error);
-            showError(
-                error instanceof Error
-                    ? error.message
-                    : t.generateError
-            );
-            button.textContent = t.btnGenerate;
-        } finally {
-            button.disabled = false;
-        }
-    }
-    async function downloadCardImage() {
-        showError('');
-
-        if (!lastCardBlob) {
-            showError(translations[currentLang].generateError);
-            return;
-        }
-
-        try {
-            const filename =
-                currentLang === 'hi'
-                    ? 'shatabdi-card.png'
-                    : currentLang === 'en'
-                        ? 'centenary-card.png'
-                        : 'shatabdi-card.png';
-
-            await downloadBlob(lastCardBlob, filename);
-        } catch (error) {
-            console.error('Card download error:', error);
-            showError(
-                error instanceof Error
-                    ? error.message
-                    : translations[currentLang].generateError
-            );
-        }
-    }
-
-    async function downloadProfileFrameImage() {
-        showError('');
-
-        if (!lastProfileFrameBlob) {
-            showError(translations[currentLang].generateError);
-            return;
-        }
-
-        try {
-            const filename =
-                currentLang === 'hi'
-                    ? 'shatabdi-profile-frame.png'
-                    : currentLang === 'en'
-                        ? 'centenary-profile-frame.png'
-                        : 'shatabdi-profile-frame.png';
-
-            await downloadBlob(lastProfileFrameBlob, filename);
-        } catch (error) {
-            console.error('Profile frame download error:', error);
-            showError(
-                error instanceof Error
-                    ? error.message
-                    : translations[currentLang].generateError
-            );
-        }
-    }
-
-    function setSelectedLanguage(lang) {
-        if (!SUPPORTED_LANGUAGES.includes(lang)) {
-            lang = DEFAULT_LANGUAGE;
-        }
-
-        applyLanguage(lang);
-        currentStep = 1;
-        showError('');
-        clearCreationModalError();
-        document.body.classList.add('creation-active');
-        updateCreationModal();
-
-        const modal = $('language-modal');
-
-        if (modal) {
-            modal.classList.add('hidden');
-        }
-
-        try {
-            sessionStorage.setItem('shatabdi-card-language', lang);
-        } catch (error) {
-            // Storage may be unavailable; language still works for this page.
-        }
-    }
-
-    document.querySelectorAll('.language-choice').forEach((button) => {
-        button.addEventListener('click', () => {
-            setSelectedLanguage(button.dataset.language);
         });
-    });
 
+        // Back/Next buttons
+        const back = $('creation-modal-back');
+        const next = $('creation-modal-next');
+        if (back) back.addEventListener('click', handleBack);
+        if (next) next.addEventListener('click', handleNext);
 
-    $('creation-modal-back').addEventListener('click', () => {
-        if (currentStep > 1) {
-            goToStep(currentStep - 1);
-        }
-    });
+        // Hide creation modal initially
+        const creationModal = $('creation-modal');
+        if (creationModal) creationModal.classList.add('hidden');
 
-    $('creation-modal-next').addEventListener('click', () => {
-        if (currentStep >= STEP_FLOW_TOTAL) {
-            return;
-        }
-
-        try {
-            validateCreationStep(currentStep);
-            goToStep(currentStep + 1);
-        } catch (error) {
-            showCreationModalError(
-                error instanceof Error
-                    ? error.message
-                    : translations[currentLang].generateError
-            );
-        }
-    });
-
-
-    let initialLanguage = DEFAULT_LANGUAGE;
-    let hasSavedLanguage = false;
-
-    try {
-        const savedLanguage = sessionStorage.getItem(
-            'shatabdi-card-language'
-        );
-
-        if (SUPPORTED_LANGUAGES.includes(savedLanguage)) {
-            initialLanguage = savedLanguage;
-            hasSavedLanguage = true;
-        }
-    } catch (error) {
-        // Ignore storage errors and use Bengali as the safe default.
+        // Set default language
+        applyLanguage(DEFAULT_LANGUAGE);
     }
 
-    populateDropdowns(initialLanguage);
-    applyLanguage(initialLanguage);
-    initStepFlow();
-
-    const languageModal = $('language-modal');
-
-    if (languageModal) {
-        if (hasSavedLanguage) {
-            languageModal.classList.add('hidden');
-        } else {
-            languageModal.classList.remove('hidden');
-        }
+    // Run on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 
-    loadSharedCard();
 })();
 </script>
 
