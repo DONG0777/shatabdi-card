@@ -2088,6 +2088,7 @@ body {
     // ১৫. ইনিশিয়ালাইজেশন (Initialization)
     // ============================================================
     function init() {
+        console.log('init() called, language buttons:', document.querySelectorAll('.language-choice').length);
         // Language buttons
         document.querySelectorAll('.language-choice').forEach((btn) => {
             btn.addEventListener('click', () => {
