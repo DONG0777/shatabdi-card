@@ -2226,6 +2226,7 @@ body {
     // ১৪. ফেসবুক শেয়ার (Facebook Share)
     // ============================================================
     // ============================================================
+    }
     function setupFacebookShare(posterDataUrl) {
         const fbBtn = $('btn-fb-share');
         if (!fbBtn) return;
@@ -2237,29 +2238,10 @@ body {
 
             const appUrl = 'https://shatabdi-card.vercel.app/';
             const t = translations[currentLang];
-            // Link inside text so WhatsApp/Telegram show it
             const shareText = `${t.tagline}\n\n🎯 আপনার নিজের কার্ড তৈরি করুন এখানে 👇\n${appUrl}`;
 
-            // Try Web Share API first (works on mobile)
-            if (navigator.share && navigator.canShare) {
-                try {
-                    const blob = await (await fetch(posterDataUrl)).blob();
-                    const file = new File([blob], 'shatabdi-poster.png', { type: 'image/png' });
-                    if (navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            files: [file],
-                            title: 'RSS Shatabdi Card — শতবর্ষপূর্তি',
-                            text: shareText
-                        });
-                        return;
-                    }
-                } catch (err) {
-                    console.warn('Web Share failed, falling back to Facebook URL:', err);
-                }
-            }
-
-            // Fallback: Open Facebook share dialog with the app URL
-            const quote = encodeURIComponent(shareText);
+            // Open Facebook share dialog with link + caption
+            const quote = encodeURIComponent(t.tagline);
             window.open(
                 `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${quote}`,
                 '_blank',
