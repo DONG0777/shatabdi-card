@@ -1807,7 +1807,10 @@ body {
             years.push(y);
         }
         const options = years.map(y => `<option value="${y}"></option>`).join('');
-        const defaultValue = formData.year || '2026';
+
+        if (!formData.year) formData.year = '2026';
+        const defaultValue = formData.year;
+
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-year">${t.lblYear}</label>
@@ -1832,7 +1835,10 @@ body {
             sanghayuOptions.push(s);
         }
         const options = sanghayuOptions.map(s => `<option value="${s}"></option>`).join('');
-        const defaultValue = formData.sanghayu || '1';
+
+        if (!formData.sanghayu) formData.sanghayu = '1';
+        const defaultValue = formData.sanghayu;
+
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-sanghayu">${t.lblSanghayu}</label>
