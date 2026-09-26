@@ -1011,8 +1011,6 @@ body {
             <span id="txt-fb-btn">📘 Facebook এ পোস্ট করুন</span>
         </a>
     </section>
-     IDENTITY CARD (1200 x 630) — Download
-     ============================================ -->
 <div id="card-export" aria-hidden="true">
     <div class="identity-card">
         <!-- Top Section -->
@@ -2759,21 +2757,6 @@ body {
         });
     });
 
-    $('lang-select').addEventListener('change', (event) => {
-        applyLanguage(event.target.value);
-        currentStep = 1;
-        clearCreationModalError();
-        updateCreationModal();
-
-        try {
-            sessionStorage.setItem(
-                'shatabdi-card-language',
-                event.target.value
-            );
-        } catch (error) {
-            // Ignore storage errors.
-        }
-    });
 
     $('creation-modal-back').addEventListener('click', () => {
         if (currentStep > 1) {
