@@ -1514,7 +1514,6 @@ body {
         const t = translations[lang];
 
         populateDropdowns(lang);
-        updateProfileFrame();
 
         setText('top-title', t.topTitle);
         setHTML('counter-text', t.counter);
@@ -2765,22 +2764,6 @@ body {
         }
     });
 
-    $('dham-select').addEventListener('change', () => {
-        toggleCustomDistrict();
-
-        if (isCustomDistrict($('dham-select').value)) {
-            const customInput = $('custom-dham-input');
-
-            if (customInput) {
-                window.setTimeout(() => customInput.focus(), 0);
-            }
-        }
-    });
-
-    $('dham-select').addEventListener('change', toggleCustomDistrict);
-    $('photo-input').addEventListener('change', handlePhotoChange);
-    $('terms-button').addEventListener('click', showTermsAlert);
-    $('btn-generate').addEventListener('click', generateCard);
 
     let initialLanguage = DEFAULT_LANGUAGE;
     let hasSavedLanguage = false;
