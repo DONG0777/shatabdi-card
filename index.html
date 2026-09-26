@@ -1774,24 +1774,31 @@ body {
         }
     }
 
+
     function renderBargaField(mount) {
         const t = translations[currentLang];
         const list = vargaList[currentLang];
-        const options = list.map(v => `<option value="${v}" ${formData.varga === v ? 'selected' : ''}>${v}</option>`).join('');
+        const defaultVarga = 'বর্গ করতে ইচ্ছুক';
+        const selectedVarga = formData.varga || defaultVarga;
+
+        if (!formData.varga) formData.varga = defaultVarga;
+
+        const options = list.map(v => `<option value="${v}" ${selectedVarga === v ? 'selected' : ''}>${v}</option>`).join('');
+
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-barga">${t.lblBarga}</label>
                 <select id="input-barga">
-                    <option value="">-- ${t.lblBarga} --</option>
                     ${options}
                 </select>
+                <p style="color:#94a3b8;font-size:11px;margin-top:6px;">বর্গ না করলে "বর্গ করতে ইচ্ছুক" নির্বাচন করুন</p>
             </div>
         `;
         const select = $('input-barga');
-        if (select) select.addEventListener('change', (e) => { formData.varga = e.target.value; });
+        if (select) {
+            select.addEventListener('change', (e) => { formData.varga = e.target.value; });
+        }
     }
-
-
     function renderYearField(mount) {
         const t = translations[currentLang];
         const currentYear = new Date().getFullYear();
