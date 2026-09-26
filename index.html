@@ -1857,42 +1857,48 @@ body {
 
     // ============================================================
     // ১০. কার্ড আপডেট (Update Card)
+    // ============================================================
     function updateCardContent() {
         const t = translations[currentLang];
 
+        // Default values (used when user doesn't provide)
+        const dName = formData.name || 'নাম নেই';
+        const dDham = formData.dham || 'ধাম নেই';
+        const dShakha = formData.shakha || 'শাখায় যেতে ইচ্ছুক';
+        const dKaam = formData.kaam || 'ব্যবসা';
+        const dRole = formData.role || 'সাধারণ স্বয়ংসেবক';
+        const dYear = formData.year || '২০২৬';
+        const dBarga = formData.varga || 'বর্গ করতে ইচ্ছুক';
+        const dSanghayu = formData.sanghayu ? formData.sanghayu + ' বছর' : '১ বছর';
+
         // ===== Identity Card =====
-        setText('card-name', formData.name || '-');
-        setText('card-dham', formData.dham || '-');
-        setText('card-shakha', formData.shakha || '-');
-        setText('card-kaam', formData.kaam || '-');
-        setText('card-role', formData.role || '-');
-        setText('card-year', formData.year || '-');
-        setText('card-barga', formData.varga || '-');
-        setText('card-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
+        setText('card-name', dName);
+        setText('card-dham', dDham);
+        setText('card-shakha', dShakha);
+        setText('card-kaam', dKaam);
+        setText('card-role', dRole);
+        setText('card-year', dYear);
+        setText('card-barga', dBarga);
+        setText('card-sanghayu', dSanghayu);
         setText('card-tagline', t.tagline);
 
         const cardPhoto = $('card-photo');
         if (cardPhoto && formData.photoDataUrl) cardPhoto.src = formData.photoDataUrl;
 
         // ===== Poster =====
-        setText('poster-name', formData.name || '-');
-        setText('poster-dham', formData.dham || '-');
-        setText('poster-shakha', formData.shakha || '-');
-        setText('poster-kaam', formData.kaam || '-');
-        setText('poster-role', formData.role || '-');
-        setText('poster-year', formData.year || '-');
-        setText('poster-barga', formData.varga || '-');
-        setText('poster-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
+        setText('poster-name', dName);
+        setText('poster-dham', dDham);
+        setText('poster-shakha', dShakha);
+        setText('poster-kaam', dKaam);
+        setText('poster-role', dRole);
+        setText('poster-year', dYear);
+        setText('poster-barga', dBarga);
+        setText('poster-sanghayu', dSanghayu);
         setText('poster-tagline', t.tagline);
 
         const posterPhoto = $('poster-photo');
         if (posterPhoto && formData.photoDataUrl) posterPhoto.src = formData.photoDataUrl;
     }
-    // ============================================================
-
-    // ============================================================
-    // ১১. কার্ড/পোস্টার জেনারেশন (Generate Blob)
-    // ============================================================
     async function generateBlob(elementId, width, height) {
         const element = $(elementId);
         if (!element) throw new Error('Element not found: ' + elementId);
