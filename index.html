@@ -2226,6 +2226,7 @@ body {
     // ১৪. ফেসবুক শেয়ার (Facebook Share)
     // ============================================================
     // ============================================================
+    }
     function setupFacebookShare(posterDataUrl) {
         const fbBtn = $('btn-fb-share');
         if (!fbBtn) return;
@@ -2237,7 +2238,8 @@ body {
 
             const appUrl = 'https://shatabdi-card.vercel.app/';
             const t = translations[currentLang];
-            const shareText = `${t.tagline}\n\n🎯 আপনার নিজের কার্ড তৈরি করুন এখানে 👉 ${appUrl}`;
+            // Link inside text so WhatsApp/Telegram show it
+            const shareText = `${t.tagline}\n\n🎯 আপনার নিজের কার্ড তৈরি করুন এখানে 👇\n${appUrl}`;
 
             // Try Web Share API first (works on mobile)
             if (navigator.share && navigator.canShare) {
@@ -2248,8 +2250,7 @@ body {
                         await navigator.share({
                             files: [file],
                             title: 'RSS Shatabdi Card — শতবর্ষপূর্তি',
-                            text: shareText,
-                            url: appUrl
+                            text: shareText
                         });
                         return;
                     }
