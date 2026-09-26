@@ -1478,47 +1478,32 @@ body {
         error.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+
     function populateDropdowns(lang) {
         const dhamSelect = $('dham-select');
         const bargaSelect = $('barga-select');
 
-        dhamSelect.replaceChildren();
-        bargaSelect.replaceChildren();
+        if (dhamSelect) dhamSelect.replaceChildren();
+        if (bargaSelect) bargaSelect.replaceChildren();
 
-        wbDistricts[lang].forEach((district) => {
-            const option = document.createElement('option');
-            option.value = district;
-            option.textContent = district;
-            dhamSelect.appendChild(option);
-        });
+        if (dhamSelect) {
+            wbDistricts[lang].forEach((district) => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                dhamSelect.appendChild(option);
+            });
+        }
 
-        vargaList[lang].forEach((varga) => {
-            const option = document.createElement('option');
-            option.value = varga;
-            option.textContent = varga;
-            bargaSelect.appendChild(option);
-        });
-    }
-
-    function isCustomDistrict(value) {
-        return (
-            value.includes('অন্যান্য') ||
-            value.includes('Other') ||
-            value.includes('अन्य')
-        );
-    }
-
-    function toggleCustomDistrict() {
-        const customInput = $('custom-dham-input');
-
-        if (isCustomDistrict($('dham-select').value)) {
-            customInput.classList.remove('hidden');
-        } else {
-            customInput.classList.add('hidden');
-            customInput.value = '';
+        if (bargaSelect) {
+            vargaList[lang].forEach((varga) => {
+                const option = document.createElement('option');
+                option.value = varga;
+                option.textContent = varga;
+                bargaSelect.appendChild(option);
+            });
         }
     }
-
     function applyLanguage(lang) {
         if (!SUPPORTED_LANGUAGES.includes(lang)) {
             lang = DEFAULT_LANGUAGE;
