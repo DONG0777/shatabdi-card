@@ -1580,6 +1580,7 @@ body {
 
         // Buttons
         if (back) back.disabled = currentStep === 1;
+        if (back) back.onclick = handleBack;
         if (next) {
             if (currentStep === STEP_FLOW_TOTAL) {
                 next.textContent = t.btnGenerate;
