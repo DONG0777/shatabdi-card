@@ -1663,18 +1663,52 @@ body {
     function renderDhamField(mount) {
         const t = translations[currentLang];
         const districts = wbDistricts[currentLang];
-        const options = districts.map(d => `<option value="${d}" ${formData.dham === d ? 'selected' : ''}>${d}</option>`).join('');
+        const customKeyword = 'অন্যান্য';
+        const isCustom = formData.dham && !districts.includes(formData.dham);
+
+        const options = districts.map(d => {
+            const selected = (formData.dham === d) ? 'selected' : '';
+            return `<option value="${d}" ${selected}>${d}</option>`;
+        }).join('');
+
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-dham">${t.lblDham}</label>
                 <select id="input-dham">
                     <option value="">-- ${t.lblDham} --</option>
                     ${options}
+                    <option value="__custom__" ${isCustom ? 'selected' : ''}>অন্যান্য / নিজে লিখুন</option>
                 </select>
+                <input type="text" id="input-custom-dham" placeholder="আপনার জেলা/রাজ্যের নাম লিখুন"
+                    value="${isCustom ? formData.dham : ''}"
+                    style="display: ${isCustom ? 'block' : 'none'}; margin-top: 10px; width: 100%; background: #1e293b; border: 1.5px solid #334155; border-radius: 12px; padding: 12px 14px; color: #f8fafc; font-size: 15px;"
+                    maxlength="${MAX_TEXT_LENGTH}">
             </div>
         `;
+
         const select = $('input-dham');
-        if (select) select.addEventListener('change', (e) => { formData.dham = e.target.value; });
+        const customInput = $('input-custom-dham');
+
+        if (select) {
+            select.addEventListener('change', (e) => {
+                if (e.target.value === '__custom__') {
+                    if (customInput) {
+                        customInput.style.display = 'block';
+                        customInput.focus();
+                        formData.dham = customInput.value || '';
+                    }
+                } else {
+                    if (customInput) customInput.style.display = 'none';
+                    formData.dham = e.target.value;
+                }
+            });
+        }
+
+        if (customInput) {
+            customInput.addEventListener('input', (e) => {
+                formData.dham = e.target.value;
+            });
+        }
     }
 
     function renderKaamField(mount) {
