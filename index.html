@@ -1242,6 +1242,7 @@ body {
     const vargaList = {
         bn: [
             'পরিচিতি বর্গ',
+            'বর্গ করতে ইচ্ছুক',
             'প্রারম্ভিক বর্গ',
             'প্রাথমিক বর্গ',
             'প্রথম বর্ষ',
@@ -1250,6 +1251,7 @@ body {
         ],
         hi: [
             'परिचय वर्ग',
+            'वर्ग करना चाहते हैं',
             'प्रारंभिक वर्ग',
             'प्राथमिक वर्ग',
             'प्रथम वर्ष',
@@ -1258,6 +1260,7 @@ body {
         ],
         en: [
             'Parichiti Varga',
+            'Want to do Varga',
             'Prarambhik Varga',
             'Prathamik Varga',
             'First Year',
@@ -1788,12 +1791,24 @@ body {
         if (select) select.addEventListener('change', (e) => { formData.varga = e.target.value; });
     }
 
+
     function renderYearField(mount) {
         const t = translations[currentLang];
+        const currentYear = new Date().getFullYear();
+        const years = [];
+        for (let y = currentYear; y >= 2010; y--) {
+            years.push(y);
+        }
+        const options = years.map(y => `<option value="${y}"></option>`).join('');
+        const defaultValue = formData.year || '2026';
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-year">${t.lblYear}</label>
-                <input type="number" id="input-year" placeholder="${t.phYear}" value="${formData.year || ''}" min="1900" max="2026">
+                <input type="number" id="input-year" list="year-list" placeholder="যেমন: 2021" value="${defaultValue}" min="2010" max="2026">
+                <datalist id="year-list">
+                    ${options}
+                </datalist>
+                <p style="color:#94a3b8;font-size:11px;margin-top:6px;">ড্রপ ডাউন থেকে বেছে নিন অথবা নিজে টাইপ করুন</p>
             </div>
         `;
         const input = $('input-year');
@@ -1805,10 +1820,20 @@ body {
 
     function renderSanghayuField(mount) {
         const t = translations[currentLang];
+        const sanghayuOptions = [];
+        for (let s = 1; s <= 50; s++) {
+            sanghayuOptions.push(s);
+        }
+        const options = sanghayuOptions.map(s => `<option value="${s}"></option>`).join('');
+        const defaultValue = formData.sanghayu || '1';
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-sanghayu">${t.lblSanghayu}</label>
-                <input type="number" id="input-sanghayu" placeholder="${t.phSanghayu}" value="${formData.sanghayu || ''}" min="0" max="100">
+                <input type="number" id="input-sanghayu" list="sanghayu-list" placeholder="যেমন: 10" value="${defaultValue}" min="1" max="50">
+                <datalist id="sanghayu-list">
+                    ${options}
+                </datalist>
+                <p style="color:#94a3b8;font-size:11px;margin-top:6px;">ড্রপ ডাউন থেকে বেছে নিন অথবা নিজে টাইপ করুন</p>
             </div>
         `;
         const input = $('input-sanghayu');
@@ -1817,7 +1842,6 @@ body {
             input.addEventListener('input', (e) => { formData.sanghayu = e.target.value; });
         }
     }
-
     function renderReviewField(mount) {
         const t = translations[currentLang];
         mount.innerHTML = `
