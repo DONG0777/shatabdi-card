@@ -1448,11 +1448,15 @@ body {
     // ============================================================
     // ৪. স্টেট (State)
     // ============================================================
+    // ============================================================
+    // ডিফল্ট ছবি (Default Photo) — used when user doesn't upload
+    // ============================================================
+    const DEFAULT_PHOTO_DATA_URL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%231e293b'/%3E%3Ccircle cx='150' cy='110' r='55' fill='%2394a3b8'/%3E%3Cpath d='M50 280c10-70 50-100 100-100s90 30 100 100' fill='%2394a3b8'/%3E%3C/svg%3E";
     let currentLang = DEFAULT_LANGUAGE;
     let currentStep = 1;
     let formData = {
         name: '',
-        photoDataUrl: '',
+        photoDataUrl: DEFAULT_PHOTO_DATA_URL,
         dham: '',
         kaam: '',
         shakha: '',
@@ -1625,6 +1629,7 @@ body {
         }
     }
 
+
     function renderPhotoField(mount) {
         const t = translations[currentLang];
         mount.innerHTML = `
@@ -1632,15 +1637,12 @@ body {
                 <label for="input-photo">${t.lblPhoto}</label>
                 <input type="file" id="input-photo" accept="image/jpeg,image/png,image/webp">
                 <p style="color:#94a3b8;font-size:12px;margin-top:8px;">${t.photoHelp}</p>
-                <img id="photo-preview" style="display:none;width:120px;height:120px;border-radius:50%;border:3px solid #f59e0b;margin-top:12px;object-fit:cover;" />
+                <p style="color:#fbbf24;font-size:11px;margin-top:4px;">(ছবি না দিলে ডিফল্ট ছবি ব্যবহার হবে)</p>
+                <img id="photo-preview" style="display:block;width:120px;height:120px;border-radius:50%;border:3px solid #f59e0b;margin-top:12px;object-fit:cover;" src="${formData.photoDataUrl || DEFAULT_PHOTO_DATA_URL}" />
             </div>
         `;
         const input = $('input-photo');
         const preview = $('photo-preview');
-        if (formData.photoDataUrl && preview) {
-            preview.src = formData.photoDataUrl;
-            preview.style.display = 'block';
-        }
         if (input) {
             input.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
@@ -1650,14 +1652,13 @@ body {
                 const reader = new FileReader();
                 reader.onload = () => {
                     formData.photoDataUrl = reader.result;
-                    if (preview) { preview.src = reader.result; preview.style.display = 'block'; }
+                    if (preview) { preview.src = reader.result; }
                     showError('');
                 };
                 reader.readAsDataURL(file);
             });
         }
     }
-
     function renderDhamField(mount) {
         const t = translations[currentLang];
         const districts = wbDistricts[currentLang];
@@ -1792,7 +1793,7 @@ body {
         const t = translations[currentLang];
         switch (step) {
             case 1: return formData.name && formData.name.trim() ? '' : t.errNameRequired;
-            case 2: return formData.photoDataUrl ? '' : t.errPhotoRequired;
+            case 2: return '';
             case 3: return formData.dham ? '' : t.errDhamRequired;
             case 4: return '';
             case 5: return '';
