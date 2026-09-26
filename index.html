@@ -1504,81 +1504,38 @@ body {
             });
         }
     }
+
     function applyLanguage(lang) {
         if (!SUPPORTED_LANGUAGES.includes(lang)) {
             lang = DEFAULT_LANGUAGE;
         }
 
         currentLang = lang;
-
         const t = translations[lang];
 
-        populateDropdowns(lang);
-
-        setText('top-title', t.topTitle);
-        setHTML('counter-text', t.counter);
-
-        setText('step-1-title', t.step1Title);
-        setText('step-1-help', t.step1Help);
-        setText('step-2-title', t.step2Title);
-        setText('step-2-help', t.step2Help);
-        setText('step-3-title', t.step3Title);
-        setText('step-3-help', t.step3Help);
-        setText('step-4-title', t.step4Title);
-        setText('step-4-help', t.step4Help);
-        setText('step-5-title', t.step5Title);
-        setText('step-5-help', t.step5Help);
-        setText('step-6-title', t.step6Title);
-        setText('step-6-help', t.step6Help);
-        setText('step-7-title', t.step7Title);
-        setText('step-7-help', t.step7Help);
-
-        setText('lbl-photo', t.lblPhoto);
-        setText('photo-help', t.photoHelp);
-        setText('lbl-name', t.lblName);
-        $('name-input').placeholder = t.phName;
-
-        setText('lbl-dham', t.lblDham);
-        $('custom-dham-input').placeholder = t.phCustomDham;
-        setText('lbl-kaam', t.lblKaam);
-        setText('lbl-shakha', t.lblShakha);
-        setText('lbl-role', t.lblRole);
-        setText('lbl-barga', t.lblBarga);
-        setText('lbl-year', t.lblYear);
-        setText('lbl-sanghayu', t.lblSanghayu);
-        setText('lbl-wa', t.lblWa);
-        setText('wa-help', t.waHelp);
-
-        $('wa-input').placeholder = currentLang === 'hi'
-            ? 'जैसे: 1234567890'
-            : currentLang === 'en'
-                ? 'e.g. 1234567890'
-                : 'যেমন: 1234567890';
-
-        setText('btn-generate', t.btnGenerate);
-
-        setText('card-header-title', t.headerTitle);
-        setText('card-header-sub', t.headerSub);
-        setText('c-lbl-dham', t.cLblDham);
-        setText('c-lbl-shakha', t.cLblShakha);
-        setText('c-lbl-barga', t.cLblBarga);
-        setText('c-lbl-sanghayu', t.cLblSanghayu);
-        setText('card-tagline', t.tagline);
-
+        // Share section texts
         setText('txt-fb-btn', t.fbBtn);
+        setText('share-success', t.success);
 
-        setText("share-success", t.success);
-
+        // Card texts (identity card)
         setText('card-dham-label', t.cLblDham);
         setText('card-shakha-label', t.cLblShakha);
         setText('card-barga-label', t.cLblBarga);
         setText('card-sanghayu-label', t.cSanghayu);
         setText('card-tagline', t.tagline);
-        $('lang-select').value = lang;
 
-        toggleCustomDistrict();
+        // Poster texts
+        setText('poster-dham-label', t.cLblDham);
+        setText('poster-shakha-label', t.cLblShakha);
+        setText('poster-sanghayu-label', t.cSanghayu);
+        setText('poster-barga-label', t.cLblBarga);
+        setText('poster-tagline', t.tagline);
+
+        // Update current step UI
+        if (typeof updateCreationModal === 'function') {
+            updateCreationModal();
+        }
     }
-
     function showTermsAlert() {
         window.alert(translations[currentLang].termsAlert);
     }
