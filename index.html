@@ -27,83 +27,316 @@
     <style>
 
 /* ============================================================
-   RSS SHATABDI CARD - COMPLETE NEW CSS
+   RSS SHATABDI CARD — PROFESSIONAL UI
    ============================================================ */
 
-/* --- Base --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body {
-    background: #0b0f19;
-    font-family: 'Hind Siliguri', 'Segoe UI', sans-serif;
+    background: #0a0f1a;
+    font-family: 'Hind Siliguri', 'Poppins', sans-serif;
     color: #f8fafc;
     min-height: 100vh;
-    padding: 20px 12px;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* --- App Container --- */
+/* --- App Wrapper --- */
 .app-wrap {
     width: 100%;
     max-width: 480px;
     margin: 0 auto;
 }
 
-/* --- Header --- */
+/* --- Language Modal --- */
+.language-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(5, 10, 20, 0.92);
+    backdrop-filter: blur(10px);
+}
+
+.language-modal.hidden {
+    display: none;
+}
+
+.language-modal-card {
+    width: 100%;
+    max-width: 380px;
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.4);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.1);
+}
+
+.language-modal-card .flag-emoji {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.language-modal-card h2 {
+    color: #fbbf24;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.language-modal-card p {
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.language-choice {
+    width: 100%;
+    background: #1e293b;
+    border: 1.5px solid #334155;
+    border-radius: 14px;
+    padding: 14px 20px;
+    color: #f8fafc;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
+    font-family: inherit;
+}
+
+.language-choice:hover {
+    border-color: #f59e0b;
+    background: #263449;
+    transform: translateY(-2px);
+}
+
+.language-choice:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Creation Modal (10-step form) --- */
+.creation-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(5, 10, 20, 0.92);
+    backdrop-filter: blur(10px);
+}
+
+.creation-modal.hidden {
+    display: none;
+}
+
+.creation-modal-card {
+    width: 100%;
+    max-width: 420px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.4);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.creation-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.creation-progress .step-count {
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.creation-progress .step-label {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.creation-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #1e293b;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.creation-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.creation-modal h2 {
+    color: #fbbf24;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.creation-modal .help-text {
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.creation-field {
+    margin-bottom: 16px;
+}
+
+.creation-field label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.creation-field input,
+.creation-field select {
+    width: 100%;
+    background: #1e293b;
+    border: 1.5px solid #334155;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #f8fafc;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.creation-field input:focus,
+.creation-field select:focus {
+    border-color: #f59e0b;
+}
+
+.creation-navigation {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-nav {
+    flex: 1;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-back {
+    background: #1e293b;
+    color: #cbd5e1;
+    border: 1.5px solid #334155;
+}
+
+.btn-back:hover {
+    background: #263449;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #0f172a;
+}
+
+.btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.btn-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Main App Header --- */
 .app-header {
-    background: #0f172a;
-    border: 2px solid #f59e0b;
-    border-radius: 16px;
-    padding: 14px 18px;
-    margin-bottom: 14px;
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    border-radius: 18px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .app-header h1 {
-    font-size: 18px;
+    font-size: 17px;
     color: #fbbf24;
     font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .app-header p {
     font-size: 11px;
-    color: #94a3b8;
+    color: #64748b;
     margin-top: 3px;
 }
 
 .lang-select {
     background: #1e293b;
     color: #fbbf24;
-    border: 1px solid #f59e0b;
-    border-radius: 8px;
-    padding: 6px 10px;
+    border: 1.5px solid #f59e0b;
+    border-radius: 10px;
+    padding: 7px 12px;
     font-size: 12px;
     font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
 }
 
-/* --- Counter --- */
+/* --- Counter Box --- */
 .counter-box {
-    background: rgba(245, 158, 11, 0.1);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 12px;
-    padding: 10px 16px;
-    margin-bottom: 14px;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.05));
+    border: 1.5px solid rgba(245, 158, 11, 0.3);
+    border-radius: 14px;
+    padding: 12px 18px;
+    margin-bottom: 16px;
     text-align: center;
     color: #fbbf24;
     font-size: 13px;
     font-weight: 700;
 }
 
-/* --- Form --- */
+/* --- Form Card --- */
 .form-card {
-    background: #0f172a;
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 14px;
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.25);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 16px;
 }
 
 .form-card h2 {
@@ -116,31 +349,31 @@ body {
 .form-card > p {
     color: #94a3b8;
     font-size: 12px;
-    margin-bottom: 14px;
-    line-height: 1.5;
+    line-height: 1.6;
+    margin-bottom: 16px;
 }
 
 .form-group {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .form-group label {
     display: block;
     color: #cbd5e1;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
     background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 10px 12px;
+    border: 1.5px solid #334155;
+    border-radius: 12px;
+    padding: 12px 14px;
     color: #f8fafc;
-    font-size: 14px;
+    font-size: 15px;
     font-family: inherit;
     outline: none;
     transition: border 0.2s;
@@ -156,17 +389,19 @@ body {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #0f172a;
     border: none;
-    border-radius: 12px;
-    padding: 13px;
-    font-size: 15px;
+    border-radius: 14px;
+    padding: 15px;
+    font-size: 16px;
     font-weight: 800;
     cursor: pointer;
-    transition: transform 0.15s, opacity 0.15s;
     font-family: inherit;
+    transition: all 0.2s;
+    margin-top: 4px;
 }
 
 .btn-generate:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.35);
 }
 
 .btn-generate:disabled {
@@ -176,8 +411,8 @@ body {
 
 /* --- Share Actions --- */
 .share-actions {
-    margin-top: 14px;
     display: none;
+    margin-top: 16px;
 }
 
 .share-actions.visible {
@@ -185,45 +420,103 @@ body {
 }
 
 .share-success {
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 12px;
-    padding: 10px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1.5px solid rgba(16, 185, 129, 0.4);
+    border-radius: 14px;
+    padding: 12px;
     text-align: center;
     color: #6ee7b7;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .btn-fb {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
-    background: #2563eb;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #ffffff;
-    text-align: center;
     text-decoration: none;
-    padding: 13px;
-    border-radius: 12px;
-    font-size: 14px;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 15px;
     font-weight: 800;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 .btn-fb:hover {
-    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
 }
 
-/* --- Error --- */
 .error-msg {
     color: #f87171;
-    font-size: 12px;
+    font-size: 13px;
     text-align: center;
     margin-top: 10px;
+    display: none;
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+/* --- Preview Card (in-app, small) --- */
+.preview-card {
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.4);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.preview-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #f59e0b;
+    object-fit: cover;
+    background: #1e293b;
+    flex-shrink: 0;
+}
+
+.preview-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.preview-info .name {
+    color: #fbbf24;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.preview-info .details {
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.preview-tagline {
+    text-align: center;
+    color: #fbbf24;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 /* ============================================================
-   IDENTITY CARD (1200 x 630) — for download
+   IDENTITY CARD (1200 x 630) — for auto download
    ============================================================ */
 #card-export {
     position: fixed;
@@ -570,6 +863,36 @@ body {
     font-size: 24px;
     font-weight: 600;
     letter-spacing: 2px;
+}
+
+/* --- Extra classes used in HTML --- */
+.creation-modal-field {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.creation-modal-navigation {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.focus-ring:focus-visible {
+    outline: 2px solid #fbbf24;
+    outline-offset: 2px;
+}
+
+.gold-gradient {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.focus-ring {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.hidden {
+    display: none !important;
 }
     </style>
 </head>
@@ -1596,6 +1919,7 @@ body {
 
     let selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
     let lastCardBlob = null;
+    let lastPosterBlob = null;
     let lastProfileFrameBlob = null;
     let lastShareUrl = null;
 
@@ -1933,6 +2257,30 @@ body {
             }, "image/png", 1);
         });
     }
+
+    async function createPosterBlob() {
+        if (typeof html2canvas === "undefined") {
+            throw new Error("Card rendering engine is still loading. Please try again.");
+        }
+        await document.fonts.ready;
+        await waitForImages();
+        const posterElement = $("poster-export");
+        const canvas = await html2canvas(posterElement, {
+            width: 1080,
+            height: 1350,
+            scale: 1,
+            useCORS: true,
+            backgroundColor: "#0a1128",
+            logging: false
+        });
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) { reject(new Error("Poster generation failed.")); return; }
+                resolve(blob);
+            }, "image/png", 1);
+        });
+    }
+
 
     async function downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
@@ -2767,6 +3115,7 @@ body {
         updateCreationModal();
     }
 
+
     async function generateCard() {
         showError('');
 
@@ -2785,18 +3134,27 @@ body {
             button.disabled = true;
             button.textContent = t.generating;
 
+            // 1. Create identity card
             console.log('[Shatabdi Card] createCardBlob:start');
-            const blob = await createCardBlob();
-            console.log('[Shatabdi Card] createCardBlob:done', blob?.size);
-            lastCardBlob = blob;
+            const cardBlob = await createCardBlob();
+            console.log('[Shatabdi Card] createCardBlob:done', cardBlob?.size);
+            lastCardBlob = cardBlob;
 
+            // 2. Create poster
+            console.log('[Shatabdi Card] createPosterBlob:start');
+            const posterBlob = await createPosterBlob();
+            console.log('[Shatabdi Card] createPosterBlob:done', posterBlob?.size);
+            lastPosterBlob = posterBlob;
 
+            // 3. Upload card to server
             console.log('[Shatabdi Card] createCardOnServer:start');
-            const result = await createCardOnServer(blob, formData);
+            const result = await createCardOnServer(cardBlob, formData);
             console.log('[Shatabdi Card] createCardOnServer:done', result?.shareUrl);
 
             setupShareLinks(result.shareUrl);
 
+            // 4. Show share actions
+            $('share-actions').classList.add('visible');
             $('share-actions').classList.remove('hidden');
             document.body.classList.remove('creation-active');
             document.body.classList.add('card-created');
@@ -2814,7 +3172,7 @@ body {
                 block: 'nearest'
             });
 
-            // Auto-download identity card after generation
+            // 5. Auto-download identity card
             try {
                 await downloadCardImage();
                 console.log("[Shatabdi Card] Auto-download completed");
@@ -2823,17 +3181,17 @@ body {
             }
 
         } catch (error) {
+            console.error('Card generation error:', error);
             showError(
                 error instanceof Error
                     ? error.message
                     : t.generateError
             );
-
+            button.textContent = t.btnGenerate;
         } finally {
             button.disabled = false;
         }
     }
-
     async function downloadCardImage() {
         showError('');
 
