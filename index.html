@@ -2225,15 +2225,19 @@ body {
     // ============================================================
     // ১৪. ফেসবুক শেয়ার (Facebook Share)
     // ============================================================
+    // ============================================================
     function setupFacebookShare(posterDataUrl) {
         const fbBtn = $('btn-fb-share');
         if (!fbBtn) return;
 
-        // Store poster in window for later use
         window.__posterDataUrl = posterDataUrl;
 
         fbBtn.onclick = async (e) => {
             e.preventDefault();
+
+            const appUrl = 'https://shatabdi-card.vercel.app/';
+            const t = translations[currentLang];
+            const shareText = `${t.tagline}\n\n🎯 আপনার নিজের কার্ড তৈরি করুন এখানে 👉 ${appUrl}`;
 
             // Try Web Share API first (works on mobile)
             if (navigator.share && navigator.canShare) {
@@ -2243,8 +2247,9 @@ body {
                     if (navigator.canShare({ files: [file] })) {
                         await navigator.share({
                             files: [file],
-                            title: 'RSS Shatabdi Card',
-                            text: translations[currentLang].tagline
+                            title: 'RSS Shatabdi Card — শতবর্ষপূর্তি',
+                            text: shareText,
+                            url: appUrl
                         });
                         return;
                     }
@@ -2254,8 +2259,7 @@ body {
             }
 
             // Fallback: Open Facebook share dialog with the app URL
-            const appUrl = 'https://shatabdi-card.vercel.app/';
-            const quote = encodeURIComponent(translations[currentLang].tagline);
+            const quote = encodeURIComponent(shareText);
             window.open(
                 `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${quote}`,
                 '_blank',
@@ -2263,10 +2267,6 @@ body {
             );
         };
     }
-
-    // ============================================================
-    // ১৫. ইনিশিয়ালাইজেশন (Initialization)
-    // ============================================================
     function init() {
         console.log('init() called, language buttons:', document.querySelectorAll('.language-choice').length);
         // Language buttons
