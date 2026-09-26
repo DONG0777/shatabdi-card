@@ -1101,7 +1101,7 @@ body {
                         <span id="card-barga-label" class="id-label">বর্গ:</span>
                         <span id="card-barga" class="id-value">-</span>
                     </div>
-                    <div class="id-line">
+                    <div class="id-line" id="card-year-line">
                         <span id="card-year-label" class="id-label">বর্ষ:</span>
                         <span id="card-year" class="id-value">-</span>
                     </div>
@@ -1166,7 +1166,7 @@ body {
                     <span id="poster-role-label" class="poster-label">দায়িত্ব:</span>
                     <span id="poster-role" class="poster-value">-</span>
                 </div>
-                <div class="poster-line">
+                <div class="poster-line" id="poster-year-line">
                     <span id="poster-year-label" class="poster-label">বর্ষ:</span>
                     <span id="poster-year" class="poster-value">-</span>
                 </div>
@@ -1882,16 +1882,22 @@ body {
     // ============================================================
     // ১০. কার্ড আপডেট (Update Card)
     // ============================================================
+    }
+    // ============================================================
+    // ১০. কার্ড আপডেট (Update Card)
+    // ============================================================
     function updateCardContent() {
         const t = translations[currentLang];
 
-        // Default values (used when user doesn't provide)
+        // Check if user did Varga or not
+        const vargaNotDone = !formData.varga || formData.varga === 'বর্গ করতে ইচ্ছুক';
+
+        // Default values
         const dName = formData.name || 'নাম নেই';
         const dDham = formData.dham || 'ধাম নেই';
         const dShakha = formData.shakha || 'শাখায় যেতে ইচ্ছুক';
         const dKaam = formData.kaam || 'ব্যবসা';
         const dRole = formData.role || 'সাধারণ স্বয়ংসেবক';
-        const dYear = formData.year || '২০২৬';
         const dBarga = formData.varga || 'বর্গ করতে ইচ্ছুক';
         const dSanghayu = formData.sanghayu ? formData.sanghayu + ' বছর' : '১ বছর';
 
@@ -1901,10 +1907,20 @@ body {
         setText('card-shakha', dShakha);
         setText('card-kaam', dKaam);
         setText('card-role', dRole);
-        setText('card-year', dYear);
         setText('card-barga', dBarga);
         setText('card-sanghayu', dSanghayu);
         setText('card-tagline', t.tagline);
+
+        // Year line (only if Varga done)
+        const cardYearLine = $('card-year-line');
+        if (cardYearLine) {
+            if (vargaNotDone) {
+                cardYearLine.style.display = 'none';
+            } else {
+                cardYearLine.style.display = 'flex';
+                setText('card-year', formData.year || '—');
+            }
+        }
 
         const cardPhoto = $('card-photo');
         if (cardPhoto && formData.photoDataUrl) cardPhoto.src = formData.photoDataUrl;
@@ -1915,10 +1931,20 @@ body {
         setText('poster-shakha', dShakha);
         setText('poster-kaam', dKaam);
         setText('poster-role', dRole);
-        setText('poster-year', dYear);
         setText('poster-barga', dBarga);
         setText('poster-sanghayu', dSanghayu);
         setText('poster-tagline', t.tagline);
+
+        // Year line (only if Varga done)
+        const posterYearLine = $('poster-year-line');
+        if (posterYearLine) {
+            if (vargaNotDone) {
+                posterYearLine.style.display = 'none';
+            } else {
+                posterYearLine.style.display = 'flex';
+                setText('poster-year', formData.year || '—');
+            }
+        }
 
         const posterPhoto = $('poster-photo');
         if (posterPhoto && formData.photoDataUrl) posterPhoto.src = formData.photoDataUrl;
