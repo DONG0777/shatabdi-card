@@ -1094,15 +1094,22 @@ body {
                         <span id="card-kaam" class="id-value">-</span>
                     </div>
                     <div class="id-line">
+                        <span id="card-role-label" class="id-label">দায়িত্ব:</span>
+                        <span id="card-role" class="id-value">-</span>
+                    </div>
+                    <div class="id-line">
                         <span id="card-barga-label" class="id-label">বর্গ:</span>
                         <span id="card-barga" class="id-value">-</span>
+                    </div>
+                    <div class="id-line">
+                        <span id="card-year-label" class="id-label">বর্ষ:</span>
+                        <span id="card-year" class="id-value">-</span>
                     </div>
                     <div class="id-line">
                         <span id="card-sanghayu-label" class="id-label">সংঘায়ু:</span>
                         <span id="card-sanghayu" class="id-value">-</span>
                     </div>
                 </div>
-            </div>
         </div>
 
         <!-- Tagline -->
@@ -1154,6 +1161,14 @@ body {
                 <div class="poster-line">
                     <span id="poster-kaam-label" class="poster-label">পেশা:</span>
                     <span id="poster-kaam" class="poster-value">-</span>
+                </div>
+                <div class="poster-line">
+                    <span id="poster-role-label" class="poster-label">দায়িত্ব:</span>
+                    <span id="poster-role" class="poster-value">-</span>
+                </div>
+                <div class="poster-line">
+                    <span id="poster-year-label" class="poster-label">বর্ষ:</span>
+                    <span id="poster-year" class="poster-value">-</span>
                 </div>
                 <div class="poster-line">
                     <span id="poster-barga-label" class="poster-label">বর্গ:</span>
@@ -1850,6 +1865,8 @@ body {
         setText('card-dham', formData.dham || '-');
         setText('card-shakha', formData.shakha || '-');
         setText('card-kaam', formData.kaam || '-');
+        setText('card-role', formData.role || '-');
+        setText('card-year', formData.year || '-');
         setText('card-barga', formData.varga || '-');
         setText('card-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
         setText('card-tagline', t.tagline);
@@ -1862,6 +1879,8 @@ body {
         setText('poster-dham', formData.dham || '-');
         setText('poster-shakha', formData.shakha || '-');
         setText('poster-kaam', formData.kaam || '-');
+        setText('poster-role', formData.role || '-');
+        setText('poster-year', formData.year || '-');
         setText('poster-barga', formData.varga || '-');
         setText('poster-sanghayu', formData.sanghayu ? formData.sanghayu + ' বছর' : '-');
         setText('poster-tagline', t.tagline);
