@@ -1394,8 +1394,7 @@ body {
     const $ = (id) => document.getElementById(id);
 
     let currentLang = DEFAULT_LANGUAGE;
-    const DEFAULT_PHOTO_DATA_URL =
-        $('card-img-preview').getAttribute('src') || '';
+    const DEFAULT_PHOTO_DATA_URL = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27220%27 height=%27220%27 viewBox=%270 0 220 220%27%3E%3Crect width=%27220%27 height=%27220%27 fill=%27%231e293b%27/%3E%3Ccircle cx=%27110%27 cy=%2785%27 r=%2738%27 fill=%27%2394a3b8%27/%3E%3Cpath d=%27M45 200c9-45 36-65 65-65s56 20 65 65%27 fill=%27%2394a3b8%27/%3E%3C/svg%3E';
 
     let selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
     let lastCardBlob = null;
@@ -2106,7 +2105,7 @@ body {
         try {
             if (!file) {
                 selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
-                $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+                $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
                 $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
                 updateProfileFrame();
                 $('selected-photo-status').textContent = '';
@@ -2117,7 +2116,7 @@ body {
             fileToDataUrl(file)
                 .then((dataUrl) => {
                     selectedPhotoDataUrl = dataUrl;
-                    $('card-img-preview').src = dataUrl;
+                    $('card-photo').src = dataUrl;
                     $('export-photo').src = dataUrl;
                     updateProfileFrame();
                     $('selected-photo-preview').src = dataUrl;
@@ -2130,7 +2129,7 @@ body {
                 .catch((error) => {
                     selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
                     event.target.value = '';
-                    $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+                    $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
                     $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
                     updateProfileFrame();
                     $('selected-photo-preview-wrap').classList.add('hidden');
@@ -2143,7 +2142,7 @@ body {
         } catch (error) {
             selectedPhotoDataUrl = DEFAULT_PHOTO_DATA_URL;
             event.target.value = '';
-            $('card-img-preview').src = DEFAULT_PHOTO_DATA_URL;
+            $('card-photo').src = DEFAULT_PHOTO_DATA_URL;
             $('export-photo').src = DEFAULT_PHOTO_DATA_URL;
             updateProfileFrame();
             $('selected-photo-status').textContent = '';
