@@ -20,6 +20,7 @@ const MAX_NAME_LENGTH = 120;
 const MAX_TEXT_LENGTH = 300;
 const MAX_WHATSAPP_LENGTH = 30;
 
+
 const TRANSLATIONS = {
   bn: {
     title: 'শতবর্ষী স্মারক পরিচিতিপত্র',
@@ -27,6 +28,11 @@ const TRANSLATIONS = {
       'শতবর্ষী স্মারক পরিচিতিপত্র | স্বয়ংসেবকের ব্যক্তিগত পরিচিতি কার্ড।',
     loading: 'কার্ড লোড হচ্ছে...',
     notFound: 'কার্ডটি পাওয়া যায়নি।',
+    nameLabel: 'নাম',
+    dhamLabel: 'ধাম',
+    ctaTitle: 'আপনার নিজের কার্ড তৈরি করুন',
+    ctaButton: 'কার্ড তৈরি করুন 🚩',
+    tagline: 'প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!',
   },
   hi: {
     title: 'शताब्दी स्मारक परिचय पत्र',
@@ -34,6 +40,11 @@ const TRANSLATIONS = {
       'शताब्दी स्मारक परिचय पत्र | स्वयंसेवक का व्यक्तिगत परिचय कार्ड।',
     loading: 'कार्ड लोड हो रहा है...',
     notFound: 'कार्ड नहीं मिला।',
+    nameLabel: 'नाम',
+    dhamLabel: 'धाम',
+    ctaTitle: 'अपना खुद का कार्ड बनाएं',
+    ctaButton: 'कार्ड बनाएं 🚩',
+    tagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
   },
   en: {
     title: 'Centenary Memorial Identity Card',
@@ -41,9 +52,13 @@ const TRANSLATIONS = {
       'Centenary Memorial Identity Card | Personal identity card for a volunteer.',
     loading: 'Loading card...',
     notFound: 'Card not found.',
+    nameLabel: 'Name',
+    dhamLabel: 'Dham',
+    ctaTitle: 'Create your own card',
+    ctaButton: 'Create Card 🚩',
+    tagline: 'Not publicity, this is my identity — I am a Swayamsevak!',
   },
 };
-
 function getLanguage(value) {
   const lang = String(value || 'bn').toLowerCase();
   return ALLOWED_LANGS.has(lang) ? lang : 'bn';
@@ -471,10 +486,6 @@ async function getCard(req, res, supabase) {
       );
     }
 
-    if (!isCrawler(req)) {
-      setCommonHeaders(res);
-      return res.redirect(302, '/');
-    }
 
     return sendOgPage(req, res, {
       cardId: id,
@@ -519,17 +530,6 @@ async function getCard(req, res, supabase) {
     });
   }
 
-  if (!isCrawler(req)) {
-    setCommonHeaders(res);
-
-    return res.redirect(
-      302,
-      getHumanUrl(
-        id,
-        version || data.terms_accepted_at || ''
-      )
-    );
-  }
 
   return sendOgPage(req, res, {
     cardId: id,
@@ -542,6 +542,7 @@ async function getCard(req, res, supabase) {
     notFound: false,
   });
 }
+
 
 function sendOgPage(
   req,
@@ -583,6 +584,11 @@ function sendOgPage(
     : `${t.description} ${safeDham}`;
 
   const shareUrl = getShareUrl(cardId, version);
+  const homeUrl = `${PUBLIC_SITE_URL}/`;
+
+  const cardImageHtml = notFound
+    ? ''
+    : `<img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(safeName)}" class="card-image" />`;
 
   const html = `<!DOCTYPE html>
 <html lang="${escapeAttribute(lang)}">
@@ -601,7 +607,7 @@ function sendOgPage(
   <meta property="og:image:secure_url" content="${escapeAttribute(imageUrl)}">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:height" content="1200">
   <meta property="og:url" content="${escapeAttribute(shareUrl)}">
   <meta property="og:site_name" content="শতবর্ষী স্মারক পরিচিতিপত্র">
 
@@ -613,46 +619,147 @@ function sendOgPage(
   <meta name="robots" content="noindex,nofollow">
 
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
-      margin: 0;
       min-height: 100%;
-      background: #0f172a;
+      background: linear-gradient(135deg, #0a1128 0%, #0f1b3d 50%, #0a1128 100%);
       color: #ffffff;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: 'Hind Siliguri', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
     body {
-      display: grid;
-      place-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       min-height: 100vh;
+      padding: 24px 16px;
       text-align: center;
-      padding: 24px;
-      box-sizing: border-box;
     }
 
-    .box {
+    .container {
+      width: 100%;
       max-width: 520px;
+      border: 4px solid #f59e0b;
+      border-radius: 20px;
+      padding: 24px 20px 28px;
+      background: rgba(15, 23, 42, 0.6);
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
     }
 
-    .title {
-      font-size: 22px;
+    .top-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .flag-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #f59e0b;
+    }
+
+    .flag-icon { font-size: 26px; }
+
+    .years-badge {
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .card-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .name {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fbbf24;
+      margin-bottom: 6px;
+    }
+
+    .dham {
+      font-size: 15px;
+      color: #cbd5e1;
+      margin-bottom: 18px;
+    }
+
+    .tagline {
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 8px;
+      color: #fef3c7;
+      line-height: 1.4;
+      margin-bottom: 22px;
+      padding: 0 8px;
     }
 
-    .text {
-      opacity: .78;
-      font-size: 14px;
+    .cta-button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 800;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5);
+    }
+
+    .not-found {
+      font-size: 18px;
+      color: #f87171;
+      margin-bottom: 22px;
     }
   </style>
 </head>
 <body>
-  <main class="box">
-    <div class="title">${escapeHtml(
-      notFound ? t.notFound : t.loading
-    )}</div>
-    <div class="text">#${escapeHtml(cardId)}</div>
-  </main>
+  <div class="container">
+    <div class="top-badge">
+      <div class="flag-text">
+        <span class="flag-icon">🚩</span>
+        <span>100 YEARS</span>
+      </div>
+      <div class="years-badge">1925 – 2026</div>
+    </div>
+
+    ${
+      notFound
+        ? `<div class="not-found">${escapeHtml(t.notFound)}</div>`
+        : `
+          ${cardImageHtml}
+          <div class="name">${escapeHtml(safeName)}</div>
+          <div class="dham">${escapeHtml(t.dhamLabel)}: ${escapeHtml(safeDham)}</div>
+        `
+    }
+
+    <div class="tagline">"${escapeHtml(t.tagline)}"</div>
+
+    <a href="${escapeAttribute(homeUrl)}" class="cta-button">
+      🚩 ${escapeHtml(t.ctaButton)}
+    </a>
+  </div>
 </body>
 </html>`;
 
@@ -662,7 +769,6 @@ function sendOgPage(
 
   return res.status(notFound ? 404 : 200).send(html);
 }
-
 export default async function handler(req, res) {
   setCommonHeaders(res);
 
