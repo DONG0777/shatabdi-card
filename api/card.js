@@ -243,6 +243,7 @@ async function createCard(req, res, supabase) {
   const sanghayu = cleanText(body.sanghayu, 60);
   const yearRaw = cleanText(body.year, 20);
   const whatsappNumber = normalizePhone(body.whatsapp_number);
+  const showPhone = Boolean(body.show_phone);
   const lang = getLanguage(body.lang);
 
   if (!fullName || fullName.length < 2) {
@@ -382,6 +383,7 @@ async function createCard(req, res, supabase) {
     whatsapp_number: whatsappNumber || null,
     shakha,
     barga,
+    show_phone: Boolean(showPhone),
     role,
     year,
     sanghayu: sanghayu || null,
