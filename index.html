@@ -2174,44 +2174,6 @@ body {
     // ============================================================
     // ১৩. কার্ড তৈরি (Generate Card)
     // ============================================================
-    async function handleGenerate() {
-        const t = translations[currentLang];
-        const btn = $('creation-modal-next');
-        if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
-
-        try {
-            updateCardContent();
-            await new Promise(r => setTimeout(r, 300));
-
-            // 1. Download identity card
-            await downloadCard();
-
-            // 2. Generate poster blob
-            const posterBlob = await generateBlob('poster-export', 1080, 1350);
-            const posterDataUrl = await blobToDataUrl(posterBlob);
-
-            // 3. Hide creation modal, show share
-            const creationModal = $('creation-modal');
-            if (creationModal) creationModal.classList.add('hidden');
-
-            const shareSection = $('share-actions');
-            if (shareSection) {
-                shareSection.classList.remove('hidden');
-                shareSection.classList.add('visible');
-            }
-
-            // 4. Setup Facebook share
-            setupFacebookShare(posterDataUrl);
-
-            // 5. Scroll to share
-            if (shareSection) shareSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        } catch (err) {
-            console.error('Card generation failed:', err);
-            showError(t.errGeneric);
-            if (btn) { btn.disabled = false; btn.textContent = t.btnGenerate; }
-        }
-    }
 
     function blobToDataUrl(blob) {
         return new Promise((resolve, reject) => {
@@ -2221,25 +2183,139 @@ body {
             reader.readAsDataURL(blob);
         });
     }
+    async function handleGenerate() {
+        const t = translations[currentLang];
+        const btn = $('creation-modal-next');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+
+        try {
+            updateCardContent();
+            await new Promise(r => setTimeout(r, 300));
+
+            // 1. Generate identity card blob
+            const cardBlob = await generateBlob('card-export', 1200, 630);
+
+            // 2. Generate poster blob
+            const posterBlob = await generateBlob('poster-export', 1080, 1350);
+            const posterDataUrl = await blobToDataUrl(posterBlob);
+
+            // 3. Download identity card
+            const cardUrl = URL.createObjectURL(cardBlob);
+            const a = document.createElement('a');
+            a.href = cardUrl;
+            a.download = `shatabdi-card-${formData.name || 'card'}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(cardUrl), 1000);
+
+            // 4. Upload card to server and get share URL
+            let shareUrl = 'https://shatabdi-card.vercel.app/';
+            try {
+                const result = await createCardOnServer(cardBlob, formData);
+                if (result && result.shareUrl) {
+                    shareUrl = result.shareUrl;
+                }
+            } catch (err) {
+                console.warn('Server upload failed, using default URL:', err);
+            }
+
+            // 5. Hide creation modal, show share
+            const creationModal = $('creation-modal');
+            if (creationModal) creationModal.classList.add('hidden');
+
+            const shareSection = $('share-actions');
+            if (shareSection) {
+                shareSection.classList.remove('hidden');
+                shareSection.classList.add('visible');
+            }
+
+            // 6. Setup share with poster + share URL
+            setupFacebookShare(posterDataUrl, shareUrl);
+
+            // 7. Scroll to share
+            if (shareSection) shareSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        } catch (err) {
+            console.error('Card generation failed:', err);
+            showError(t.errGeneric);
+            if (btn) { btn.disabled = false; btn.textContent = t.btnGenerate; }
+        }
+    }
+    async function createCardOnServer(cardBlob, formData) {
+        // Convert blob to data URL
+        const imageDataUrl = await blobToDataUrl(cardBlob);
+
+        // Build request body
+        const payload = {
+            full_name: formData.name || '',
+            dham: formData.dham || '',
+            kaam: formData.kaam || '',
+            shakha: formData.shakha || '',
+            barga: formData.varga || '',
+            role: formData.role || '',
+            sanghayu: formData.sanghayu || '',
+            year: formData.year || '',
+            lang: currentLang,
+            terms_accepted: true,
+            image_data_url: imageDataUrl
+        };
+
+        // Send to server
+        const response = await fetch('/api/card', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server error:', errorText);
+            throw new Error('Card upload failed');
+        }
+
+        const result = await response.json();
+        return result;
+    }
 
     // ============================================================
     // ১৪. ফেসবুক শেয়ার (Facebook Share)
     // ============================================================
     // ============================================================
-    function setupFacebookShare(posterDataUrl) {
+    }
+    function setupFacebookShare(posterDataUrl, shareUrl) {
         const fbBtn = $('btn-fb-share');
         if (!fbBtn) return;
 
         window.__posterDataUrl = posterDataUrl;
+        window.__shareUrl = shareUrl || 'https://shatabdi-card.vercel.app/';
 
         fbBtn.onclick = async (e) => {
             e.preventDefault();
 
-            const appUrl = 'https://shatabdi-card.vercel.app/';
+            const appUrl = window.__shareUrl;
             const t = translations[currentLang];
             const shareText = `${t.tagline}\n\n🎯 আপনার নিজের কার্ড তৈরি করুন এখানে 👇\n${appUrl}`;
 
-            // Open Facebook share dialog with link + caption
+            // Try Web Share API first (works on WhatsApp, Telegram, Messenger)
+            if (navigator.share && navigator.canShare) {
+                try {
+                    const blob = await (await fetch(posterDataUrl)).blob();
+                    const file = new File([blob], 'shatabdi-poster.png', { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'RSS Shatabdi Card — শতবর্ষপূর্তি',
+                            text: shareText
+                        });
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Web Share failed, falling back to Facebook URL:', err);
+                }
+            }
+
+            // Fallback: Open Facebook share dialog with link + caption
             const quote = encodeURIComponent(t.tagline);
             window.open(
                 `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${quote}`,
