@@ -1311,6 +1311,10 @@ body {
                         <span id="card-sanghayu-label" class="id-label">সংঘায়ু:</span>
                         <span id="card-sanghayu" class="id-value">-</span>
                     </div>
+                    <div class="id-line" id="card-phone-line" style="display:none;">
+                        <span class="id-label">মোবাইল:</span>
+                        <span id="card-phone" class="id-value">-</span>
+                    </div>
                 </div>
         </div>
 
@@ -1379,6 +1383,10 @@ body {
                 <div class="poster-line">
                     <span id="poster-sanghayu-label" class="poster-label">সংঘায়ু:</span>
                     <span id="poster-sanghayu" class="poster-value">-</span>
+                </div>
+                <div class="poster-line" id="poster-phone-line" style="display:none;">
+                    <span class="poster-label">মোবাইল:</span>
+                    <span id="poster-phone" class="poster-value">-</span>
                 </div>
             </div>
         </div>
@@ -2183,6 +2191,17 @@ body {
             }
         }
 
+        // Phone number display (only if show_phone is true)
+        const cardPhoneLine = $("card-phone-line");
+        if (cardPhoneLine) {
+            if (formData.show_phone && formData.whatsapp_number) {
+                cardPhoneLine.style.display = "flex";
+                setText("card-phone", formData.whatsapp_number);
+            } else {
+                cardPhoneLine.style.display = "none";
+            }
+        }
+
         const cardPhoto = $('card-photo');
         if (cardPhoto && formData.photoDataUrl) cardPhoto.src = formData.photoDataUrl;
 
@@ -2204,6 +2223,17 @@ body {
             } else {
                 posterYearLine.style.display = 'flex';
                 setText('poster-year', formData.year || '—');
+            }
+        }
+
+        // Phone number display for poster (only if show_phone is true)
+        const posterPhoneLine = $("poster-phone-line");
+        if (posterPhoneLine) {
+            if (formData.show_phone && formData.whatsapp_number) {
+                posterPhoneLine.style.display = "flex";
+                setText("poster-phone", formData.whatsapp_number);
+            } else {
+                posterPhoneLine.style.display = "none";
             }
         }
 
