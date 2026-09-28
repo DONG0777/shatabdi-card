@@ -13,8 +13,8 @@
       "destination": "/admin.html"
     },
     {
-      "source": "/(.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg|.*\\.ico|.*\\.webp|.*\\.gif)",
-      "destination": "/$1"
+      "source": "/shatabdi-poster-bg.png",
+      "destination": "/shatabdi-poster-bg.png"
     },
     {
       "source": "/(.*)",
