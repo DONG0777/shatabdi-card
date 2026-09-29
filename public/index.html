@@ -692,7 +692,7 @@ body {
 #poster-export {
     position: fixed;
     left: -22000px;
-    top: 0;
+    top: -22000px;
     width: 1080px;
     height: 1350px;
     overflow: hidden;
@@ -1001,12 +1001,12 @@ body {
 #poster-export .poster-lower {
     background: #fdf6e3 !important;
     position: absolute !important;
-    top: 55% !important;
+    top: 50% !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: 0 !important;
+    bottom: 180px !important;
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
     gap: 50px !important;
     padding: 30px 60px !important;
@@ -1022,9 +1022,9 @@ body {
 
 #poster-export .poster-profile {
     position: static !important;
-    width: 280px !important;
-    height: 280px !important;
-    border: 8px solid #f59e0b !important;
+    width: 400px !important;
+    height: 400px !important;
+    border: 10px solid #f59e0b !important;
     border-radius: 50% !important;
     overflow: hidden !important;
     background: #1e293b !important;
@@ -1051,19 +1051,19 @@ body {
 
 #poster-export .poster-name {
     font-family: 'Hind Siliguri', sans-serif !important;
-    font-size: 52px !important;
+    font-size: 68px !important;
     font-weight: 900 !important;
     color: #7f1d1d !important;
     text-align: left !important;
     line-height: 1.1 !important;
-    margin: 0 0 20px 0 !important;
+    margin: 0 0 28px 0 !important;
     text-shadow: 0 2px 6px rgba(255, 255, 255, 0.6) !important;
 }
 
 #poster-export .poster-details {
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
+    gap: 12px !important;
     text-align: left !important;
     background: transparent !important;
     border: none !important;
@@ -1077,7 +1077,7 @@ body {
     align-items: baseline !important;
     justify-content: flex-start !important;
     gap: 10px !important;
-    font-size: 24px !important;
+    font-size: 28px !important;
     line-height: 1.4 !important;
     margin: 0 !important;
     color: #1e293b !important;
@@ -1087,14 +1087,14 @@ body {
     color: #7f1d1d !important;
     font-weight: 900 !important;
     flex: 0 0 auto !important;
-    font-size: 24px !important;
+    font-size: 28px !important;
     white-space: nowrap !important;
 }
 
 #poster-export .poster-value {
     color: #0f172a !important;
     font-weight: 700 !important;
-    font-size: 24px !important;
+    font-size: 28px !important;
 }
 
 /* Tagline — cream area-র নিচে */
@@ -1134,7 +1134,7 @@ body {
 }
 
 #poster-export .poster-footer-line {
-    background: linear-gradient(90deg, transparent, #f59e0b, transparent) !important;
+    display: none !important;
     height: 2px !important;
     margin: 0 60px 10px !important;
 }
@@ -2248,9 +2248,8 @@ body {
         const canvas = await html2canvas(element, {
             width: width,
             height: height,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: '#0a1128',
+            scale: 2,
+            backgroundColor: '#fdf6e3',
             logging: false
         });
 
