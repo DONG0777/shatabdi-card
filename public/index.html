@@ -57,78 +57,6 @@ body {
 }
 
 /* --- Language Modal --- */
-.language-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(5, 10, 20, 0.92);
-    backdrop-filter: blur(10px);
-}
-
-.language-modal.hidden {
-    display: none !important;
-}
-
-.language-modal-card {
-    width: 100%;
-    max-width: 380px;
-    background: linear-gradient(145deg, #0f172a, #0a1020);
-    border: 2px solid rgba(245, 158, 11, 0.4);
-    border-radius: 24px;
-    padding: 32px 24px;
-    text-align: center;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.1);
-}
-
-.language-modal-card .flag-emoji {
-    font-size: 48px;
-    margin-bottom: 12px;
-}
-
-.language-modal-card h2 {
-    color: #fbbf24;
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.language-modal-card p {
-    color: #94a3b8;
-    font-size: 13px;
-    line-height: 1.6;
-    margin-bottom: 24px;
-}
-
-.language-choice {
-    width: 100%;
-    background: #1e293b;
-    border: 1.5px solid #334155;
-    border-radius: 14px;
-    padding: 14px 20px;
-    color: #f8fafc;
-    font-size: 16px;
-    font-weight: 700;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 10px;
-    font-family: inherit;
-}
-
-.language-choice:hover {
-    border-color: #f59e0b;
-    background: #263449;
-    transform: translateY(-2px);
-}
-
-.language-choice:last-child {
-    margin-bottom: 0;
-}
-
 /* --- Creation Modal (10-step form) --- */
 .creation-modal {
     position: fixed;
@@ -521,44 +449,6 @@ body {
 /* ============================================================
    IDENTITY CARD (1200 x 630) — for auto download
    ============================================================ */
-#card-export {
-    position: fixed;
-    left: -20000px;
-    top: 0;
-    width: 1200px;
-    height: 630px;
-    overflow: hidden;
-    z-index: -1;
-    pointer-events: none;
-}
-
-.identity-card {
-    width: 1200px;
-    height: 630px;
-    background: linear-gradient(135deg, #b45309 0%, #92400e 50%, #7c2d12 100%);
-    border: 8px solid #f59e0b;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(245, 158, 11, 0.15);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 35px 50px;
-    font-family: 'Hind Siliguri', sans-serif;
-}
-
-.identity-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 40%);
-    pointer-events: none;
-}
-
 .id-top {
     display: flex;
     justify-content: space-between;
@@ -990,14 +880,6 @@ body {
                 0 15px 40px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* --- Identity Card: Background golden glow --- */
-.identity-card {
-    background: 
-        radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.12), transparent 40%),
-        radial-gradient(circle at 15% 85%, rgba(245, 158, 11, 0.08), transparent 40%),
-        linear-gradient(135deg, #091326 0%, #04070d 100%) !important;
-}
-
 /* --- Identity Card: Name font size --- */
 .id-name {
     font-size: 44px !important;
@@ -1192,34 +1074,6 @@ body {
 
 <body class="bg-slate-950 text-slate-100 min-h-screen py-5 px-3">
 
-<div id="language-modal" role="dialog" aria-modal="true" aria-labelledby="language-modal-title">
-    <div class="language-modal-card">
-        <div class="text-center">
-            <div class="text-3xl mb-2" aria-hidden="true">🚩</div>
-            <h2 id="language-modal-title" class="text-xl font-bold text-amber-300">
-                ভাষা নির্বাচন করুন
-            </h2>
-            <p id="language-modal-help" class="mt-2 text-xs leading-relaxed text-slate-400">
-                কার্ড তৈরি শুরু করার আগে আপনার ভাষা বেছে নিন।
-            </p>
-        </div>
-
-        <div class="mt-5 space-y-2.5">
-            <button type="button" class="language-choice" data-language="bn">
-                বাংলা
-            </button>
-
-            <button type="button" class="language-choice" data-language="hi">
-                हिन्दी
-            </button>
-
-            <button type="button" class="language-choice" data-language="en">
-                English
-            </button>
-        </div>
-    </div>
-</div>
-
 <div
     id="creation-modal"
     class="hidden"
@@ -1304,78 +1158,9 @@ body {
             <span id="txt-fb-btn">📘 Facebook এ পোস্ট করুন</span>
         </a>
     </section>
-<div id="card-export" aria-hidden="true">
-    <div class="identity-card">
-        <!-- Top Section -->
-        <div class="id-top">
-            <div class="id-flag-section">
-                <div class="id-flag-icon">🚩</div>
-                <div class="id-flag-text">100 YEARS</div>
-            </div>
-            <div class="id-badge-100">
-                <span class="number">100</span>
-                <span class="years-label">YEARS</span>
-            </div>
-        </div>
-
-        <!-- Middle Section -->
-        <div class="id-middle">
-            <div class="id-profile">
-                <img id="card-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Crect width='220' height='220' fill='%231e293b'/%3E%3Ccircle cx='110' cy='85' r='38' fill='%2394a3b8'/%3E%3Cpath d='M45 200c9-45 36-65 65-65s56 20 65 65' fill='%2394a3b8'/%3E%3C/svg%3E" alt="Profile">
-            </div>
-            <div class="id-info">
-                <div id="card-name" class="id-name">XXXX YYYY ZZZ</div>
-                <div class="id-details">
-                    <div class="id-line">
-                        <span id="card-dham-label" class="id-label">ধাম:</span>
-                        <span id="card-dham" class="id-value">-</span>
-                    </div>
-                    <div class="id-line">
-                        <span id="card-shakha-label" class="id-label">শাখা:</span>
-                        <span id="card-shakha" class="id-value">-</span>
-                    </div>
-                    <div class="id-line">
-                        <span id="card-kaam-label" class="id-label">পেশা:</span>
-                        <span id="card-kaam" class="id-value">-</span>
-                    </div>
-                    <div class="id-line">
-                        <span id="card-role-label" class="id-label">দায়িত্ব:</span>
-                        <span id="card-role" class="id-value">-</span>
-                    </div>
-                    <div class="id-line">
-                        <span id="card-barga-label" class="id-label">বর্গ:</span>
-                        <span id="card-barga" class="id-value">-</span>
-                    </div>
-                    <div class="id-line" id="card-year-line">
-                        <span id="card-year-label" class="id-label">বর্ষ:</span>
-                        <span id="card-year" class="id-value">-</span>
-                    </div>
-                    <div class="id-line">
-                        <span id="card-sanghayu-label" class="id-label">সংঘায়ু:</span>
-                        <span id="card-sanghayu" class="id-value">-</span>
-                    </div>
-                    <div class="id-line" id="card-phone-line" style="display:none;">
-                        <span class="id-label">মোবাইল:</span>
-                        <span id="card-phone" class="id-value">-</span>
-                    </div>
-                </div>
-        </div>
-
-        <!-- Tagline -->
-        <div id="card-tagline" class="id-tagline">
-            প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!
-        </div>
-
-        <!-- Footer -->
-        <div class="id-footer">
-            <span>SHATABDI CARD</span>
-            <span>1925 <span class="id-footer-dot"></span> 2026</span>
-        </div>
-    </div>
-</div>
-
 <!-- ============================================
      POSTER (1080 x 1350) — Facebook Share
+     ============================================ --> (1080 x 1350) — Facebook Share
      ============================================ -->
 <div id="poster-export" aria-hidden="true">
     <div class="poster-card">
@@ -1452,7 +1237,7 @@ body {
     // ============================================================
     // ১. ধ্রুবক (Constants)
     // ============================================================
-    const SUPPORTED_LANGUAGES = ['bn', 'hi', 'en'];
+    const SUPPORTED_LANGUAGES = ['bn'];
     const DEFAULT_LANGUAGE = 'bn';
     const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
     const MAX_TEXT_LENGTH = 80;
@@ -1470,23 +1255,7 @@ body {
             'বীরভূম', 'বাঁকুড়া', 'পুরুলিয়া', 'পূর্ব মেদিনীপুর',
             'পশ্চিম মেদিনীপুর', 'ঝাড়গ্রাম', 'অন্যান্য / রাজ্য'
         ],
-        hi: [
-            'जलपाईगुड़ी', 'दार्जिलिंग', 'कालिम्पोंग', 'अलीपुरद्वार',
-            'कोचबिहार', 'उत्तर दिनाजपुर', 'दक्षिण दिनाजपुर', 'मालदा',
-            'मुर्शिदाबाद', 'नदिया', 'उत्तर 24 परगना', 'दक्षिण 24 परगना',
-            'कोलकाता', 'हावड़ा', 'हुगली', 'पूर्व बर्धमान', 'पश्चिम बर्धमान',
-            'बीरभूम', 'बांकुरा', 'पुरुलिया', 'पूर्व मेदिनीपुर',
-            'पश्चिम मेदिनीपुर', 'झाड़ग्राम', 'अन्य / राज्य'
-        ],
-        en: [
-            'Jalpaiguri', 'Darjeeling', 'Kalimpong', 'Alipurduar',
-            'Cooch Behar', 'North Dinajpur', 'South Dinajpur', 'Malda',
-            'Murshidabad', 'Nadia', 'North 24 Parganas', 'South 24 Parganas',
-            'Kolkata', 'Howrah', 'Hooghly', 'East Burdwan', 'West Burdwan',
-            'Birbhum', 'Bankura', 'Purulia', 'East Midnapore',
-            'West Midnapore', 'Jhargram', 'Other / State'
-        ]
-    };
+        };
 
     const vargaList = {
         bn: [
@@ -1498,25 +1267,7 @@ body {
             'কার্য কর্তা বিকাশ বর্গ ১',
             'কার্য কর্তা বিকাশ বর্গ ২'
         ],
-        hi: [
-            'परिचय वर्ग',
-            'वर्ग करना चाहते हैं',
-            'प्रारंभिक वर्ग',
-            'प्राथमिक वर्ग',
-            'प्रथम वर्ष',
-            'कार्यकर्ता विकास वर्ग १',
-            'कार्यकर्ता विकास वर्ग २'
-        ],
-        en: [
-            'Parichiti Varga',
-            'Want to do Varga',
-            'Prarambhik Varga',
-            'Prathamik Varga',
-            'First Year',
-            'Karyakarta Vikas Varga 1',
-            'Karyakarta Vikas Varga 2'
-        ]
-    };
+        };
 
     // ============================================================
     // ৩. অনুবাদ (Translations)
@@ -1592,124 +1343,6 @@ body {
             errPhotoType: 'শুধু JPG, PNG বা WebP ছবি আপলোড করুন।',
             errGeneric: 'কিছু ভুল হয়েছে। আবার চেষ্টা করুন।'
         },
-        hi: {
-            langTitle: 'भाषा चुनें',
-            langHelp: 'कार्ड बनाना शुरू करने से पहले अपनी भाषा चुनें।',
-            step1Title: 'आपकी पहचान',
-            step1Help: 'सबसे पहले अपना नाम लिखें। यह नाम स्मारक परिचय पत्र में प्रमुखता से दिखेगा।',
-            step2Title: 'फोटो चुनें',
-            step2Help: 'अपनी एक साफ फोटो चुनें। JPG, PNG या WebP (अधिकतम 5 MB)।',
-            step3Title: 'धाम / जिला',
-            step3Help: 'अपना धाम या जिला चुनें।',
-            step4Title: 'काम / पेशा',
-            step4Help: 'अपना काम या पेशा लिखें।',
-            step5Title: 'शाखा / मिलन',
-            step5Help: 'अपनी शाखा या मिलन का नाम लिखें।',
-            step6Title: 'दायित्व',
-            step6Help: 'अपना दायित्व लिखें (लागू न हो तो "सामान्य स्वयंसेवक" लिखें)।',
-            step7Title: 'वर्ग',
-            step7Help: 'अपना वर्ग चुनें।',
-            step8Title: 'वर्ष',
-            step8Help: 'अपने वर्ग का वर्ष लिखें।',
-            step9Title: 'संघायु',
-            step9Help: 'आपका संघायु कितने वर्ष है, लिखें।',
-            step10Title: 'अंतिम जाँच',
-            step10Help: 'अपनी जानकारी एक बार देखें, फिर कार्ड बनाएं।',
-            lblName: 'आपका नाम *',
-            phName: 'जैसे: Sukanta Shil',
-            lblDham: 'धाम / जिला *',
-            lblKaam: 'काम / पेशा',
-            phKaam: 'जैसे: व्यवसायी',
-            lblShakha: 'शाखा / मिलन',
-            phShakha: 'जैसे: धूपगुड़ी शाखा',
-            lblRole: 'दायित्व',
-            phRole: 'जैसे: शाखा दायित्ववान',
-            lblBarga: 'वर्ग *',
-            lblYear: 'वर्ष *',
-            phYear: 'जैसे: 2021',
-            lblSanghayu: 'संघायु (वर्ष) *',
-            phSanghayu: 'जैसे: 10',
-            lblPhoto: 'फोटो चुनें *',
-            photoHelp: 'JPG, PNG या WebP (अधिकतम 5 MB)',
-            btnGenerate: '✅ कार्ड बनाएं',
-            cLblDham: 'धाम:',
-            cLblShakha: 'शाखा:',
-            cLblBarga: 'वर्ग:',
-            cSanghayu: 'संघायु:',
-            tagline: 'प्रचार नहीं, यह मेरी पहचान है — मैं स्वयंसेवक हूँ!',
-            btnBack: '← पीछे',
-            btnNext: 'आगे →',
-            btnShare: '📘 Facebook पर पोस्ट करें',
-            successMsg: 'आपका स्मारक कार्ड बन गया है और डाउनलोड हो गया है।',
-            errNameRequired: 'कृपया अपना नाम लिखें।',
-            errDhamRequired: 'कृपया अपना धाम चुनें।',
-            errBargaRequired: 'कृपया अपना वर्ग चुनें।',
-            errYearRequired: 'कृपया अपना वर्ष लिखें।',
-            errSanghayuRequired: 'कृपया अपना संघायु लिखें।',
-            errPhotoRequired: 'कृपया एक फोटो चुनें।',
-            errPhotoTooLarge: 'फोटो का आकार 5 MB से कम होना चाहिए।',
-            errPhotoType: 'केवल JPG, PNG या WebP अपलोड करें।',
-            errGeneric: 'कुछ गलत हो गया। फिर से प्रयास करें।'
-        },
-        en: {
-            langTitle: 'Select Language',
-            langHelp: 'Choose your language before creating the card.',
-            step1Title: 'Your Identity',
-            step1Help: 'Start by entering your name. This name will appear prominently on the commemorative card.',
-            step2Title: 'Select Photo',
-            step2Help: 'Choose a clear photo. JPG, PNG or WebP (max 5 MB).',
-            step3Title: 'Dham / District',
-            step3Help: 'Select your dham or district.',
-            step4Title: 'Work / Profession',
-            step4Help: 'Enter your work or profession.',
-            step5Title: 'Shakha / Milan',
-            step5Help: 'Enter your shakha or milan name.',
-            step6Title: 'Responsibility',
-            step6Help: 'Enter your responsibility (if not applicable, write "General Swayamsevak").',
-            step7Title: 'Varga',
-            step7Help: 'Select your varga.',
-            step8Title: 'Year',
-            step8Help: 'Enter the year of your varga.',
-            step9Title: 'Sanghayu',
-            step9Help: 'Enter your years of association (Sanghayu).',
-            step10Title: 'Final Review',
-            step10Help: 'Review your information, then create the card.',
-            lblName: 'Your Name *',
-            phName: 'e.g. Sukanta Shil',
-            lblDham: 'Dham / District *',
-            lblKaam: 'Work / Profession',
-            phKaam: 'e.g. Businessman',
-            lblShakha: 'Shakha / Milan',
-            phShakha: 'e.g. Dhupguri Shakha',
-            lblRole: 'Responsibility',
-            phRole: 'e.g. Shakha Leader',
-            lblBarga: 'Varga *',
-            lblYear: 'Year *',
-            phYear: 'e.g. 2021',
-            lblSanghayu: 'Sanghayu (Years) *',
-            phSanghayu: 'e.g. 10',
-            lblPhoto: 'Select Photo *',
-            photoHelp: 'JPG, PNG or WebP (max 5 MB)',
-            btnGenerate: '✅ Create Card',
-            cLblDham: 'Dham:',
-            cLblShakha: 'Shakha:',
-            cLblBarga: 'Varga:',
-            cSanghayu: 'Sanghayu:',
-            tagline: 'Not publicity, this is my identity — I am a Swayamsevak!',
-            btnBack: '← Back',
-            btnNext: 'Next →',
-            btnShare: '📘 Post on Facebook',
-            successMsg: 'Your commemorative card has been created and downloaded.',
-            errNameRequired: 'Please enter your name.',
-            errDhamRequired: 'Please select your dham.',
-            errBargaRequired: 'Please select your varga.',
-            errYearRequired: 'Please enter your year.',
-            errSanghayuRequired: 'Please enter your sanghayu.',
-            errPhotoRequired: 'Please select a photo.',
-            errPhotoTooLarge: 'Photo size must be less than 5 MB.',
-            errPhotoType: 'Only JPG, PNG or WebP allowed.',
-            errGeneric: 'Something went wrong. Please try again.'
-        }
     };
 
     // ============================================================
@@ -1765,17 +1398,6 @@ body {
         currentLang = lang;
         const t = translations[lang];
 
-        // Language modal texts
-        setText('language-modal-title', t.langTitle);
-        setText('language-modal-help', t.langHelp);
-
-        // Card labels
-        setText('card-dham-label', t.cLblDham);
-        setText('card-shakha-label', t.cLblShakha);
-        setText('card-barga-label', t.cLblBarga);
-        setText('card-sanghayu-label', t.cSanghayu);
-        setText('card-tagline', t.tagline);
-
         // Poster labels
         setText('poster-dham-label', t.cLblDham);
         setText('poster-shakha-label', t.cLblShakha);
@@ -1791,12 +1413,8 @@ body {
         updateStepUI();
     }
 
-    function selectLanguage(lang) {
-        applyLanguage(lang);
-
-        // Hide language modal
-        const langModal = $('language-modal');
-        if (langModal) langModal.classList.add('hidden');
+    function startCard() {
+        applyLanguage('bn');
 
         // Show creation modal
         const creationModal = $('creation-modal');
@@ -1932,18 +1550,10 @@ body {
     }
     function renderPhoneField(mount) {
         const t = translations[currentLang];
-        const langLabel = currentLang === 'hi' ? 'मोबाइल नंबर (वैकल्पिक)' :
-                         currentLang === 'en' ? 'Mobile Number (Optional)' :
-                         'মোবাইল নাম্বার (ঐচ্ছিক)';
-        const privacyLabel = currentLang === 'hi' ? '🔒 आपका नंबर कार्ड या पोस्टर पर नहीं दिखेगा।' :
-                            currentLang === 'en' ? '🔒 Your number will not appear on the card or poster.' :
-                            '🔒 আপনার নাম্বার কার্ডে বা পোস্টারে দেখা যাবে না।';
-        const benefitLabel = currentLang === 'hi' ? '🎁 नंबर देने पर कैंपेन का अपडेट मिलेगा।' :
-                            currentLang === 'en' ? '🎁 Get campaign updates by providing your number.' :
-                            '🎁 নাম্বার দিলে ক্যাম্পেইনের আপডেট পাবেন।';
-        const showLabel = currentLang === 'hi' ? '☐ मेरा नंबर कार्ड पर दिखाएं' :
-                         currentLang === 'en' ? '☐ Show my number on the card' :
-                         '☐ কার্ডে আমার নাম্বার দেখান';
+        const langLabel = 'মোবাইল নাম্বার (ঐচ্ছিক)';
+        const privacyLabel = '🔒 আপনার নাম্বার কার্ডে বা পোস্টারে দেখা যাবে না।';
+        const benefitLabel = '🎁 নাম্বার দিলে ক্যাম্পেইনের আপডেট পাবেন।';
+        const showLabel = '☐ কার্ডে আমার নাম্বার দেখান';
 
         mount.innerHTML = `
             <div class="creation-field">
@@ -1974,7 +1584,7 @@ body {
     }
     function renderDhamField(mount) {
         const t = translations[currentLang];
-        const districts = wbDistricts[currentLang];
+        const districts = wbDistricts.bn;
         const customKeyword = 'অন্যান্য';
         const isCustom = formData.dham && !districts.includes(formData.dham);
 
@@ -2071,7 +1681,7 @@ body {
 
     function renderBargaField(mount) {
         const t = translations[currentLang];
-        const list = vargaList[currentLang];
+        const list = vargaList.bn;
         const defaultVarga = 'বর্গ করতে ইচ্ছুক';
         const selectedVarga = formData.varga || defaultVarga;
 
@@ -2209,41 +1819,6 @@ body {
         const dBarga = formData.varga || 'বর্গ করতে ইচ্ছুক';
         const dSanghayu = formData.sanghayu ? formData.sanghayu + ' বছর' : '১ বছর';
 
-        // ===== Identity Card =====
-        setText('card-name', dName);
-        setText('card-dham', dDham);
-        setText('card-shakha', dShakha);
-        setText('card-kaam', dKaam);
-        setText('card-role', dRole);
-        setText('card-barga', dBarga);
-        setText('card-sanghayu', dSanghayu);
-        setText('card-tagline', t.tagline);
-
-        // Year line (only if Varga done)
-        const cardYearLine = $('card-year-line');
-        if (cardYearLine) {
-            if (vargaNotDone) {
-                cardYearLine.style.display = 'none';
-            } else {
-                cardYearLine.style.display = 'flex';
-                setText('card-year', formData.year || '—');
-            }
-        }
-
-        // Phone number display (only if show_phone is true)
-        const cardPhoneLine = $("card-phone-line");
-        if (cardPhoneLine) {
-            if (formData.show_phone && formData.whatsapp_number) {
-                cardPhoneLine.style.display = "flex";
-                setText("card-phone", formData.whatsapp_number);
-            } else {
-                cardPhoneLine.style.display = "none";
-            }
-        }
-
-        const cardPhoto = $('card-photo');
-        if (cardPhoto && formData.photoDataUrl) cardPhoto.src = formData.photoDataUrl;
-
         // ===== Poster =====
         setText('poster-name', dName);
         setText('poster-dham', dDham);
@@ -2293,8 +1868,8 @@ body {
         // Extra settle time for font rasterization
         await new Promise(r => setTimeout(r, 500));
 
-        // Per-target background: card is dark, poster is cream
-        const bg = elementId === 'card-export' ? '#091326' : '#fdf6e3';
+        // Poster only — cream background
+        const bg = '#fdf6e3';
 
         const canvas = await html2canvas(element, {
             width: width,
@@ -2331,22 +1906,6 @@ body {
     // ============================================================
     // ১২. ডাউনলোড (Download)
     // ============================================================
-    async function downloadCard() {
-        try {
-            const blob = await generateBlob('card-export', 1200, 630);
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `shatabdi-card-${formData.name || 'card'}.png`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-        } catch (err) {
-            console.error('Download failed:', err);
-        }
-    }
-
     // ============================================================
     // ১৩. কার্ড তৈরি (Generate Card)
     // ============================================================
@@ -2368,27 +1927,14 @@ body {
             updateCardContent();
             await new Promise(r => setTimeout(r, 300));
 
-            // 1. Generate identity card blob
-            const cardBlob = await generateBlob('card-export', 1200, 630);
-
-            // 2. Generate poster blob
+            // 1. Generate poster blob only
             const posterBlob = await generateBlob('poster-export', 1080, 1350);
             const posterDataUrl = await blobToDataUrl(posterBlob);
 
-            // 3. Download identity card
-            const cardUrl = URL.createObjectURL(cardBlob);
-            const a = document.createElement('a');
-            a.href = cardUrl;
-            a.download = `shatabdi-card-${formData.name || 'card'}.png`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setTimeout(() => URL.revokeObjectURL(cardUrl), 1000);
-
-            // 4. Upload card to server and get share URL
+            // 2. Upload poster to server and get share URL
             let shareUrl = 'https://shatabdi-card.vercel.app/';
             try {
-                const result = await createCardOnServer(cardBlob, formData);
+                const result = await createCardOnServer(posterBlob, formData);
                 if (result && result.shareUrl) {
                     shareUrl = result.shareUrl;
                 }
@@ -2418,9 +1964,9 @@ body {
             if (btn) { btn.disabled = false; btn.textContent = t.btnGenerate; }
         }
     }
-    async function createCardOnServer(cardBlob, formData) {
+    async function createCardOnServer(posterBlob, formData) {
         // Convert blob to data URL
-        const imageDataUrl = await blobToDataUrl(cardBlob);
+        const imageDataUrl = await blobToDataUrl(posterBlob);
 
         // Build request body
         const payload = {
@@ -2432,7 +1978,7 @@ body {
             role: formData.role || '',
             sanghayu: formData.sanghayu || '',
             year: formData.year || '',
-            lang: currentLang,
+            lang: 'bn',
             whatsapp_number: formData.whatsapp_number || '',
             show_phone: formData.show_phone || false,
             terms_accepted: true,
@@ -2502,24 +2048,17 @@ body {
         };
     }
     function init() {
-        console.log('init() called, language buttons:', document.querySelectorAll('.language-choice').length);
-        // Language buttons
-        document.querySelectorAll('.language-choice').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                selectLanguage(btn.dataset.language || 'bn');
-            });
-        });
-
         // Back/Next buttons
         const back = $('creation-modal-back');
         const next = $('creation-modal-next');
 
-        // Hide creation modal initially
+        // Show creation modal directly (Bangla only)
+        applyLanguage('bn');
         const creationModal = $('creation-modal');
-        if (creationModal) creationModal.classList.add('hidden');
+        if (creationModal) creationModal.classList.remove('hidden');
 
-        // Set default language
-        applyLanguage(DEFAULT_LANGUAGE);
+        currentStep = 1;
+        renderStep();
     }
 
     // Run on DOM ready
