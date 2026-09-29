@@ -26,6 +26,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <!-- DEBUG: Eruda mobile console (only loads with ?debug=1 in URL) -->
+    <script>
+      if (location.search.includes('debug=1')) {
+        var _eruda = document.createElement('script');
+        _eruda.src = 'https://cdn.jsdelivr.net/npm/eruda';
+        _eruda.onload = function () { window.eruda && window.eruda.init(); };
+        document.head.appendChild(_eruda);
+      }
+    </script>
 
     <style>
 
