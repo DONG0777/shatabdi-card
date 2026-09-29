@@ -1720,12 +1720,23 @@ body {
         const preview = $('photo-preview');
 
         if (input) {
+            // iOS/Android sometimes needs click() to fire on hidden input
+            input.addEventListener('click', (e) => {
+                console.log('[photo] input clicked');
+            });
+
             input.addEventListener('change', async (e) => {
+                console.log('[photo] change fired', e.target.files);
                 const file = e.target.files && e.target.files[0];
-                if (!file) return;
+                if (!file) {
+                    console.warn('[photo] no file selected');
+                    return;
+                }
+                console.log('[photo] file:', file.name, file.size, file.type);
 
                 // Size check (5 MB)
                 if (file.size > MAX_PHOTO_BYTES) {
+                    console.warn('[photo] too large:', file.size, '>', MAX_PHOTO_BYTES);
                     showError(t.errPhotoTooLarge || 'ছবির আকার ৫ MB এর কম হতে হবে।');
                     return;
                 }
@@ -1734,21 +1745,28 @@ body {
                 const type = (file.type || '').toLowerCase();
                 const nameOk = /\.(jpe?g|png|webp|heic|heif|gif)$/i.test(file.name || '');
                 const typeOk = !type || type.startsWith('image/');
+                console.log('[photo] typeOk:', typeOk, 'nameOk:', nameOk);
                 if (!typeOk && !nameOk) {
+                    console.warn('[photo] rejected: bad type');
                     showError(t.errPhotoType || 'শুধু JPG, PNG বা WebP আপলোড করুন।');
                     return;
                 }
 
                 const reader = new FileReader();
                 reader.onload = () => {
+                    console.log('[photo] FileReader loaded, size:', reader.result.length);
                     formData.photoDataUrl = reader.result;
                     if (preview) {
                         preview.src = reader.result;
                         preview.style.display = 'block';
+                        console.log('[photo] preview.src set, img visible');
+                    } else {
+                        console.error('[photo] preview element NOT found!');
                     }
                     showError('');
                 };
-                reader.onerror = () => {
+                reader.onerror = (err) => {
+                    console.error('[photo] FileReader error:', err);
                     showError('ছবি পড়তে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
                 };
                 reader.readAsDataURL(file);
