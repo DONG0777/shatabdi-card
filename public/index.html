@@ -959,14 +959,24 @@ body {
 
 @media (max-width: 640px) {
     #photo-preview {
-        width: 170px !important;
-        height: 170px !important;
+        width: 150px !important;
+        height: 150px !important;
         margin: 0 !important;
     }
 
     .photo-upload-btn {
         min-height: 58px;
         font-size: 16.5px;
+    }
+
+    /* Photo step: tighter spacing to fit preview */
+    .creation-field .photo-preview-wrap {
+        margin-top: 12px;
+    }
+
+    /* On photo step, reduce field min-height so content fits */
+    .creation-modal-field {
+        min-height: 180px;
     }
 }
 
@@ -1769,6 +1779,14 @@ body {
                         preview.src = reader.result;
                         preview.style.display = 'block';
                         console.log('[photo] preview.src set, img visible');
+                        // Auto-scroll preview into view
+                        setTimeout(() => {
+                            try {
+                                preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            } catch(e) {
+                                preview.scrollIntoView();
+                            }
+                        }, 100);
                     } else {
                         console.error('[photo] preview element NOT found!');
                     }
