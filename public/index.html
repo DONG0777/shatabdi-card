@@ -801,6 +801,9 @@ body {
     display: flex;
     gap: 10px;
     margin-top: 20px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    position: relative;
+    z-index: 2;
 }
 
 .focus-ring:focus-visible {
@@ -1636,6 +1639,20 @@ body {
     // ============================================================
     // ৭. ফর্ম স্টেপ (Form Steps)
     // ============================================================
+    // Keyboard helper — auto-scroll buttons into view
+    function keepButtonsVisible() {
+        setTimeout(() => {
+            const nav = document.querySelector('.creation-modal-navigation');
+            if (nav) {
+                try {
+                    nav.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                } catch(e) {
+                    nav.scrollIntoView(false);
+                }
+            }
+        }, 300);
+    }
+
     function renderStep() {
         const t = translations[currentLang];
         const title = $("creation-modal-title");
@@ -1689,6 +1706,37 @@ body {
         }
     }
 
+    // Keyboard UX — Enter to advance + auto-scroll buttons
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        const creationModal = document.getElementById('creation-modal');
+        if (!creationModal || creationModal.classList.contains('hidden')) return;
+
+        const target = e.target;
+        if (!target) return;
+
+        const tag = target.tagName;
+        const type = (target.type || '').toLowerCase();
+        if (tag !== 'INPUT') return;
+        if (['checkbox', 'radio', 'file', 'submit', 'button'].includes(type)) return;
+
+        e.preventDefault();
+        target.blur();
+
+        const next = document.getElementById('creation-modal-next');
+        if (next && !next.disabled) {
+            setTimeout(() => next.click(), 100);
+        }
+    });
+
+    document.addEventListener('focusin', function(e) {
+        const target = e.target;
+        if (!target || target.tagName !== 'INPUT') return;
+        const creationModal = document.getElementById('creation-modal');
+        if (!creationModal || creationModal.classList.contains('hidden')) return;
+        keepButtonsVisible();
+    });
+
     function updateStepUI() {
         if (!document.querySelector('#creation-modal:not(.hidden)')) return;
         renderStep();
@@ -1717,7 +1765,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-name">${t.lblName}</label>
-                <input type="text" id="input-name" placeholder="${t.phName}" value="${formData.name || ''}" maxlength="${MAX_TEXT_LENGTH}">
+                <input type="text" id="input-name" placeholder="${t.phName}" value="${formData.name || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next" autocomplete="name">
             </div>
         `;
         const input = $('input-name');
@@ -1840,7 +1888,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-phone">${langLabel}</label>
-                <input type="tel" id="input-phone" placeholder="যেমন: 9876543210" value="${formData.whatsapp_number || ''}" maxlength="10" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" id="input-phone" placeholder="যেমন: 9876543210" value="${formData.whatsapp_number || ''}" maxlength="10" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next">
                 <p style="color:#94a3b8;font-size:11px;margin-top:6px;">${privacyLabel}</p>
                 <p style="color:#fbbf24;font-size:11px;margin-top:4px;">${benefitLabel}</p>
                 <label style="display:flex;align-items:center;gap:8px;margin-top:12px;color:#cbd5e1;font-size:13px;cursor:pointer;">
@@ -1920,7 +1968,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-kaam">${t.lblKaam}</label>
-                <input type="text" id="input-kaam" placeholder="${t.phKaam}" value="${formData.kaam || ''}" maxlength="${MAX_TEXT_LENGTH}">
+                <input type="text" id="input-kaam" placeholder="${t.phKaam}" value="${formData.kaam || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-kaam');
@@ -1935,7 +1983,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-shakha">${t.lblShakha}</label>
-                <input type="text" id="input-shakha" placeholder="${t.phShakha}" value="${formData.shakha || ''}" maxlength="${MAX_TEXT_LENGTH}">
+                <input type="text" id="input-shakha" placeholder="${t.phShakha}" value="${formData.shakha || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-shakha');
@@ -1950,7 +1998,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-role">${t.lblRole}</label>
-                <input type="text" id="input-role" placeholder="${t.phRole}" value="${formData.role || ''}" maxlength="${MAX_TEXT_LENGTH}">
+                <input type="text" id="input-role" placeholder="${t.phRole}" value="${formData.role || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-role');
@@ -2000,7 +2048,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-year">${t.lblYear}</label>
-                <input type="number" id="input-year" list="year-list" placeholder="যেমন: 2021" value="${defaultValue}" min="2010" max="2026">
+                <input type="number" id="input-year" list="year-list" placeholder="যেমন: 2021" value="${defaultValue}" min="2010" max="2026" enterkeyhint="next">
                 <datalist id="year-list">
                     ${options}
                 </datalist>
@@ -2028,7 +2076,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-sanghayu">${t.lblSanghayu}</label>
-                <input type="number" id="input-sanghayu" list="sanghayu-list" placeholder="যেমন: 10" value="${defaultValue}" min="1" max="50">
+                <input type="number" id="input-sanghayu" list="sanghayu-list" placeholder="যেমন: 10" value="${defaultValue}" min="1" max="50" enterkeyhint="next">
                 <datalist id="sanghayu-list">
                     ${options}
                 </datalist>
