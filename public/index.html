@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;800&family=Hind+Siliguri:wght@400;500;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
@@ -532,7 +535,7 @@ body {
 .identity-card {
     width: 1200px;
     height: 630px;
-    background: linear-gradient(135deg, #091326 0%, #04070d 100%);
+    background: linear-gradient(135deg, #b45309 0%, #92400e 50%, #7c2d12 100%);
     border: 8px solid #f59e0b;
     border-radius: 20px;
     position: relative;
@@ -647,6 +650,10 @@ body {
 }
 
 .id-details {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    column-gap: 30px !important;
+    row-gap: 4px;
     color: #fef3c7;
     font-size: 23px;
     line-height: 1.4;
@@ -909,13 +916,13 @@ body {
 }
 
 .id-label {
-    color: #f59e0b;
+    color: #ffffff;
     font-weight: 800;
     flex: 0 0 auto;
 }
 
 .id-value {
-    color: #fef3c7;
+    color: #ffffff;
     font-weight: 500;
 }
 
@@ -947,15 +954,25 @@ body {
    DESIGN IMPROVEMENTS - Card & Poster
    ============================================================ */
 
-/* --- Identity Card: Tagline centered --- */
+/* --- Identity Card: Tagline centered (FIXED) --- */
 .id-tagline {
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    width: 100% !important;
     display: block !important;
-    font-size: 28px !important;
-    line-height: 1.3 !important;
+    width: 100% !important;
+    max-width: calc(100% - 20px) !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+    margin: 12px auto 0 auto !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    font-size: 34px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.45) !important;
+    flex: none !important;
+    align-self: center !important;
 }
 
 /* --- Identity Card: Footer centered --- */
@@ -987,10 +1004,38 @@ body {
     line-height: 1.1 !important;
 }
 
-/* --- Identity Card: Details font size --- */
+/* --- Identity Card: Details font (FIXED - mane mane glitch) --- */
+.id-line,
+.id-label,
+.id-value,
+.id-details {
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'SolaimanLipi', sans-serif !important;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1 !important;
+    font-variant-ligatures: normal !important;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    word-spacing: normal !important;
+    letter-spacing: normal !important;
+}
 .id-line {
-    font-size: 21px !important;
-    margin-top: 6px !important;
+    font-size: 22px !important;
+    margin-top: 4px !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 10px !important;
+    line-height: 1.5 !important;
+}
+.id-label {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    flex: 0 0 auto !important;
+}
+.id-value {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2238,14 +2283,41 @@ body {
         const element = $(elementId);
         if (!element) throw new Error('Element not found: ' + elementId);
 
+        // Wait for ALL fonts (incl. Google Fonts Bengali) to be fully loaded
         await document.fonts.ready;
+        try {
+            await document.fonts.load("700 34px 'Noto Sans Bengali'");
+            await document.fonts.load("800 22px 'Noto Sans Bengali'");
+            await document.fonts.load("500 22px 'Noto Sans Bengali'");
+        } catch (e) { console.warn('font preload warn:', e); }
+        // Extra settle time for font rasterization
+        await new Promise(r => setTimeout(r, 500));
+
+        // Per-target background: card is dark, poster is cream
+        const bg = elementId === 'card-export' ? '#091326' : '#fdf6e3';
 
         const canvas = await html2canvas(element, {
             width: width,
             height: height,
             scale: 2,
-            backgroundColor: '#fdf6e3',
-            logging: false
+            backgroundColor: bg,
+            useCORS: true,
+            allowTaint: true,
+            foreignObjectRendering: false,
+            imageTimeout: 15000,
+            logging: false,
+            onclone: (clonedDoc) => {
+                // Force font-family on cloned tagline/details (html2canvas clone safe)
+                const tag = clonedDoc.querySelector('.id-tagline');
+                if (tag) {
+                    tag.style.fontFamily = "'Noto Sans Bengali','Hind Siliguri',sans-serif";
+                    tag.style.whiteSpace = 'nowrap';
+                }
+                clonedDoc.querySelectorAll('.id-line,.id-label,.id-value,.id-details').forEach(el => {
+                    el.style.fontFamily = "'Noto Sans Bengali','Hind Siliguri',sans-serif";
+                    el.style.fontFeatureSettings = '"kern" 1, "liga" 1, "calt" 1';
+                });
+            }
         });
 
         return new Promise((resolve, reject) => {
