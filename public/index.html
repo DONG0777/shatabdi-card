@@ -27,6 +27,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js" defer></script>
 
 
     <style>
@@ -961,6 +963,182 @@ body {
     letter-spacing: 0.3px;
 }
 
+/* ============================================================
+   PHOTO CROP BUTTON + CROP MODAL
+   ============================================================ */
+.photo-crop-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 18px;
+    margin-top: 12px;
+    background: #1e293b;
+    border: 2px solid #f59e0b;
+    border-radius: 14px;
+    color: #fbbf24;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s, background 0.15s;
+}
+
+.photo-crop-btn:active {
+    transform: scale(0.98);
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.photo-upload-btn-secondary {
+    background: #1e293b !important;
+    color: #fbbf24 !important;
+    border-color: #475569 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.crop-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(5, 10, 20, 0.96);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.crop-modal.hidden {
+    display: none !important;
+}
+
+.crop-modal-card {
+    width: 100%;
+    max-width: 480px;
+    max-height: 96vh;
+    background: linear-gradient(145deg, #0f172a, #0a1020);
+    border: 2px solid rgba(245, 158, 11, 0.5);
+    border-radius: 20px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+}
+
+.crop-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.crop-modal-header h2 {
+    color: #fbbf24;
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.crop-modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #1e293b;
+    border: 1.5px solid #334155;
+    color: #cbd5e1;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.crop-modal-help {
+    color: #94a3b8;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 4px 0 14px;
+    text-align: center;
+}
+
+.crop-image-wrap {
+    flex: 1 1 auto;
+    min-height: 240px;
+    max-height: 55vh;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+#crop-image {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.crop-modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.crop-btn-cancel,
+.crop-btn-apply {
+    flex: 1;
+    min-height: 50px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.crop-btn-cancel {
+    background: #1e293b;
+    border: 1.5px solid #334155;
+    color: #cbd5e1;
+}
+
+.crop-btn-apply {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 2px solid #34d399;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.crop-btn-cancel:active,
+.crop-btn-apply:active {
+    transform: scale(0.97);
+}
+
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50% !important;
+}
+
+.cropper-view-box {
+    outline: 3px solid #f59e0b !important;
+    outline-color: #f59e0b !important;
+    box-shadow: 0 0 0 9999em rgba(5, 10, 20, 0.75) !important;
+}
+
+.cropper-line,
+.cropper-point {
+    background-color: #fbbf24 !important;
+}
+
+
 .photo-preview-wrap {
     display: flex;
     justify-content: center;
@@ -1641,6 +1819,30 @@ body {
 
     </div>
 </div>
+<!-- ============================================
+     PHOTO CROP MODAL (Cropper.js)
+     ============================================ -->
+<div id="crop-modal" class="crop-modal hidden" role="dialog" aria-modal="true" aria-labelledby="crop-modal-title">
+    <div class="crop-modal-card">
+        <div class="crop-modal-header">
+            <h2 id="crop-modal-title">📷 ছবি ক্রপ করুন</h2>
+            <button type="button" id="crop-cancel-x" class="crop-modal-close" aria-label="Close">×</button>
+        </div>
+        <p class="crop-modal-help">ছবিটি টেনে সরান এবং দুই আঙুলে জুম করে ফ্রেমের মধ্যে ফিট করুন।</p>
+        <div class="crop-image-wrap">
+            <img id="crop-image" alt="crop preview">
+        </div>
+        <div class="crop-modal-actions">
+            <button type="button" id="crop-cancel" class="crop-btn-cancel">
+                ← বাতিল
+            </button>
+            <button type="button" id="crop-apply" class="crop-btn-apply">
+                ✅ ক্রপ করুন
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 (() => {
     'use strict';
@@ -2007,45 +2209,183 @@ body {
         });
     }
 
+    // ============================================================
+    // PHOTO CROP — Cropper.js integration
+    // ============================================================
+    let cropperInstance = null;
+    let cropSourceDataUrl = null;
+    let cropResolveFn = null;
+
+    function openCropModal(imageSrc) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('crop-modal');
+            const img = document.getElementById('crop-image');
+            if (!modal || !img) { resolve(null); return; }
+
+            cropSourceDataUrl = imageSrc;
+            cropResolveFn = resolve;
+
+            img.src = imageSrc;
+            modal.classList.remove('hidden');
+
+            // Destroy old instance
+            if (cropperInstance) {
+                try { cropperInstance.destroy(); } catch(e) {}
+                cropperInstance = null;
+            }
+
+            // Wait for image load then init Cropper
+            img.onload = () => {
+                if (typeof Cropper === 'undefined') {
+                    console.warn('[crop] Cropper.js not loaded');
+                    resolve(null);
+                    return;
+                }
+                cropperInstance = new Cropper(img, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.9,
+                    background: false,
+                    modal: true,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: false,
+                    cropBoxResizable: false,
+                    toggleDragModeOnDblclick: false,
+                    responsive: true,
+                    checkOrientation: false
+                });
+            };
+        });
+    }
+
+    function closeCropModal(result) {
+        const modal = document.getElementById('crop-modal');
+        if (modal) modal.classList.add('hidden');
+        if (cropperInstance) {
+            try { cropperInstance.destroy(); } catch(e) {}
+            cropperInstance = null;
+        }
+        if (cropResolveFn) {
+            cropResolveFn(result);
+            cropResolveFn = null;
+        }
+    }
+
+    function initCropModalHandlers() {
+        const apply = document.getElementById('crop-apply');
+        const cancel = document.getElementById('crop-cancel');
+        const cancelX = document.getElementById('crop-cancel-x');
+
+        if (apply && !apply.dataset.bound) {
+            apply.dataset.bound = '1';
+            apply.addEventListener('click', () => {
+                if (!cropperInstance) { closeCropModal(null); return; }
+                try {
+                    const canvas = cropperInstance.getCroppedCanvas({
+                        width: 600,
+                        height: 600,
+                        imageSmoothingQuality: 'high',
+                        fillColor: '#ffffff'
+                    });
+                    const cropped = canvas.toDataURL('image/jpeg', 0.9);
+                    closeCropModal(cropped);
+                } catch (e) {
+                    console.error('[crop] error:', e);
+                    closeCropModal(null);
+                }
+            });
+        }
+
+        if (cancel && !cancel.dataset.bound) {
+            cancel.dataset.bound = '1';
+            cancel.addEventListener('click', () => closeCropModal(null));
+        }
+        if (cancelX && !cancelX.dataset.bound) {
+            cancelX.dataset.bound = '1';
+            cancelX.addEventListener('click', () => closeCropModal(null));
+        }
+    }
+
     function renderPhotoField(mount) {
         const t = translations[currentLang];
         mount.innerHTML = `
             <div class="creation-field photo-field-compact">
-                <label for="input-photo" style="display:block;text-align:center;margin-bottom:12px;">${t.lblPhoto}</label>
+                <label style="display:block;text-align:center;margin-bottom:12px;">${t.lblPhoto}</label>
 
                 <!-- Preview FIRST — always visible at top -->
                 <div class="photo-preview-wrap" id="photo-preview-wrap">
                     <img id="photo-preview" src="${formData.photoDataUrl || DEFAULT_PHOTO_DATA_URL}" alt="preview" />
                 </div>
-                <p id="photo-preview-hint" style="display:block;color:#22c55e;font-size:12px;text-align:center;margin-top:8px;">ছবি পরিবর্তন করতে নিচের button চাপুন</p>
+                <p id="photo-preview-hint" style="display:block;color:#94a3b8;font-size:12px;text-align:center;margin-top:8px;">ছবি নির্বাচন করুন</p>
 
-                <!-- Button BELOW preview -->
-                <label for="input-photo" class="photo-upload-btn" style="margin-top:16px;">
-                    <span class="photo-upload-icon">📷</span>
-                    <span class="photo-upload-text" id="photo-btn-text">ছবি নির্বাচন করুন</span>
-                </label>
+                <!-- Two buttons: Camera + Gallery -->
+                <div style="display:flex;gap:10px;margin-top:16px;">
+                    <label for="input-photo-camera" class="photo-upload-btn" style="flex:1;">
+                        <span class="photo-upload-icon">📷</span>
+                        <span class="photo-upload-text">ছবি তুলুন</span>
+                    </label>
+                    <label for="input-photo" class="photo-upload-btn photo-upload-btn-secondary" style="flex:1;">
+                        <span class="photo-upload-icon">🖼️</span>
+                        <span class="photo-upload-text">গ্যালারি</span>
+                    </label>
+                </div>
+
+                <!-- Crop button (hidden until photo loaded) -->
+                <button type="button" id="btn-crop-photo" class="photo-crop-btn" style="display:none;">
+                    <span style="font-size:18px;">✂️</span>
+                    <span>ছবি ক্রপ করুন</span>
+                </button>
+
+                <input type="file" id="input-photo-camera" accept="image/*" capture="user" style="position:absolute;left:-9999px;" />
                 <input type="file" id="input-photo" accept="image/*" style="position:absolute;left:-9999px;" />
 
                 <p style="color:#94a3b8;font-size:11px;margin-top:10px;text-align:center;">${t.photoHelp}</p>
             </div>
         `;
         const input = $('input-photo');
+        const inputCamera = $('input-photo-camera');
         const preview = $('photo-preview');
+        const cropBtn = document.getElementById('btn-crop-photo');
 
-        if (input) {
-            // iOS/Android sometimes needs click() to fire on hidden input
-            input.addEventListener('click', (e) => {
-                console.log('[photo] input clicked');
-            });
-
-            input.addEventListener('change', async (e) => {
-                console.log('[photo] change fired', e.target.files);
-                const file = e.target.files && e.target.files[0];
-                if (!file) {
-                    console.warn('[photo] no file selected');
+        // Wire crop button
+        if (cropBtn && !cropBtn.dataset.bound) {
+            cropBtn.dataset.bound = '1';
+            cropBtn.addEventListener('click', async () => {
+                if (!formData.photoDataUrl || formData.photoDataUrl === DEFAULT_PHOTO_DATA_URL) {
+                    alert('আগে একটি ছবি নির্বাচন করুন।');
                     return;
                 }
-                console.log('[photo] file:', file.name, file.size, file.type);
+                const cropped = await openCropModal(formData.photoDataUrl);
+                if (cropped) {
+                    formData.photoDataUrl = cropped;
+                    if (preview) preview.src = cropped;
+                    var hint = document.getElementById('photo-preview-hint');
+                    if (hint) {
+                        hint.textContent = '✅ ছবি ক্রপ হয়েছে (' + Math.round(cropped.length * 0.75 / 1024) + 'KB)';
+                        hint.style.color = '#22c55e';
+                    }
+                    console.log('[crop] applied, new size:', Math.round(cropped.length * 0.75 / 1024) + 'KB');
+                }
+            });
+        }
+
+        // Show crop button if photo already exists
+        if (cropBtn && formData.photoDataUrl && formData.photoDataUrl !== DEFAULT_PHOTO_DATA_URL) {
+            cropBtn.style.display = 'flex';
+        }
+
+        // Shared change handler for both camera + gallery
+        async function handlePhotoChange(e) {
+            console.log('[photo] change fired', e.target.files);
+            const file = e.target.files && e.target.files[0];
+            if (!file) {
+                console.warn('[photo] no file selected');
+                return;
+            }
+            console.log('[photo] file:', file.name, file.size, file.type);
 
                 // Size check (5 MB)
                 if (file.size > MAX_PHOTO_BYTES) {
@@ -2107,6 +2447,11 @@ body {
                         hint.textContent = '✅ ছবি লোড হয়েছে (' + resizedKB + 'KB)';
                         hint.style.color = '#22c55e';
                     }
+
+                    // Show crop button
+                    var cropBtnEl = document.getElementById('btn-crop-photo');
+                    if (cropBtnEl) cropBtnEl.style.display = 'flex';
+
                     showError('');
                 } catch (err) {
                     console.error('[photo] resize error:', err);
@@ -2116,7 +2461,16 @@ body {
                         hint.style.color = '#94a3b8';
                     }
                 }
-            });
+        }
+
+        // Wire both inputs
+        if (input) {
+            input.addEventListener('click', () => console.log('[photo] gallery clicked'));
+            input.addEventListener('change', handlePhotoChange);
+        }
+        if (inputCamera) {
+            inputCamera.addEventListener('click', () => console.log('[photo] camera clicked'));
+            inputCamera.addEventListener('change', handlePhotoChange);
         }
     }
     function renderPhoneField(mount) {
@@ -2772,6 +3126,9 @@ body {
         };
     }
     function init() {
+        // Crop modal handlers
+        if (typeof initCropModalHandlers === 'function') initCropModalHandlers();
+
         // Back/Next buttons
         const back = $('creation-modal-back');
         const next = $('creation-modal-next');
