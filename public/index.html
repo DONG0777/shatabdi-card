@@ -946,15 +946,24 @@ body {
 }
 
 #photo-preview {
-    display: block;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: 4px solid #f59e0b;
-    object-fit: cover;
+    display: block !important;
+    width: 140px !important;
+    height: 140px !important;
+    border-radius: 50% !important;
+    border: 4px solid #f59e0b !important;
+    object-fit: cover !important;
     box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.15),
-                0 8px 24px rgba(0, 0, 0, 0.5);
-    background: #1e293b;
+                0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    background: #1e293b !important;
+    margin: 0 auto !important;
+}
+
+.photo-preview-wrap {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto 12px auto !important;
+    padding: 8px 0 !important;
 }
 
 @media (max-width: 640px) {
@@ -1722,18 +1731,23 @@ body {
     function renderPhotoField(mount) {
         const t = translations[currentLang];
         mount.innerHTML = `
-            <div class="creation-field">
-                <label for="input-photo">${t.lblPhoto}</label>
-                <label for="input-photo" class="photo-upload-btn">
+            <div class="creation-field photo-field-compact">
+                <label for="input-photo" style="display:block;text-align:center;margin-bottom:12px;">${t.lblPhoto}</label>
+
+                <!-- Preview FIRST — always visible at top -->
+                <div class="photo-preview-wrap" id="photo-preview-wrap">
+                    <img id="photo-preview" src="${formData.photoDataUrl || DEFAULT_PHOTO_DATA_URL}" alt="preview" />
+                </div>
+                <p id="photo-preview-hint" style="display:block;color:#22c55e;font-size:12px;text-align:center;margin-top:8px;">ছবি পরিবর্তন করতে নিচের button চাপুন</p>
+
+                <!-- Button BELOW preview -->
+                <label for="input-photo" class="photo-upload-btn" style="margin-top:16px;">
                     <span class="photo-upload-icon">📷</span>
                     <span class="photo-upload-text" id="photo-btn-text">ছবি নির্বাচন করুন</span>
                 </label>
                 <input type="file" id="input-photo" accept="image/*" style="position:absolute;left:-9999px;" />
-                <p style="color:#94a3b8;font-size:12px;margin-top:10px;text-align:center;">${t.photoHelp}</p>
-                <div class="photo-preview-wrap" id="photo-preview-wrap">
-                    <img id="photo-preview" src="${formData.photoDataUrl || DEFAULT_PHOTO_DATA_URL}" alt="preview" />
-                    <p id="photo-preview-hint" style="display:none;color:#22c55e;font-size:12px;text-align:center;margin-top:8px;">✅ ছবি লোড হয়েছে — আবার "ছবি পরিবর্তন" tap করে বদলাতে পারবেন</p>
-                </div>
+
+                <p style="color:#94a3b8;font-size:11px;margin-top:10px;text-align:center;">${t.photoHelp}</p>
             </div>
         `;
         const input = $('input-photo');
