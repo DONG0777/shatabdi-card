@@ -1308,7 +1308,123 @@ body {
     margin: 0 60px 10px !important;
 }
 
-    </style>
+    
+/* ============================================================
+   SCROLL-STOPPING POSTER UPGRADES (mobile-first eye-catcher)
+   ============================================================ */
+
+/* 1. Poster name — BIGGER + golden glow */
+#poster-export .poster-name {
+    font-size: 54px !important;
+    font-weight: 900 !important;
+    color: #7f1d1d !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.05 !important;
+    text-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.35),
+        0 0 24px rgba(245, 158, 11, 0.45),
+        0 0 60px rgba(245, 158, 11, 0.2) !important;
+    margin-bottom: 18px !important;
+}
+
+/* 2. Photo circular frame — layered golden rings */
+#poster-export .poster-profile img {
+    box-shadow:
+        0 0 0 5px #f59e0b,
+        0 0 0 8px #fbbf24,
+        0 0 0 12px rgba(245, 158, 11, 0.25),
+        0 0 50px rgba(245, 158, 11, 0.65),
+        0 12px 32px rgba(0, 0, 0, 0.6) !important;
+    border: none !important;
+    filter: brightness(1.05) contrast(1.05) !important;
+}
+
+/* 3. "100 YEARS" badge — bigger + shine */
+#poster-export .poster-badge {
+    transform: scale(1.08) !important;
+    box-shadow:
+        0 0 30px rgba(245, 158, 11, 0.75),
+        0 0 60px rgba(245, 158, 11, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4)) !important;
+}
+
+/* 4. Tagline — highlight strip + bigger */
+#poster-export .poster-tagline {
+    font-size: 34px !important;
+    font-weight: 900 !important;
+    padding: 14px 28px !important;
+    margin: 8px auto !important;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(245, 158, 11, 0.15) 20%,
+        rgba(245, 158, 11, 0.25) 50%,
+        rgba(245, 158, 11, 0.15) 80%,
+        transparent 100%) !important;
+    border-radius: 999px !important;
+    text-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(245, 158, 11, 0.35) !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* 5. Poster card — outer glow + subtle border */
+#poster-export .poster-card {
+    box-shadow:
+        0 0 80px rgba(245, 158, 11, 0.45),
+        0 0 160px rgba(245, 158, 11, 0.2),
+        inset 0 0 60px rgba(245, 158, 11, 0.08),
+        0 30px 80px rgba(0, 0, 0, 0.5) !important;
+    border: 3px solid rgba(245, 158, 11, 0.7) !important;
+    border-radius: 20px !important;
+}
+
+/* 6. Details text — subtle depth */
+#poster-export .poster-label {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    letter-spacing: 0.2px !important;
+}
+
+#poster-export .poster-value {
+    color: #1e293b !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 7. Premium divider line between sections */
+#poster-export .poster-lower {
+    position: relative;
+}
+
+#poster-export .poster-lower::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(245, 158, 11, 0.7),
+        #fbbf24,
+        rgba(245, 158, 11, 0.7),
+        transparent);
+    border-radius: 999px;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* 8. Prevent poster overflow during glow */
+#poster-export {
+    overflow: visible !important;
+}
+
+#poster-export .poster-card {
+    overflow: hidden !important;
+}
+
+</style>
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen py-5 px-3">
@@ -1892,13 +2008,24 @@ body {
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = () => {
-                    console.log('[photo] FileReader loaded, size:', reader.result.length);
-                    formData.photoDataUrl = reader.result;
+                // ---- RESIZE + PREVIEW ----
+                var hint = document.getElementById('photo-preview-hint');
+                if (hint) {
+                    hint.textContent = '⏳ ছবি প্রসেস হচ্ছে...';
+                    hint.style.color = '#fbbf24';
+                    hint.style.display = 'block';
+                }
+
+                try {
+                    const originalKB = Math.round(file.size / 1024);
+                    const resizedDataUrl = await resizeImage(file, 800, 0.85);
+                    const resizedKB = Math.round(resizedDataUrl.length * 0.75 / 1024);
+
+                    formData.photoDataUrl = resizedDataUrl;
+                    console.log('[photo] resized:', originalKB + 'KB ->', resizedKB + 'KB');
+
                     if (preview) {
-                        preview.src = reader.result;
-                        // Nuclear: force all visibility styles
+                        preview.src = resizedDataUrl;
                         preview.style.display = 'block';
                         preview.style.visibility = 'visible';
                         preview.style.opacity = '1';
@@ -1910,29 +2037,28 @@ body {
                         preview.style.margin = '0 auto';
                         preview.style.background = '#1e293b';
 
-                        // Show hint
-                        var hint = document.getElementById('photo-preview-hint');
-                        if (hint) hint.style.display = 'block';
-
-                        // Update button text
                         var btnTxt = document.getElementById('photo-btn-text');
                         if (btnTxt) btnTxt.textContent = '🔄 ছবি পরিবর্তন করুন';
 
-                        console.log('[photo] preview.src set, img visible');
                         setTimeout(() => {
                             try { preview.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
                             catch(e) { preview.scrollIntoView(); }
                         }, 150);
-                    } else {
-                        console.error('[photo] preview element NOT found!');
+                    }
+
+                    if (hint) {
+                        hint.textContent = '✅ ছবি লোড হয়েছে (' + resizedKB + 'KB)';
+                        hint.style.color = '#22c55e';
                     }
                     showError('');
-                };
-                reader.onerror = (err) => {
-                    console.error('[photo] FileReader error:', err);
-                    showError('ছবি পড়তে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-                };
-                reader.readAsDataURL(file);
+                } catch (err) {
+                    console.error('[photo] resize error:', err);
+                    showError('ছবি প্রসেস করা যায়নি। আবার চেষ্টা করুন।');
+                    if (hint) {
+                        hint.textContent = 'ছবি নির্বাচন করুন';
+                        hint.style.color = '#94a3b8';
+                    }
+                }
             });
         }
     }
