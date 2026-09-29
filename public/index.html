@@ -26,6 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
     <!-- DEBUG: Eruda mobile console (only loads with ?debug=1 in URL) -->
     <script>
       if (location.search.includes('debug=1')) {
@@ -1424,6 +1425,56 @@ body {
     overflow: hidden !important;
 }
 
+
+/* ============================================================
+   DOWNLOAD BUTTON
+   ============================================================ */
+.btn-download:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.5);
+}
+
+/* ============================================================
+   QR CODE (poster এ যোগ হবে)
+   ============================================================ */
+#poster-export .poster-qr-wrap {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    width: 110px;
+    height: 110px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35),
+                0 0 0 3px rgba(245, 158, 11, 0.7);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#poster-export .poster-qr-wrap img,
+#poster-export .poster-qr-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 6px;
+    display: block;
+}
+
+#poster-export .poster-qr-label {
+    position: absolute;
+    bottom: -22px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #7f1d1d;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
 </style>
 </head>
 
@@ -1500,9 +1551,17 @@ body {
     <section id="share-actions" class="share-actions hidden">
         <div class="share-success">
             <p id="share-success">
-                আপনার স্মারক কার্ড তৈরি হয়েছে এবং ডাউনলোড হয়েছে।
+                ✅ আপনার পোস্টার তৈরি হয়েছে! এখন ডাউনলোড করুন বা সরাসরি শেয়ার করুন।
             </p>
         </div>
+        <button
+            id="btn-download-poster"
+            type="button"
+            style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:16px 20px;margin-bottom:14px;background:linear-gradient(135deg,#10b981,#059669);color:#ffffff;border:2px solid #34d399;border-radius:14px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(16,185,129,0.4);-webkit-tap-highlight-color:transparent;"
+        >
+            <span style="font-size:22px;line-height:1;">📥</span>
+            <span>পোস্টার ডাউনলোড করুন</span>
+        </button>
         <a
             id="btn-fb-share"
             href="#"
@@ -1580,6 +1639,12 @@ body {
         <!-- Tagline -->
         <div id="poster-tagline" class="poster-tagline">
             প্রচার নয়, এটি আমার পরিচয় — আমি স্বয়ংসেবক!
+        </div>
+
+        <!-- QR Code (share URL) -->
+        <div class="poster-qr-wrap" id="poster-qr-wrap" style="display:flex;">
+            <div id="poster-qr-target"></div>
+            <span class="poster-qr-label">স্ক্যান করুন</span>
         </div>
 
     </div>
@@ -1684,7 +1749,7 @@ body {
             btnBack: '← পিছনে',
             btnNext: 'পরবর্তী →',
             btnShare: '📘 Facebook এ পোস্ট করুন',
-            successMsg: 'আপনার স্মারক কার্ড তৈরি হয়েছে এবং ডাউনলোড হয়েছে।',
+            successMsg: '✅ আপনার পোস্টার তৈরি হয়েছে! এখন ডাউনলোড করুন বা সরাসরি শেয়ার করুন।',
 
             // Errors
             errNameRequired: 'অনুগ্রহ করে আপনার নাম লিখুন।',
@@ -2494,6 +2559,86 @@ body {
             reader.readAsDataURL(blob);
         });
     }
+    // ============================================================
+    // Download Poster — user can save PNG directly
+    // ============================================================
+    async function downloadPoster() {
+        try {
+            const btn = document.getElementById('btn-download-poster');
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
+            const posterBlob = await generateBlob('poster-export', 1080, 1350);
+            const url = URL.createObjectURL(posterBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = (formData.name || 'poster').replace(/[^\w\u0980-\u09FF]+/g, '-');
+            a.download = 'shatabdi-poster-' + safeName + '.png';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+            if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+        } catch (err) {
+            console.error('Download failed:', err);
+            const btn = document.getElementById('btn-download-poster');
+            if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+        }
+    }
+
+    // ============================================================
+    // QR Code Generator — poster এ share URL encode করবে
+    // ============================================================
+    function generatePosterQR(shareUrl) {
+        const wrap = document.getElementById('poster-qr-wrap');
+        const target = document.getElementById('poster-qr-target');
+        if (!wrap || !target) return;
+
+        try {
+            // qrcode-generator library
+            if (typeof qrcode === 'undefined') {
+                console.warn('QR library not loaded');
+                wrap.style.display = 'none';
+                return;
+            }
+            const qr = qrcode(0, 'M');
+            qr.addData(shareUrl || 'https://shatabdi-card.vercel.app/');
+            qr.make();
+
+            // qrcode-generator API: createSvgTag(cellSize, margin)
+            // Old API signature: createSvgTag(cellSize, margin)
+            var svg = '';
+            try {
+                svg = qr.createSvgTag(4, 0);
+            } catch (e) {
+                // fallback: try with object (newer API)
+                svg = qr.createSvgTag({ cellSize: 4, margin: 0 });
+            }
+
+            if (!svg || svg.length < 100) {
+                // fallback: use image tag
+                svg = qr.createImgTag(4, 0);
+            }
+
+            target.innerHTML = svg;
+            wrap.style.display = 'flex';
+
+            // Force SVG/img size
+            var innerSvg = target.querySelector('svg, img');
+            if (innerSvg) {
+                innerSvg.setAttribute('width', '96');
+                innerSvg.setAttribute('height', '96');
+                innerSvg.style.width = '96px';
+                innerSvg.style.height = '96px';
+            }
+
+            console.log('[qr] generated, svg length:', svg.length);
+        } catch (e) {
+            console.warn('QR generation failed:', e);
+            wrap.style.display = 'none';
+        }
+    }
+
     async function handleGenerate() {
         const t = translations[currentLang];
         const btn = $('creation-modal-next');
@@ -2503,20 +2648,25 @@ body {
             updateCardContent();
             await new Promise(r => setTimeout(r, 300));
 
-            // 1. Generate poster blob only
-            const posterBlob = await generateBlob('poster-export', 1080, 1350);
-            const posterDataUrl = await blobToDataUrl(posterBlob);
-
-            // 2. Upload poster to server and get share URL
+            // 1. Generate share URL FIRST (needed for QR)
             let shareUrl = 'https://shatabdi-card.vercel.app/';
             try {
-                const result = await createCardOnServer(posterBlob, formData);
+                const tempBlob = await generateBlob('poster-export', 1080, 1350);
+                const result = await createCardOnServer(tempBlob, formData);
                 if (result && result.shareUrl) {
                     shareUrl = result.shareUrl;
                 }
             } catch (err) {
                 console.warn('Server upload failed, using default URL:', err);
             }
+
+            // 2. Generate QR code BEFORE final poster capture
+            generatePosterQR(shareUrl);
+            await new Promise(r => setTimeout(r, 200));  // QR render wait
+
+            // 3. Generate FINAL poster blob (with QR visible)
+            const posterBlob = await generateBlob('poster-export', 1080, 1350);
+            const posterDataUrl = await blobToDataUrl(posterBlob);
 
             // 5. Hide creation modal, show share
             const creationModal = $('creation-modal');
@@ -2528,7 +2678,13 @@ body {
                 shareSection.classList.add('visible');
             }
 
-            // 6. Setup share with poster + share URL
+            // Wire download button
+            const dlBtn = document.getElementById('btn-download-poster');
+            if (dlBtn) {
+                dlBtn.onclick = downloadPoster;
+            }
+
+            // 7. Setup share with poster + share URL
             setupFacebookShare(posterDataUrl, shareUrl);
 
             // 7. Scroll to share
