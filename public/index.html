@@ -188,6 +188,32 @@ body {
     color: #64748b;
 }
 
+/* Exclude checkbox from global input styles */
+.creation-field input[type="checkbox"] {
+    width: 24px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    accent-color: #f59e0b;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.phone-checkbox-label {
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.phone-checkbox-label:active {
+    transform: scale(0.98);
+}
+
+.phone-checkbox-label:has(input:checked) {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: #f59e0b !important;
+}
+
 .creation-navigation {
     display: flex;
     gap: 10px;
@@ -1570,7 +1596,7 @@ body {
         name: '',
         photoDataUrl: DEFAULT_PHOTO_DATA_URL,
         whatsapp_number: '',
-        show_phone: false,
+        show_phone: true,
         dham: '',
         kaam: '',
         shakha: '',
@@ -1923,10 +1949,17 @@ body {
                 <input type="tel" id="input-phone" placeholder="যেমন: 9876543210" value="${formData.whatsapp_number || ''}" maxlength="10" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next">
                 <p style="color:#94a3b8;font-size:11px;margin-top:6px;">${privacyLabel}</p>
                 <p style="color:#fbbf24;font-size:11px;margin-top:4px;">${benefitLabel}</p>
-                <label style="display:flex;align-items:center;gap:8px;margin-top:12px;color:#cbd5e1;font-size:13px;cursor:pointer;">
-                    <input type="checkbox" id="input-show-phone" ${formData.show_phone ? 'checked' : ''} style="width:auto;cursor:pointer;">
-                    <span>${showLabel}</span>
-                </label>
+                <div class="phone-checkbox-label" id="phone-checkbox-wrap" style="display:flex;align-items:center;gap:14px;margin-top:16px;padding:16px 18px;background:#1e293b;border:2px solid #334155;border-radius:14px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:all 0.2s;">
+                    <div id="phone-checkbox-visual" style="width:28px;height:28px;min-width:28px;border:2.5px solid #64748b;border-radius:8px;background:#0f172a;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;font-size:18px;color:#0a1020;font-weight:900;">${formData.show_phone ? '✓' : ''}</div>
+                    <span style="font-size:15px;line-height:1.4;font-weight:700;color:#fbbf24;">${showLabel}</span>
+                </div>
+                <input type="checkbox" id="input-show-phone" ${formData.show_phone ? 'checked' : ''} style="position:absolute;left:-9999px;">
+                <style>
+                    .phone-checkbox-label:has(input:checked) {
+                        background: rgba(245, 158, 11, 0.15);
+                        border-color: #f59e0b;
+                    }
+                </style>
             </div>
         `;
         const input = $('input-phone');
@@ -1938,9 +1971,60 @@ body {
                 formData.whatsapp_number = e.target.value;
             });
         }
+        // Custom checkbox wrapper — tap anywhere toggles
+        const checkboxWrap = document.getElementById('phone-checkbox-wrap');
+        const checkboxVisual = document.getElementById('phone-checkbox-visual');
+
+        function updateCheckboxVisual() {
+            if (!checkboxVisual) return;
+            if (formData.show_phone) {
+                checkboxVisual.textContent = '✓';
+                checkboxVisual.style.background = '#f59e0b';
+                checkboxVisual.style.borderColor = '#f59e0b';
+                checkboxVisual.style.color = '#0a1020';
+                if (checkboxWrap) {
+                    checkboxWrap.style.background = 'rgba(245, 158, 11, 0.15)';
+                    checkboxWrap.style.borderColor = '#f59e0b';
+                }
+            } else {
+                checkboxVisual.textContent = '';
+                checkboxVisual.style.background = '#0f172a';
+                checkboxVisual.style.borderColor = '#64748b';
+                if (checkboxWrap) {
+                    checkboxWrap.style.background = '#1e293b';
+                    checkboxWrap.style.borderColor = '#334155';
+                }
+            }
+            if (checkbox) checkbox.checked = formData.show_phone;
+        }
+
+        // Initial state
+        updateCheckboxVisual();
+
+        // Tap anywhere on wrapper toggles
+        if (checkboxWrap) {
+            checkboxWrap.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                formData.show_phone = !formData.show_phone;
+                updateCheckboxVisual();
+                console.log('[phone] show_phone toggled:', formData.show_phone);
+            });
+
+            // Touch feedback
+            checkboxWrap.addEventListener('touchstart', () => {
+                checkboxWrap.style.transform = 'scale(0.98)';
+            }, { passive: true });
+            checkboxWrap.addEventListener('touchend', () => {
+                checkboxWrap.style.transform = 'scale(1)';
+            });
+        }
+
+        // Hidden checkbox change (fallback)
         if (checkbox) {
             checkbox.addEventListener('change', (e) => {
                 formData.show_phone = e.target.checked;
+                updateCheckboxVisual();
             });
         }
     }
@@ -2191,25 +2275,29 @@ body {
         setText('poster-sanghayu', dSanghayu);
         setText('poster-tagline', t.tagline);
 
-        // Year line (only if Varga done)
+        // Year line — hide if varga not done OR year empty
         const posterYearLine = $('poster-year-line');
         if (posterYearLine) {
-            if (vargaNotDone) {
-                posterYearLine.style.display = 'none';
+            const yearEmpty = !formData.year || !String(formData.year).trim();
+            if (vargaNotDone || yearEmpty) {
+                posterYearLine.style.setProperty('display', 'none', 'important');
             } else {
-                posterYearLine.style.display = 'flex';
-                setText('poster-year', formData.year || '—');
+                posterYearLine.style.setProperty('display', 'flex', 'important');
+                setText('poster-year', formData.year);
             }
         }
 
-        // Phone number display for poster (only if show_phone is true)
-        const posterPhoneLine = $("poster-phone-line");
+        // Phone line — hide unless show_phone AND number given
+        const posterPhoneLine = $('poster-phone-line');
         if (posterPhoneLine) {
-            if (formData.show_phone && formData.whatsapp_number) {
-                posterPhoneLine.style.display = "flex";
-                setText("poster-phone", formData.whatsapp_number);
+            const phoneGiven = formData.show_phone
+                && formData.whatsapp_number
+                && String(formData.whatsapp_number).trim().length >= 10;
+            if (phoneGiven) {
+                posterPhoneLine.style.setProperty('display', 'flex', 'important');
+                setText('poster-phone', formData.whatsapp_number);
             } else {
-                posterPhoneLine.style.display = "none";
+                posterPhoneLine.style.setProperty('display', 'none', 'important');
             }
         }
 
