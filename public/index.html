@@ -27,15 +27,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
-    <!-- DEBUG: Eruda mobile console (only loads with ?debug=1 in URL) -->
-    <script>
-      if (location.search.includes('debug=1')) {
-        var _eruda = document.createElement('script');
-        _eruda.src = 'https://cdn.jsdelivr.net/npm/eruda';
-        _eruda.onload = function () { window.eruda && window.eruda.init(); };
-        document.head.appendChild(_eruda);
-      }
-    </script>
+
 
     <style>
 
