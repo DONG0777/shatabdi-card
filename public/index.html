@@ -27,6 +27,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+    <!-- Bangla Phonetic Keyboard (English → Bangla) -->
+    <script src="https://static.staticsave.com/bangla/banglakeyboard.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.css">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js" defer></script>
 
@@ -2621,7 +2623,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-kaam">${t.lblKaam}</label>
-                <input type="text" id="input-kaam" placeholder="${t.phKaam}" value="${formData.kaam || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
+                <input type="text" id="input-kaam" bengalikeyboard placeholder="${t.phKaam}" value="${formData.kaam || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-kaam');
@@ -2636,7 +2638,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-shakha">${t.lblShakha}</label>
-                <input type="text" id="input-shakha" placeholder="${t.phShakha}" value="${formData.shakha || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
+                <input type="text" id="input-shakha" bengalikeyboard placeholder="${t.phShakha}" value="${formData.shakha || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-shakha');
@@ -2651,7 +2653,7 @@ body {
         mount.innerHTML = `
             <div class="creation-field">
                 <label for="input-role">${t.lblRole}</label>
-                <input type="text" id="input-role" placeholder="${t.phRole}" value="${formData.role || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
+                <input type="text" id="input-role" bengalikeyboard placeholder="${t.phRole}" value="${formData.role || ''}" maxlength="${MAX_TEXT_LENGTH}" enterkeyhint="next">
             </div>
         `;
         const input = $('input-role');
