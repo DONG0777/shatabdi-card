@@ -1647,6 +1647,75 @@ body {
     white-space: nowrap;
 }
 
+
+/* ============================================================
+   PROFILE PHOTO (DP/Status) — 1200x1200
+   ============================================================ */
+#profile-export {
+    position: fixed;
+    left: -20000px;
+    top: 0;
+    width: 1200px;
+    height: 1200px;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.profile-card {
+    position: relative;
+    width: 1200px;
+    height: 1200px;
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+}
+
+.profile-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1200px;
+    height: 1200px;
+    display: block;
+    object-fit: contain;
+}
+
+/* Photo circle — 1024-based coords scaled to 1200 */
+.profile-photo-wrap {
+    position: absolute;
+    left: 285px;    /* 243 * 1.171875 */
+    top: 155px;     /* 132 * 1.171875 */
+    width: 630px;   /* 538 * 1.171875 */
+    height: 630px;  /* 538 * 1.171875 */
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f5f0e8;
+    z-index: 2;
+}
+
+#profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* সংঘায়ু — top of golden ring */
+.profile-sanghayu {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 42px;
+    font-weight: 900;
+    color: #7f1d1d;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+    z-index: 3;
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+}
+
 </style>
 </head>
 
@@ -1851,6 +1920,19 @@ body {
                 ✅ ক্রপ করুন
             </button>
         </div>
+    </div>
+</div>
+
+<!-- ============================================
+     PROFILE PHOTO (1200 x 1200) — for DP/Status
+     ============================================ -->
+<div id="profile-export" aria-hidden="true">
+    <div class="profile-card">
+        <img src="./profile-template-bg.png" class="profile-bg" alt="" />
+        <div class="profile-photo-wrap">
+            <img id="profile-photo" src="" alt="" />
+        </div>
+        <div id="profile-sanghayu" class="profile-sanghayu"></div>
     </div>
 </div>
 
@@ -2917,6 +2999,85 @@ body {
         });
     }
     // ============================================================
+    // Profile Photo Generator — DP/Status badge (auto-download)
+    // ============================================================
+    // ============================================================
+    // Success toast — profile photo downloaded
+    // ============================================================
+    function showProfileToast() {
+        const toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:0 10px 30px rgba(0,0,0,0.4);z-index:99999;text-align:center;max-width:90%;';
+        toast.innerHTML = '📸 প্রোফাইল ফটো ডাউনলোড হয়েছে!<br><span style="font-size:12px;opacity:0.9;">DP হিসেবে ব্যবহার করুন</span>';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.4s';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 400);
+        }, 3500);
+    }
+
+    async function generateProfilePhoto() {
+        const photo = document.getElementById('profile-photo');
+        const sanghayuEl = document.getElementById('profile-sanghayu');
+        const profileCard = document.querySelector('#profile-export .profile-card');
+
+        if (!photo || !sanghayuEl || !profileCard) {
+            console.warn('[profile] elements missing');
+            return null;
+        }
+
+        // Populate photo
+        photo.src = formData.photoDataUrl || DEFAULT_PHOTO_DATA_URL;
+
+        // Populate সংঘায়ু
+        const sanghayu = formData.sanghayu ? formData.sanghayu + ' বছর' : '১ বছর';
+        sanghayuEl.textContent = 'সংঘায়ু: ' + sanghayu;
+
+        // Wait for image to load
+        await new Promise((resolve) => {
+            if (photo.complete && photo.naturalWidth > 0) {
+                resolve();
+            } else {
+                photo.onload = () => resolve();
+                photo.onerror = () => resolve();
+            }
+        });
+
+        // Wait for fonts + render
+        await document.fonts.ready;
+        await new Promise(r => setTimeout(r, 400));
+
+        // Generate blob via html2canvas
+        const blob = await generateBlob('profile-export', 1200, 1200);
+        return blob;
+    }
+
+    async function downloadProfilePhoto() {
+        try {
+            const blob = await generateProfilePhoto();
+            if (!blob) {
+                console.warn('[profile] generate failed');
+                return false;
+            }
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = (formData.name || 'profile').replace(/[^\w\u0980-\u09FF]+/g, '-');
+            a.download = 'shatabdi-profile-' + safeName + '.png';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+            console.log('[profile] downloaded');
+            return true;
+        } catch (err) {
+            console.error('[profile] download failed:', err);
+            return false;
+        }
+    }
+
+    // ============================================================
     // Download Poster — user can save PNG directly
     // ============================================================
     async function downloadPoster() {
@@ -3146,10 +3307,36 @@ body {
         const fbBtn = $('btn-fb-share');
         const waBtn = $('btn-whatsapp-share');
 
-        // Wire WhatsApp button
+        // Wire WhatsApp button — auto-download DP on share
         if (waBtn && !waBtn.dataset.bound) {
             waBtn.dataset.bound = '1';
-            waBtn.addEventListener('click', shareToWhatsApp);
+            waBtn.addEventListener('click', async () => {
+                // Trigger DP download in background
+                setTimeout(() => {
+                    downloadProfilePhoto().then(ok => {
+                        if (ok) {
+                            showProfileToast();
+                        }
+                    });
+                }, 1000);
+                // Then do the share
+                shareToWhatsApp();
+            });
+        }
+
+        // Wire Facebook button — auto-download DP on share
+        if (fbBtn && !fbBtn.dataset.dpBound) {
+            fbBtn.dataset.dpBound = '1';
+            const originalHandler = fbBtn.onclick;
+            fbBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    downloadProfilePhoto().then(ok => {
+                        if (ok) {
+                            showProfileToast();
+                        }
+                    });
+                }, 1000);
+            });
         }
 
         // Store share URL globally
