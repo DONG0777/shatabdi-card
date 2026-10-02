@@ -1743,6 +1743,15 @@ body {
         >
             <span id="txt-fb-btn">📘 Facebook এ পোস্ট করুন</span>
         </a>
+
+        <button
+            id="btn-whatsapp-share"
+            type="button"
+            style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:16px 20px;margin-top:14px;background:linear-gradient(135deg,#25D366,#128C7E);color:#ffffff;border:2px solid #34d399;border-radius:14px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(37,211,102,0.4);-webkit-tap-highlight-color:transparent;transition:transform 0.15s,box-shadow 0.15s;"
+        >
+            <span style="font-size:22px;line-height:1;">💬</span>
+            <span>WhatsApp এ শেয়ার করুন</span>
+        </button>
     </section>
 <!-- ============================================
      POSTER (1080 x 1350) — Facebook Share
@@ -3032,6 +3041,9 @@ body {
                 dlBtn.onclick = downloadPoster;
             }
 
+            // 6c. Store poster blob for sharing
+            lastPosterBlob = posterBlob;
+
             // 7. Setup share with poster + share URL
             setupFacebookShare(posterDataUrl, shareUrl);
 
@@ -3086,8 +3098,63 @@ body {
     // ১৪. ফেসবুক শেয়ার (Facebook Share)
     // ============================================================
     // ============================================================
+    // ============================================================
+    // WhatsApp Share + Web Share API (native mobile share)
+    // ============================================================
+    let lastPosterBlob = null;
+    let lastShareUrl = 'https://shatabdi-card.vercel.app/';
+
+    async function shareToWhatsApp() {
+        const caption = '🚩 আমি আমার পরিচয় দিতে গর্বিত!\nআপনিও আপনার শতবর্ষী স্মারক কার্ড তৈরি করুন 👇';
+        const fullText = caption + '\n' + lastShareUrl;
+
+        // Try Web Share API first (mobile) — image + text + link
+        if (navigator.share && lastPosterBlob) {
+            try {
+                const file = new File(
+                    [lastPosterBlob],
+                    'shatabdi-poster.png',
+                    { type: 'image/png' }
+                );
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'শতবর্ষী স্মারক কার্ড',
+                        text: caption,
+                        url: lastShareUrl
+                    });
+                    console.log('[share] web share API success');
+                    return;
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    console.log('[share] user cancelled');
+                    return;
+                }
+                console.warn('[share] web share failed, falling back:', err);
+            }
+        }
+
+        // Fallback: WhatsApp URL scheme (text + link only)
+        console.log('[share] fallback to WhatsApp URL');
+        const waUrl = 'https://wa.me/?text=' + encodeURIComponent(fullText);
+        window.open(waUrl, '_blank', 'noopener');
+    }
+
     function setupFacebookShare(posterDataUrl, shareUrl) {
         const fbBtn = $('btn-fb-share');
+        const waBtn = $('btn-whatsapp-share');
+
+        // Wire WhatsApp button
+        if (waBtn && !waBtn.dataset.bound) {
+            waBtn.dataset.bound = '1';
+            waBtn.addEventListener('click', shareToWhatsApp);
+        }
+
+        // Store share URL globally
+        lastShareUrl = shareUrl || 'https://shatabdi-card.vercel.app/';
+
         if (!fbBtn) return;
 
         window.__posterDataUrl = posterDataUrl;
